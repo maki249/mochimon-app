@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScriptなしのレイアウト</title>
+    <link rel="stylesheet" href="style.css"> </head>
+<body>
+    <header class="header">
+        <h1>ヘッダー領域</h1>
+        <p>画面上部に常に表示されるヘッダーです。</p>
+    </header>
+
+    <div class="main-content">
+        <nav class="menu">
+            <h2>メニュー</h2>
+            <ul>
+                <li><a href="#">メニュー項目 1</a></li>
+                <li><a href="#">メニュー項目 2</a></li>
+                <li><a href="#">メニュー項目 3</a></li>
+                <li><a href="#">メニュー項目 4</a></li>
+                <li><a href="#">メニュー項目 5</a></li>
+                <li><a href="#">さらに長いメニュー項目を試す</a></li>
+                <li><a href="#">別のメニュー項目</a></li>
+                <li><a href="#">メニュー項目 8</a></li>
+                <li><a href="#">メニュー項目 9</a></li>
+                <li><a href="#">メニュー項目 10</a></li>
+            </ul>
+        </nav>
+
+        <div class="center-right-container">
+            <main class="display-area">
+                <h2>中央表示領域</h2>
+                <p>ここに主要なコンテンツが表示されます。</p>
+                <p>この領域は、コンテンツが画面に収まらない場合にスクロールします。</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                <p>Curabitur pretium tincidunt lacus. Nulla facilisi. Nullam faucibus mi quis velit. Proin eu turpis. Duis lectus. Nunc turpis lorem, pharetra in, adipiscing at, dolor. Aenean sagittis lacus at nunc. Morbi justo. Nam ipsum. Praesent mauris leo, mattis eget, dictum sed, nonummy sed, magna. Maurice semper inceptos hymenaeos. Mauris massa. Praesent in magna. Proin adipiscing.</p>
+                <p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                <p>Curabitur pretium tincidunt lacus. Nulla facilisi. Nullam faucibus mi quis velit. Proin eu turpis. Duis lectus. Nunc turpis lorem, pharetra in, adipiscing at, dolor. Aenean sagittis lacus at nunc. Morbi justo. Nam ipsum. Praesent mauris leo, mattis eget, dictum sed, nonummy sed, magna. Maurice semper inceptos hymenaeos. Mauris massa. Praesent in magna. Proin adipiscing.</p>
+            </main>
+
+            <aside class="edit-operations-area">
+                <h2>編集/操作領域</h2>
+                <p>ここには、選択された項目に対する編集フォームや操作ボタンを配置します。</p>
+                <form>
+                    <label for="item-name">項目名:</label>
+                    <input type="text" id="item-name" name="item-name" value="現在の項目名">
+
+                    <label for="description">詳細:</label>
+                    <textarea id="description" name="description" rows="5">ここに詳細を記述します。</textarea>
+
+                    <button type="submit">保存</button>
+                    <button type="button">削除</button>
+                    <button type="button">追加</button>
+                </form>
+                <p>この領域も、内容が多すぎる場合はスクロールします。</p>
+            </aside>
+        </div>
+    </div>
+</body>
+</html>

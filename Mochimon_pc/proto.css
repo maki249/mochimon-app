@@ -1,0 +1,88 @@
+/* 基本的なリセット */
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: sans-serif;
+}
+
+/* 全体を囲むコンテナのスタイル */
+.container {
+    display: grid;
+    height: 100vh; /* ビューポート全体の高さに設定 */
+    grid-template-columns: 200px 1fr 250px; /* 左:200px, 中央:可変, 右:250px */
+    grid-template-rows: 60px 1fr; /* 上:60px, 中央:可変 */
+    grid-template-areas:
+        "header header header"
+        "menu   content sidebar";
+}
+
+/* 各エリアの配置 */
+.header {
+    grid-area: header;
+}
+
+.left-menu {
+    grid-area: menu;
+}
+
+.content {
+    grid-area: content;
+}
+
+.right-sidebar {
+    grid-area: sidebar;
+}
+
+
+/* ----- 以下、見た目を整えるためのスタイル ----- */
+
+.header {
+    background-color: #34495e;
+    color: #ffffff;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.left-menu {
+    background-color: #f4f4f4;
+    padding: 1rem;
+}
+
+.left-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.left-menu li a {
+    display: block;
+    padding: 0.8rem;
+    text-decoration: none;
+    color: #333;
+    border-radius: 4px;
+}
+
+.left-menu li a:hover {
+    background-color: #e0e0e0;
+}
+
+.content {
+    padding: 1.5rem;
+}
+
+.right-sidebar {
+    background-color: #f9f9f9;
+    padding: 1rem;
+    border-left: 1px solid #ddd;
+}

@@ -61,11 +61,12 @@
     const password = document.getElementById("password").value;
 
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      alert("ログイン成功！");
-      console.log("ログインユーザー:", user);
-      window.location.href = "Home.html";  // ログイン成功後の遷移先
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+        alert("ログイン成功！");
+        setTimeout(() => {
+        window.location.href = "Home.html";
+        }, 100);  // 0.1秒後に遷移（alert終了後に動作）
     } catch (error) {
       alert("ログインに失敗しました: " + error.message);
       console.error("エラー:", error);

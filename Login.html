@@ -6,6 +6,7 @@
         <link rel="stylesheet" href="Login.css">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
         <title>ログイン/アカウント登録</title>
+        
     </head>
 
     <body>
@@ -64,9 +65,12 @@
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
         alert("ログイン成功！");
-        setTimeout(() => {
-        window.location.href = "Home.html";
-        }, 100);  // 0.1秒後に遷移（alert終了後に動作）
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            if (isMobile) {
+                window.location.href = "Mochimon_mobile/Home.html"; // スマホ用
+            } else {
+                window.location.href = "Mochimon_pc/Home.html"; // PC用
+            }
     } catch (error) {
       alert("ログインに失敗しました: " + error.message);
       console.error("エラー:", error);

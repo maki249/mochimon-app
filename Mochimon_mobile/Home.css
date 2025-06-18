@@ -2,7 +2,11 @@ body {
     margin: 0;
     padding-top: 120px; /* ヘッダーエリアの高さ分、上に余白を持たせる */
     padding-bottom: 60px; /* 下部メニューの高さ分、下に余白を持たせる */
+    align-items: center;
+    justify-content: center;
     font-family: sans-serif;
+    display: flex;
+    overflow: hidden; /* bodyでスクロールさせない */
 }
 
 .app-content {
@@ -48,6 +52,52 @@ body {
     height: auto; /* アイコンサイズに合わせるためautoに、または固定値を指定 */
 }
 
+/* ダッシュボードコンテナ */
+.dashboard {
+  width: 90%;
+  max-width: 400px;
+  margin-top: 30px;
+
+  /* スクロールエリア */
+  height: 90vh;               /* 画面高の90% */
+  overflow-y: auto;           /* 縦スクロール可 */
+  padding: 8px 0;
+}
+
+.dashboard::-webkit-scrollbar {
+  width: 6px;
+}
+.dashboard::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 10px;
+}
+
+
+/* 予定カード */
+.card {
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 2px solid #a2d0d0;
+}
+
+/* 予定のタイトル */
+.card h2 {
+  margin: 0 0 8px 0;
+  font-size: 1.2em;
+  color: #222;
+}
+
+/* 予定の詳細 */
+.card p {
+  margin: 4px 0;
+  color: #666;
+}
+
+
+
 /*メニューボタン*/
 
 .bottom-menu {
@@ -80,6 +130,7 @@ body {
     font-size: 24px; /* テキストのフォントサイズ */
     text-decoration: none;
 }
+
 
 .bottom-menu p{
     font-size: 12px;

@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-import { getFirestore, setDoc, collection } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+import { getFirestore, doc, updateDoc } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
-async function addData(listName){
+async function addData(listName, done){
     const firebaseConfig = {
         apiKey: "AIzaSyChPt5NDvgd4okxbUQalZtrS7w6Tm30fgg",
         authDomain: "mochimon-base.firebaseapp.com",
@@ -15,11 +15,12 @@ async function addData(listName){
     const db = getFirestore(app);
     const user = getAuth(app).currentUser();
 
+    const docRef = doc(db, user.uid, listName)
     try{
         //データ登録
-        const docRef = await setDoc(collection(db, user.uid, listName), {
+        await updateDoc(docRef, {
             name: listName,
-            isDone: false,  //準備完了フラグ
+            isDone: done,  //準備完了フラグ
             userId: user.uid//userIDの登録
         });
     } catch(e){

@@ -5,10 +5,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="Calendar.css">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
-        
         <!-- FullCalendar CSS & JS -->
         <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css' rel='stylesheet' />
         <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
+
         <title>カレンダー</title>
     </head>
 
@@ -40,7 +40,7 @@
                 <span  class="select">
                     <i class="fa-regular fa-calendar-days"></i>
                 </span>
-                <p class="select">カレンダー</p>
+                <p>カレンダー</p>
             </a>
             <a href="Template.html" class="menu-button">
                 <span>
@@ -102,14 +102,30 @@
             },
             events: events,
             dateClick: function(info) {
-                const selectedDate = info.dateStr;
-                window.location.href = `EventCreate.html?date=${selectedDate}`;
-            }
+                // すでに選択されていた日付のハイライトをリセット
+                document.querySelectorAll('.fc-day').forEach(el => {
+                    el.classList.remove('selected-date');
+                });
+
+                // クリックされた日付にハイライトを追加
+                info.dayEl.classList.add('selected-date');
+                }
+
             });
 
             calendar.render();
         });
+        // プラスボタンをクリックして予定作成画面に遷移
+        document.getElementById("add-event-btn").addEventListener("click", () => {
+            window.location.href = "EventCreate.html";
+        });
         </script>
+
+        <!-- プラスボタン -->
+        <button id="add-event-btn" class="add-event-btn" aria-label="予定を追加">
+            <i class="fa-solid fa-plus"></i>
+        </button>
+
     </body>
 
 </html>

@@ -1,12 +1,38 @@
-body {
+/* 基本的なリセット */
+* {
+    box-sizing: border-box;
+}
+
+html, body {
     margin: 0;
-    padding-top: 120px; /* ヘッダーエリアの高さ分、上に余白を持たせる */
-    padding-bottom: 60px; /* 下部メニューの高さ分、下に余白を持たせる */
+    padding: 0;
+    height: 100%;
     font-family: sans-serif;
 }
 
-.app-content {
-    padding: 20px;
+/* 全体を囲むコンテナのスタイル */
+.container {
+    display: grid;
+    height: 100vh; /* ビューポート全体の高さに設定 */
+    grid-template-columns: 200px 1fr 250px; /* 左:200px, 中央:可変, 右:250px */
+    grid-template-rows: 60px 1fr; /* 上:60px, 中央:可変 */
+    grid-template-areas:
+        "header header header"
+        "menu   content sidebar";
+}
+
+/* 各エリアの配置 */
+
+.left-menu {
+    grid-area: menu;
+}
+
+.content {
+    grid-area: content;
+}
+
+.right-sidebar {
+    grid-area: sidebar;
 }
 
 /*ヘッダー*/
@@ -15,7 +41,7 @@ body {
     top: 0;
     left: 0;
     width: 100%;
-    height: 120px; /* ヘッダーの高さ */
+    height: 60px; /* ヘッダーの高さ */
     display: flex;
     justify-content: space-between; /* 左端と右端に要素を配置 */
     align-items: center;
@@ -35,69 +61,39 @@ body {
     font-size: 32px;
 }
 
-
-/*ハンバーガーボタン*/
-.hamburger-button {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 10px; /* クリックエリアを確保 */
-    font-size: 32px;
-    box-sizing: border-box;
-    width: auto;  /* アイコンサイズに合わせるためautoに、または固定値を指定 */
-    height: auto; /* アイコンサイズに合わせるためautoに、または固定値を指定 */
+.left-menu {
+    background-color: #f4f4f4;
+    padding: 1rem;
 }
 
-/*メニューボタン*/
-
-.bottom-menu {
-    position: fixed; /* 画面下部に固定 */
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 60px; /* メニューの高さ */
-    background-color: #f0f0f0; /* メニューの背景色 */
-    display: flex; /* ボタンを横並びにする */
-    justify-content: space-around; /* ボタンを均等に配置 */
-    align-items: center; /* ボタンを上下中央に配置 */
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* 上部に影をつける */
-    z-index: 1000; /* 他の要素より手前に表示 */
+.left-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
-.menu-button {
-    background-color: transparent;
-    border: none;
-    color: #333; /* ボタンの文字色 */
-    cursor: pointer;
-    display: flex;
-    flex-direction: column; /* アイコンとテキストを縦に並べる場合 */
-    align-items: center;
-    justify-content: center;
-    flex-grow: 1; /* 各ボタンが均等に幅を取るようにする */
-    height: 100%;
-    padding: 5px 0;
-    margin-top: 5px;
-    font-size: 24px; /* テキストのフォントサイズ */
+.left-menu li a {
+    display: block;
+    padding: 0.8rem;
     text-decoration: none;
+    color: #333;
+    border-radius: 4px;
 }
 
-.bottom-menu p{
-    font-size: 12px;
-    margin-top: 0;
+.left-menu li a:hover {
+    background-color: #e0e0e0;
+}
+
+.content {
+    padding: 1.5rem;
+}
+
+.right-sidebar {
+    background-color: #f9f9f9;
+    padding: 1rem;
+    border-left: 1px solid #ddd;
 }
 
 .select{
-    color: #a2d0d0; /* ボタンの文字色 */
-}
-
-.menu-button:hover {
-    background-color: #e0e0e0; /* ホバー時の背景色 */
-}
-
-.menu-button:active {
-    background-color: #d0d0d0; /* クリック時の背景色 */
-}
-
-.menu-button span {
-    display: block;
+    background-color: #DDDDDD;
 }

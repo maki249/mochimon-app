@@ -1,0 +1,112 @@
+body {
+    margin: 0;
+    padding-top: 120px; /* ヘッダーエリアの高さ分、上に余白を持たせる */
+    padding-bottom: 60px; /* 下部メニューの高さ分、下に余白を持たせる */
+    font-family: sans-serif;
+}
+
+
+
+/*ヘッダー*/
+.header-area {
+    position: fixed; /* 画面上部に固定 */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 120px; /* ヘッダーの高さ */
+    display: flex;
+    justify-content: center; /* 左端と右端に要素を配置 */
+    align-items: center;
+    padding: 0 20px; /* 左右にパディングを設定 */
+    box-sizing: border-box; /* paddingを含めて幅を計算 */
+    z-index: 1000; /* 下部メニューと同じか、必要に応じて調整 */
+    background-color: #e0ffff;
+}
+
+.title{
+    text-decoration: none;
+    color: black;
+}
+
+/*ログインフォーム*/
+.login-container {
+    flex-grow: 1; /* ヘッダー以外の残りのスペースを全て使用 */
+    display: flex;
+    justify-content: center; /* 水平方向中央 */
+    align-items: center; /* 垂直方向中央 */
+    padding: 20px; /* 必要に応じてフォームの上下左右に余白 */
+    box-sizing: border-box;
+    margin-top: 50px;
+}
+
+
+.login-form{
+    background-color: #ffffff;
+    padding: 35px 45px;
+    border-radius: 10px; /* 角を少し丸く */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 380px; /* フォームの最大幅 */
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.login-form h2 {
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 30px;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.form-group input[type="mail"],
+.form-group input[type="password"] {
+    width: 100%;
+    padding: 14px 16px; /* パディングを少し大きく */
+    border: 1px solid #dce1e6; /* ボーダー色を調整 */
+    border-radius: 6px; /* 入力欄の角も丸く */
+    box-sizing: border-box;
+    font-size: 15px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-button {
+    width: 100%;
+    padding: 14px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+.login-button:hover {
+    background-color: #0056b3; 
+}
+
+.signup-link {
+    margin-top: 30px;
+    font-size: 14px;
+    
+}
+
+.signup-link a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+}

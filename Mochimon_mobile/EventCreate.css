@@ -1,125 +1,172 @@
-<!DOCTYPE html>
-<html lang="ja">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="EventCreate.css">
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
-    </head>
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background-color: rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
 
-    <body>
-        <div class="overlay">
-            <div class="event-form">
-                <div class="form-header">
-                    <button class="cancel-button">キャンセル</button>
-                    <h2>新しい予定</h2>
-                    <button class="save-button">保存</button>
-                </div>
+.overlay {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
 
-                <div class="form-body">
-                    <div class="form-section">
-                        <input type="text" id="event-title" placeholder="タイトルを入力" />
-                    </div>
+.event-form {
+  width: 100%;
+  height: calc(100% - 40px);
+  background-color: white;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.4s ease-out;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
 
-                    <div class="form-section">
-                        <div class="form-row">
-                            <span class="form-label">終日予定</span>
-                            <label class="toggle-container">
-                                <input type="checkbox" id="all-day-toggle" />
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
 
-                        <div class="form-row">
-                            <span class="form-label">開始</span>
-                            <div class="datetime-display">
-                                <div class="box" id="start-date-box">2025年6月18日（水）</div>
-                                <div class="box" id="start-time-box">13:00</div>
-                            </div>
-                        </div>
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid #ddd;
+}
 
-                        <div class="form-row">
-                            <span class="form-label">終了</span>
-                            <div class="datetime-display">
-                                <div class="box" id="end-date-box">2025年6月18日（水）</div>
-                                <div class="box" id="end-time-box">14:00</div>
-                            </div>
-                        </div>
-                    </div>
+.form-header h2 {
+  margin: 0;
+  font-size: 18px;
+  flex-grow: 1;
+  text-align: center;
+}
 
-                    <div class="form-section">
-                        <div class="form-row">
-                            <span class="form-label">通知</span>
-                            <label class="toggle-container">
-                                <input type="checkbox" id="notification-toggle" />
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                    </div>
+.cancel-button,
+.save-button {
+  background: none;
+  border: none;
+  color: #007aff;
+  font-size: 16px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
 
-                    <button id="add-item-button">
-                        <i class="fa-solid fa-plus"></i> 持ち物を追加
-                    </button>
-                </div>
-            </div>
-        </div>
+.form-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
 
-        <script>
-            document.querySelector('.cancel-button').addEventListener('click', () => {
-                window.location.href = 'Calendar.html';
-            });
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
 
-            document.querySelector('.save-button').addEventListener('click', () => {
-                const title = document.getElementById('event-title').value;
-                const allDay = document.getElementById('all-day-toggle').checked;
-                const notify = document.getElementById('notification-toggle').checked;
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
 
-                console.log({ title, allDay, notify });
-                alert('保存処理をここに追加してください');
-            });
+.form-label {
+  font-size: 14px;
+  color: #333;
+  flex-shrink: 0;
+  width: 80px;
+}
 
-            document.getElementById('add-item-button').addEventListener('click', () => {
-                alert('持ち物追加画面に遷移します（未実装）');
-            });
+input[type="text"] {
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  width: 100%;
+}
 
-            document.addEventListener('DOMContentLoaded', () => {
-                const urlParams = new URLSearchParams(window.location.search);
-                const selectedDateStr = urlParams.get("date");
+.datetime-display {
+  display: flex;
+  gap: 8px;
+}
 
-                if (selectedDateStr) {
-                    const now = new Date();
-                    function roundToNextHour(date) {
-                        const result = new Date(date);
-                        result.setMinutes(0, 0, 0);
-                        if (date.getMinutes() > 0) {
-                            result.setHours(result.getHours() + 1);
-                        }
-                        return result;
-                    }
+.box {
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  min-width: 120px;
+  text-align: center;
+}
 
-                    const roundedNow = roundToNextHour(now);
-                    const startDate = new Date(selectedDateStr);
-                    startDate.setHours(roundedNow.getHours(), roundedNow.getMinutes(), 0, 0);
+.toggle-container {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+}
 
-                    const endDate = new Date(startDate);
-                    endDate.setHours(endDate.getHours() + 1);
+.toggle-container input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
 
-                    const formatDate = (date) => `${date.getFullYear()}年${date.getMonth()+1}月${date.getDate()}日（${['日','月','火','水','木','金','土'][date.getDay()]}）`;
-                    const formatTime = (date) => `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 999px;
+}
 
-                    document.getElementById('start-date-box').textContent = formatDate(startDate);
-                    document.getElementById('start-time-box').textContent = formatTime(startDate);
-                    document.getElementById('end-date-box').textContent = formatDate(endDate);
-                    document.getElementById('end-time-box').textContent = formatTime(endDate);
-                }
-            });
+.toggle-slider::before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 1px;
+  bottom: 1px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
 
-            document.getElementById('all-day-toggle').addEventListener('change', () => {
-                const isAllDay = document.getElementById('all-day-toggle').checked;
-                document.getElementById('start-time-box').style.display = isAllDay ? 'none' : 'inline-block';
-                document.getElementById('end-time-box').style.display = isAllDay ? 'none' : 'inline-block';
-            });
-        </script>
-    </body>
+.toggle-container input:checked + .toggle-slider {
+  background-color: #007aff;
+}
 
-</html>
+.toggle-container input:checked + .toggle-slider::before {
+  transform: translateX(20px);
+}
+
+#add-item-button {
+  padding: 10px;
+  font-size: 16px;
+  background-color: #eee;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+}

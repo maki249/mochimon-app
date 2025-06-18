@@ -32,6 +32,45 @@
             </form>
         </div>
 
+        <script type="module">
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+            import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
+            import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+
+            const firebaseConfig = {
+            apiKey: "AIzaSyChPt5NDvgd4okxbUQalZtrS7w6Tm30fgg",
+            authDomain: "mochimon-base.firebaseapp.com",
+            projectId: "mochimon-base",
+            storageBucket: "mochimon-base.firebasestorage.app",
+            messagingSenderId: "5202457046",
+            appId: "1:5202457046:web:7233c6b556a7d260803477",
+            measurementId: "G-GPT541EW6S"
+            };
+
+            const app = initializeApp(firebaseConfig);
+            const analytics = getAnalytics(app);
+            const auth = getAuth(app);
+
+            // フォーム送信時の処理
+            const form = document.getElementById("registerForm");
+            form.addEventListener("submit", async (e) => {
+            e.preventDefault(); // フォームのデフォルト送信を防ぐ
+
+            const email = document.getElementById("mail").value;
+            const password = document.getElementById("password").value;
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                alert("登録に成功しました！");
+                console.log("登録ユーザー:", user);
+                window.location.href = "Home.html"; // ← 登録後にリダイレクト
+            } catch (error) {
+                alert("登録に失敗しました: " + error.message);
+                console.error("エラー:", error);
+            }
+            });
+        </script>
     </body>
 
 </html>    

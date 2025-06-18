@@ -22,11 +22,11 @@ body {
     padding: 0 20px; /* 左右にパディングを設定 */
     box-sizing: border-box; /* paddingを含めて幅を計算 */
     z-index: 1000; /* 下部メニューと同じか、必要に応じて調整 */
-    background-color: #e0ffff;
+    background-color: #e0f0f0;
 }
 
 .login-button {
-    background-color: #e0ffff;
+    background-color: #e0f0f0;
     color: #333; /* ボタンの文字色 */
     padding: 8px 16px;
     border: none;
@@ -34,6 +34,7 @@ body {
     cursor: pointer;
     font-size: 32px;
 }
+
 
 /*ハンバーガーボタン*/
 .hamburger-button {
@@ -46,6 +47,8 @@ body {
     width: auto;  /* アイコンサイズに合わせるためautoに、または固定値を指定 */
     height: auto; /* アイコンサイズに合わせるためautoに、または固定値を指定 */
 }
+
+/*メニューボタン*/
 
 .bottom-menu {
     position: fixed; /* 画面下部に固定 */
@@ -84,7 +87,7 @@ body {
 }
 
 .select{
-    color: #d3d3d3; /* ボタンの文字色 */
+    color: #a2d0d0; /* ボタンの文字色 */
 }
 
 .menu-button:hover {
@@ -94,7 +97,6 @@ body {
 .menu-button:active {
     background-color: #d0d0d0; /* クリック時の背景色 */
 }
-
 
 .menu-button span {
     display: block;

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>マイページ</title>
+  <link rel="stylesheet" href="MyPage.css" />
+  
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut, deleteUser } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyChPt5NDvgd4okxbUQalZtrS7w6Tm30fgg",
+      authDomain: "mochimon-base.firebaseapp.com",
+      projectId: "mochimon-base",
+      storageBucket: "mochimon-base.appspot.com",
+      messagingSenderId: "5202457046",
+      appId: "1:5202457046:web:7233c6b556a7d260803477",
+      measurementId: "G-GPT541EW6S"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const userEmail = document.getElementById("user-email");
+    const logoutBtn = document.getElementById("logout-btn");
+    const deleteBtn = document.getElementById("delete-btn");
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        userEmail.textContent = user.email;
+      } else {
+        window.location.href = "Login.html";
+      }
+    });
+
+    logoutBtn.addEventListener("click", () => {
+      signOut(auth).then(() => {
+        window.location.href = "Login.html";
+      });
+    });
+
+    deleteBtn.addEventListener("click", () => {
+      if (confirm("本当にアカウントを削除しますか？この操作は取り消せません。")) {
+        const user = auth.currentUser;
+        deleteUser(user).then(() => {
+          alert("アカウントを削除しました。");
+          window.location.href = "Login.html";
+        }).catch((error) => {
+          alert("削除に失敗しました。再ログインが必要かもしれません。");
+          console.error(error);
+        });
+      }
+    });
+  </script>
+</head>
+<body>
+    <div class="header-area">
+            <a href="#" class="title" id="home-link">
+                <h1>Mochimon</h1>
+            </a>
+    </div>
+    <div class="mypage_container">
+        <h1>マイページ</h1>
+        <p>ログイン中のアカウント：</p>
+        <p id="user-email">読み込み中...</p>
+        
+        <button id="logout-btn">ログアウト</button>
+        <button id="delete-btn">アカウントを削除</button>
+    </div>
+    <script>
+        const homeLink = document.getElementById('home-link');
+
+        homeLink.addEventListener('click', (e) => {
+            e.preventDefault(); // デフォルトのリンク動作を止める
+
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+            if (isMobile) {
+            window.location.href = "Mochimon_mobile/Home.html"; // スマホ用
+            } else {
+            window.location.href = "Mochimon_pc/Home.html"; // PC用
+            }
+        });
+    </script>
+</body>
+</html>

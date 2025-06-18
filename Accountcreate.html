@@ -18,7 +18,7 @@
         </div>
 
         <div class="login-container">
-            <form class="login-form" action="#" method="POST">
+            <form class="login-form" id="registerForm">
                 <h2>アカウント登録</h2>
                 <div class="form-group">
                     <label for="mail">メールアドレス</label>
@@ -64,7 +64,9 @@
             try {
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
-                alert("登録に成功しました！");
+                // 認証メールの送信
+                await sendEmailVerification(user);
+                alert("登録に成功しました！確認メールを送信しました。メールをチェックしてください。");
                 console.log("登録ユーザー:", user);
                 const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
                 if (isMobile) {

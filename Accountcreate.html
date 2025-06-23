@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="ja">
     <head>
+    
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="Accountcreate.css">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
         <title>アカウント登録</title>
+        
     </head>
 
     <body>
@@ -16,7 +18,7 @@
         </div>
 
         <div class="login-container">
-            <form class="login-form" action="#" method="POST">
+            <form class="login-form" id="registerForm">
                 <h2>アカウント登録</h2>
                 <div class="form-group">
                     <label for="mail">メールアドレス</label>
@@ -35,7 +37,9 @@
         <script type="module">
             import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
             import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
-            import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+            import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+
+
 
             const firebaseConfig = {
             apiKey: "AIzaSyChPt5NDvgd4okxbUQalZtrS7w6Tm30fgg",
@@ -62,9 +66,16 @@
             try {
                 const userCredential = await createUserWithEmailAndPassword(auth, email, password);
                 const user = userCredential.user;
-                alert("登録に成功しました！");
+                // 認証メールの送信
+                await sendEmailVerification(user);
+                alert("登録に成功しました！確認メールを送信しました。メールをチェックしてください。");
                 console.log("登録ユーザー:", user);
-                window.location.href = "Home.html"; // ← 登録後にリダイレクト
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                if (isMobile) {
+                    window.location.href = "Login.html"; // スマホ用
+                } else {
+                    window.location.href = "Login.html"; // PC用
+                }
             } catch (error) {
                 alert("登録に失敗しました: " + error.message);
                 console.error("エラー:", error);

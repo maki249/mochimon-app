@@ -35,7 +35,6 @@ body {
     font-size: 32px;
 }
 
-
 /*ハンバーガーボタン*/
 .hamburger-button {
     background-color: transparent;
@@ -47,8 +46,6 @@ body {
     width: auto;  /* アイコンサイズに合わせるためautoに、または固定値を指定 */
     height: auto; /* アイコンサイズに合わせるためautoに、または固定値を指定 */
 }
-
-/*メニューボタン*/
 
 .bottom-menu {
     position: fixed; /* 画面下部に固定 */
@@ -87,7 +84,7 @@ body {
 }
 
 .select{
-    color: #a2d0d0; /* ボタンの文字色 */
+    color: #d3d3d3; /* ボタンの文字色 */
 }
 
 .menu-button:hover {
@@ -98,6 +95,42 @@ body {
     background-color: #d0d0d0; /* クリック時の背景色 */
 }
 
+
 .menu-button span {
     display: block;
+}
+
+.add-event-btn {
+  position: fixed;
+  bottom: 80px; /* フッターメニューの上に重ならないように調整 */
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: #a2d0d0;
+  color: white;
+  font-size: 24px;
+  border: none;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  cursor: pointer;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.add-event-btn:hover {
+  background-color: #8fc0c0;
+}
+
+/* 今日の日付の背景色を薄い灰色にする */
+.fc-day-today {
+  background-color: #eeeeee !important;
+}
+
+/* 選択された日付を水色の枠で囲む */
+.fc-day.selected-date {
+  outline: 2px solid #00bcd4;
+  outline-offset: -2px;
 }

@@ -72,6 +72,10 @@ body {
   border-radius: 10px;
 }
 
+.dashboard a{
+  text-decoration: none;
+}
+
 
 /* 予定カード */
 .card {
@@ -95,7 +99,6 @@ body {
   margin: 4px 0;
   color: #666;
 }
-
 
 
 /*メニューボタン*/

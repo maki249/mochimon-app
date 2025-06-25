@@ -93,23 +93,23 @@
             const events = snapshot.docs.map(doc => doc.data());
 
             const calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                locale: 'ja',
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,listWeek'
-                },
-                events: events,
-                dateClick: function(info) {
-                    // すでに選択されていた日付のハイライトをリセット
-                    document.querySelectorAll('.fc-day').forEach(el => {
-                        el.classList.remove('selected-date');
-                    });
-                    selectedDateStr = info.dateStr;
-                    // クリックされた日付にハイライトを追加
-                    info.dayEl.classList.add('selected-date');
-                }
+            initialView: 'dayGridMonth',
+            locale: 'ja',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,listWeek'
+            },
+            events: events,
+            dateClick: function(info) {
+                // すでに選択されていた日付のハイライトをリセット
+                document.querySelectorAll('.fc-day').forEach(el => {
+                    el.classList.remove('selected-date');
+                });
+                selectedDateStr = info.dateStr;
+                // クリックされた日付にハイライトを追加
+                info.dayEl.classList.add('selected-date');
+            }
 
             });
 

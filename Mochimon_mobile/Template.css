@@ -48,6 +48,51 @@ body {
     height: auto; /* アイコンサイズに合わせるためautoに、または固定値を指定 */
 }
 
+.main-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 0;
+}
+
+.main-card {
+    background-color: #f0f0f0;
+    width: 80%;
+    max-width: 600px;
+    padding: 10px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.small-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 80px);
+    gap: 16px;
+    margin-top: 10px;
+    justify-content: center;
+}
+
+.small-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    padding: 20px;
+    text-align: center;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    aspect-ratio: 1 / 1;
+}
+
+.card-icon{
+    color: #a2d0d0;
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+
 /*メニューボタン*/
 
 .bottom-menu {

@@ -12,13 +12,13 @@
             <div class="event-form">
                 <div class="form-header">
                     <button class="cancel-button">キャンセル</button>
-                    <h2>新しい予定</h2>
+                    <div class="form-title">新しい予定</div>
                     <button class="save-button">保存</button>
                 </div>
 
                 <div class="form-body">
                     <div class="form-section">
-                        <input type="text" id="event-title" placeholder="タイトルを入力" />
+                        <input type="text" id="event-title" placeholder="タイトル" />
                     </div>
 
                     <div class="form-section">
@@ -29,7 +29,9 @@
                                 <span class="toggle-slider"></span>
                             </label>
                         </div>
-
+                    </div>
+                    
+                    <div class="form-section">
                         <div class="form-row">
                             <span class="form-label">開始</span>
                             <div class="datetime-display">
@@ -37,7 +39,9 @@
                                 <div class="box" id="start-time-box">13:00</div>
                             </div>
                         </div>
+                    </div>
 
+                    <div class="form-section">
                         <div class="form-row">
                             <span class="form-label">終了</span>
                             <div class="datetime-display">

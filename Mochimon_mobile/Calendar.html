@@ -106,7 +106,7 @@
                     document.querySelectorAll('.fc-day').forEach(el => {
                         el.classList.remove('selected-date');
                     });
-
+                    selectedDateStr = info.dateStr;
                     // クリックされた日付にハイライトを追加
                     info.dayEl.classList.add('selected-date');
                 }

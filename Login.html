@@ -6,6 +6,7 @@
         <link rel="stylesheet" href="Login.css">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
         <title>ログイン/アカウント登録</title>
+
     </head>
 
     <body>
@@ -31,47 +32,75 @@
                 <div class="signup-link">
                     <a href="Accountcreate.html">新規登録はこちら</a>
                 </div>
+                <div class="reset-link">
+                    <a href="#" id="resetPassword">パスワードをお忘れですか？</a>
+                </div>
+                
 
             </form>
         </div>
+        <script type="module">
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+            import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+            import { sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 
+            const firebaseConfig = {
+                apiKey: "AIzaSyChPt5NDvgd4okxbUQalZtrS7w6Tm30fgg",
+                authDomain: "mochimon-base.firebaseapp.com",
+                projectId: "mochimon-base",
+                storageBucket: "mochimon-base.firebasestorage.app",
+                messagingSenderId: "5202457046",
+                appId: "1:5202457046:web:7233c6b556a7d260803477",
+                measurementId: "G-GPT541EW6S"
+            };
+
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+
+            const form = document.querySelector(".login-form");
+            form.addEventListener("submit", async (e) => {
+                e.preventDefault();
+
+            const email = document.getElementById("mail").value;
+            const password = document.getElementById("password").value;
+
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
+                alert("ログイン成功！");
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                    if (isMobile) {
+                        window.location.href = "Mochimon_mobile/Home.html"; // スマホ用
+                    } else {
+                        window.location.href = "Mochimon_pc/Home.html"; // PC用
+                    }
+            } catch (error) {
+            alert("ログインに失敗しました: " + error.message);
+            console.error("エラー:", error);
+            }
+        });
+        // パスワード再設定リンクの処理
+            const resetLink = document.getElementById("resetPassword");
+            resetLink.addEventListener("click", async (e) => {
+            e.preventDefault();
+            const email = document.getElementById("mail").value;
+
+            if (!email) {
+                alert("まずメールアドレスを入力してください。");
+                return;
+            }
+
+            try {
+                await sendPasswordResetEmail(auth, email);
+                alert("パスワード再設定メールを送信しました。メールをご確認ください。");
+            } catch (error) {
+                alert("送信に失敗しました: " + error.message);
+                console.error("リセットエラー:", error);
+            }
+            });
+        </script>
     </body>
-    <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyChPt5NDvgd4okxbUQalZtrS7w6Tm30fgg",
-    authDomain: "mochimon-base.firebaseapp.com",
-    projectId: "mochimon-base",
-    storageBucket: "mochimon-base.firebasestorage.app",
-    messagingSenderId: "5202457046",
-    appId: "1:5202457046:web:7233c6b556a7d260803477",
-    measurementId: "G-GPT541EW6S"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-
-  const form = document.querySelector(".login-form");
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const email = document.getElementById("mail").value;
-    const password = document.getElementById("password").value;
-
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      alert("ログイン成功！");
-      console.log("ログインユーザー:", user);
-      window.location.href = "Home.html";  // ログイン成功後の遷移先
-    } catch (error) {
-      alert("ログインに失敗しました: " + error.message);
-      console.error("エラー:", error);
-    }
-  });
-</script>
+    
 
 
 </html>    

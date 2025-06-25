@@ -1,3 +1,4 @@
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
 import { getFirestore, addDoc, updateDoc, deleteDoc, collection } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
@@ -14,22 +15,25 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const user = getAuth(app).currentUser();
-async function addData(listName){
+async function addEvent(name,start,end,isNotify,id){
     try{
         //データ登録
         const docRef = await addDoc(collection(db, user.uid), {
-            Name: listName,
-            IsDone: false,  //準備完了フラグ
-            UserId: user.uid//userIDの登録
+            eventName: name,    //タイトル
+            startDate: start,   //開始日時
+            endDate: end,       //終了日時
+            notify: isNotify,   //通知設定
+            docID: id           //持ち物リスト参照
         });
         const docID = docRef.id
+        return docID
     } catch(e){
         alert("登録に失敗しました: " + error.message);
         console.error("エラー", error);
     }
 }
 
-async function updateData(listName, isDone, docID){
+async function updateEvent(date, id, docID){
     try{
         //データ更新
         await updateDoc(collection(db, user.uid, docID), {

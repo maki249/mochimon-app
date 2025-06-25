@@ -8,6 +8,7 @@
     </head>
 
     <body>
+        <a  id="user-icon-btn"></a>
         <div class="overlay">
             <div class="event-form">
                 <div class="form-header">
@@ -68,6 +69,8 @@
             </div>
         </div>
 
+        <script type="module" src="login.js">
+        </script>
         <script>
             document.querySelector('.cancel-button').addEventListener('click', () => {
                 window.location.href = 'Calendar.html';
@@ -136,6 +139,9 @@
                 document.getElementById('start-time-box').style.display = isAllDay ? 'none' : 'inline-block';
                 document.getElementById('end-time-box').style.display = isAllDay ? 'none' : 'inline-block';
             });
+        </script>
+        <script type="module" src="./eventManage.js">
+            
         </script>
     </body>
 

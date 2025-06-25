@@ -26,6 +26,7 @@ async function addEvent(name,start,end,isNotify,id){
             docID: id           //持ち物リスト参照
         });
         const docID = docRef.id
+        alert("登録成功: ");
         return docID
     } catch(e){
         alert("登録に失敗しました: " + error.message);

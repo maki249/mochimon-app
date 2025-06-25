@@ -10,20 +10,19 @@ document.querySelector('.cancel-button').addEventListener('click', () => {
 document.querySelector('.save-button').addEventListener('click', () => {
     const title = document.getElementById('event-title').value;
     const allDay = document.getElementById('all-day-toggle').checked;
-    const startDate = document.getElementById('start-date-box').value;
-    
+
+    var startDate = document.getElementById('start-date-box').value;
     if (!allDay) startDate += document.getElementById('start-time-box').value;
-    const endDate = document.getElementById('end-date-box').value;
+    var endDate = document.getElementById('end-date-box').value;
     if (!allDay) endDate += document.getElementById('end-time-box').value;
+
     const start = stringToDate(startDate, allDay)
     const end = stringToDate(endDate, allDay)
-
+    
     const notify = document.getElementById('notification-toggle').checked;
 
     console.log({ title, allDay, notify });
-    alert('どうですか？');
     Event.addEvent(title, start, end, notify);
-    alert('どうですか？');
 });
 
 document.getElementById('add-item-button').addEventListener('click', () => {
@@ -69,7 +68,10 @@ document.getElementById('all-day-toggle').addEventListener('change', () => {
 });
 
 function stringToDate(str, allDay){
+    
     const parts = str.match(/\d+/g);
+    
+    var date;
     if (allDay) date = new Date(parts[1], parts[2] - 1, parts[3]);
     else date = new Date(parts[1], parts[2] - 1, parts[3], parts[4], parts[5]);
     return date; 

@@ -1,138 +1,96 @@
 <!DOCTYPE html>
 <html lang="ja">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="EventCreate.css">
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
-    </head>
 
-    <body>
-        <div class="overlay">
-            <div class="event-form">
-                <div class="form-header">
-                    <button class="cancel-button">キャンセル</button>
-                    <div class="form-title">新しい予定</div>
-                    <button class="save-button">保存</button>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="EventCreate.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="overlay">
+        <div class="event-form">
+            <div class="form-header">
+                <button class="cancel-button">キャンセル</button>
+                <div class="form-title">新しい予定</div>
+                <button class="save-button">保存</button>
+            </div>
+
+            <div class="form-body">
+                <div class="form-section">
+                    <input type="text" id="event-title" placeholder="タイトル" />
                 </div>
 
-                <div class="form-body">
-                    <div class="form-section">
-                        <input type="text" id="event-title" placeholder="タイトル" />
+                <div class="form-section">
+                    <div class="form-row">
+                        <span class="form-label">終日予定</span>
+                        <label class="toggle-container">
+                            <input type="checkbox" id="all-day-toggle" />
+                            <span class="toggle-slider"></span>
+                        </label>
                     </div>
 
-                    <div class="form-section">
-                        <div class="form-row">
-                            <span class="form-label">終日予定</span>
-                            <label class="toggle-container">
-                                <input type="checkbox" id="all-day-toggle" />
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                    
-                        <div class="form-row">
-                            <span class="form-label">開始</span>
-                            <div class="datetime-display">
-                                <input type="date" class="box" id="start-date-box"/>
-                                <input type="time" class="box" id="start-time-box" step="300"/>
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <span class="form-label">終了</span>
-                            <div class="datetime-display">
-                                <input type="date" class="box" id="end-date-box"/>
-                                <input type="time" class="box" id="end-time-box" step="300"/>
-                            </div>
+                    <div class="form-row">
+                        <span class="form-label">開始</span>
+                        <div class="datetime-display">
+                            <input type="date" class="box" id="start-date-box" />
+                            <input type="time" class="box" id="start-time-box" step="300" />
                         </div>
                     </div>
 
-                    <div class="form-section">
-                        <div class="form-row">
-                            <span class="form-label">通知</span>
-                            <label class="toggle-container">
-                                <input type="checkbox" id="notification-toggle" />
-                                <span class="toggle-slider"></span>
-                            </label>
+                    <div class="form-row">
+                        <span class="form-label">終了</span>
+                        <div class="datetime-display">
+                            <input type="date" class="box" id="end-date-box" />
+                            <input type="time" class="box" id="end-time-box" step="300" />
                         </div>
                     </div>
-
-                    <button id="add-item-button">
-                        <i class="fa-solid fa-plus"></i> 持ち物を追加
-                    </button>
                 </div>
+
+                <div class="form-section">
+                    <div class="form-row" id="notification-row">
+                        <span class="form-label">通知</span>
+                        <span class="form-arrow">></span>
+                    </div>
+                </div>
+
+                <button id="add-item-button">
+                    <i class="fa-solid fa-plus"></i> 持ち物を追加
+                </button>
             </div>
         </div>
+    </div>
 
-        <script>
-            document.querySelector('.cancel-button').addEventListener('click', () => {
-                window.location.href = 'Calendar.html';
-            });
+    <script>
+        // キャンセルボタン
+        document.querySelector('.cancel-button').addEventListener('click', () => {
+            window.location.href = 'Calendar.html';
+        });
+        // 保存ボタン
+        document.querySelector('.save-button').addEventListener('click', () => {
+            const title = document.getElementById('event-title').value;
+            const allDay = document.getElementById('all-day-toggle').checked;
+            const notify = document.getElementById('notification-toggle').checked;
 
-            document.querySelector('.save-button').addEventListener('click', () => {
-                const title = document.getElementById('event-title').value;
-                const allDay = document.getElementById('all-day-toggle').checked;
-                const notify = document.getElementById('notification-toggle').checked;
-
-                console.log({ title, allDay, notify });
-                alert('保存処理をここに追加してください');
-            });
-
-            document.getElementById('add-item-button').addEventListener('click', () => {
-                alert('持ち物追加画面に遷移します（未実装）');
-            });
-
-            document.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const selectedDateStr = urlParams.get('date'); // 例: "2025-06-18"
-
-            const now = new Date();
-
-            function roundToNextHour(date) {
-                const rounded = new Date(date);
-                if (date.getMinutes() > 0 || date.getSeconds() > 0) {
-                    rounded.setHours(rounded.getHours() + 1);
-                }
-                rounded.setMinutes(0, 0, 0);
-                return rounded;
-            }
-
-            const start = roundToNextHour(now);
-
-            // URLで日付が指定されていれば日付をそれに置き換え
-            if (selectedDateStr) {
-                const [year, month, day] = selectedDateStr.split('-');
-                start.setFullYear(Number(year));
-                start.setMonth(Number(month) - 1);
-                start.setDate(Number(day));
-            }
-
-            const end = new Date(start);
-            end.setHours(start.getHours() + 1);
-
-            function formatJapaneseDate(date) {
-                const youbi = ['日', '月', '火', '水', '木', '金', '土'];
-                return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日（${youbi[date.getDay()]}）`;
-            }
-
-            function formatTime(date) {
-                return date.toTimeString().slice(0, 5);
-            }
-
-            // 表示に反映
-            document.getElementById('start-date-box').textContent = formatJapaneseDate(start);
-            document.getElementById('start-time-box').textContent = formatTime(start);
-            document.getElementById('end-date-box').textContent = formatJapaneseDate(end);
-            document.getElementById('end-time-box').textContent = formatTime(end);
-            });
-
-
-            document.getElementById('all-day-toggle').addEventListener('change', () => {
-                const isAllDay = document.getElementById('all-day-toggle').checked;
-                document.getElementById('start-time-box').style.display = isAllDay ? 'none' : 'inline-block';
-                document.getElementById('end-time-box').style.display = isAllDay ? 'none' : 'inline-block';
-            });
-        </script>
-    </body>
+            console.log({ title, allDay, notify });
+            alert('保存処理をここに追加');
+        });
+        //  持ち物リスト追加ボタン
+        document.getElementById('add-item-button').addEventListener('click', () => {
+            alert('持ち物追加画面に遷移（未実装）');
+        });
+        //  終日トグル
+        document.getElementById('all-day-toggle').addEventListener('change', () => {
+            const isAllDay = document.getElementById('all-day-toggle').checked;
+            document.getElementById('start-time-box').style.display = isAllDay ? 'none' : 'inline-block';
+            document.getElementById('end-time-box').style.display = isAllDay ? 'none' : 'inline-block';
+        });
+        // 通知設定画面に遷移
+        document.querySelector('.notification-row').addEventListener('click', () => {
+            window.location.href = 'Alarm.html';
+        });
+    </script>
+</body>
 
 </html>

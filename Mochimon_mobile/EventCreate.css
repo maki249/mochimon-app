@@ -44,6 +44,14 @@ body {
   align-items: center;
   padding: 16px;
   color: #fff;
+  position: relative;
+}
+
+.form-title{
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 18px;
 }
 
 .cancel-button,
@@ -89,6 +97,12 @@ body {
   color: #3e3e3e;
 }
 
+.form-arrow {
+  font-size: 18px;
+  color: #888;
+  margin-left: auto;
+}
+
 input[type="text"] {
   padding: 8px;
   font-size: 16px;
@@ -106,7 +120,7 @@ input[type="text"] {
 .box {
   padding: 8px 12px;
   font-size: 14px;
-  border: 1px solid #ccc;
+  border: none;
   border-radius: 8px;
   background-color: #ededed;
   min-width: 120px;

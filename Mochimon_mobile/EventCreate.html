@@ -8,7 +8,6 @@
     </head>
 
     <body>
-        <a  id="user-icon-btn"></a>
         <div class="overlay">
             <div class="event-form">
                 <div class="form-header">
@@ -30,24 +29,20 @@
                                 <span class="toggle-slider"></span>
                             </label>
                         </div>
-                    </div>
                     
-                    <div class="form-section">
                         <div class="form-row">
                             <span class="form-label">開始</span>
                             <div class="datetime-display">
-                                <div class="box" id="start-date-box">2025年6月18日（水）</div>
-                                <div class="box" id="start-time-box">13:00</div>
+                                <input type="date" class="box" id="start-date-box"/>
+                                <input type="time" class="box" id="start-time-box" step="300"/>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="form-section">
                         <div class="form-row">
                             <span class="form-label">終了</span>
                             <div class="datetime-display">
-                                <div class="box" id="end-date-box">2025年6月18日（水）</div>
-                                <div class="box" id="end-time-box">14:00</div>
+                                <input type="date" class="box" id="end-date-box"/>
+                                <input type="time" class="box" id="end-time-box" step="300"/>
                             </div>
                         </div>
                     </div>
@@ -69,8 +64,6 @@
             </div>
         </div>
 
-        <script type="module" src="login.js">
-        </script>
         <script>
             document.querySelector('.cancel-button').addEventListener('click', () => {
                 window.location.href = 'Calendar.html';
@@ -139,9 +132,6 @@
                 document.getElementById('start-time-box').style.display = isAllDay ? 'none' : 'inline-block';
                 document.getElementById('end-time-box').style.display = isAllDay ? 'none' : 'inline-block';
             });
-        </script>
-        <script type="module" src="./eventManage.js">
-            
         </script>
     </body>
 

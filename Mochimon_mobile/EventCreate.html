@@ -62,6 +62,61 @@
         </div>
     </div>
 
+    <!-- 通知設定画面が右から出てくる -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal">
+            <div class="form-header">
+                <button class="cancel-button" id="modal-back-button">＜戻る</button>
+                <div class="form-title">通知</div>
+            </div>
+            <div class="notification-body">
+                <div class="form-section notification-options">
+                    <div class="form-row" data-value="0">
+                        <span class="form-label">予定時間</span>
+                        <span class="checkmark"></span>
+                    </div>
+                    <div class="form-row" data-value="5">
+                        <span class="form-label">5分前</span>
+                        <span class="checkmark"></span>
+                    </div>
+                    <div class="form-row" data-value="10">
+                        <span class="form-label">10分前</span>
+                        <span class="checkmark"></span>
+                    </div>
+                    <div class="form-row" data-value="15">
+                        <span class="form-label">15分前</span>
+                        <span class="checkmark"></span>
+                    </div>
+                    <div class="form-row" data-value="30">
+                        <span class="form-label">30分前</span>
+                        <span class="checkmark"></span>
+                    </div>
+                    <div class="form-row" data-value="60">
+                        <span class="form-label">1時間前</span>
+                        <span class="checkmark"></span>
+                    </div>
+                    <div class="form-row" data-value="120">
+                        <span class="form-label">2時間前</span>
+                        <span class="checkmark"></span>
+                    </div>
+                    <div class="form-row" data-value="180">
+                        <span class="form-label">3時間前</span>
+                        <span class="checkmark"></span>
+                    </div>
+                    <div class="form-row" data-value="360">
+                        <span class="form-label">6時間前</span>
+                        <span class="checkmark"></span>
+                    </div>
+                    <div class="form-row" data-value="1440">
+                        <span class="form-label">1日前</span>
+                        <span class="checkmark"></span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
     <script>
         // キャンセルボタン
         document.querySelector('.cancel-button').addEventListener('click', () => {
@@ -78,7 +133,7 @@
         });
         //  持ち物リスト追加ボタン
         document.getElementById('add-item-button').addEventListener('click', () => {
-             window.location.href = 'ListCreate.html';
+            window.location.href = 'ListCreate.html';
         });
         //  終日トグル
         document.getElementById('all-day-toggle').addEventListener('change', () => {
@@ -86,10 +141,23 @@
             document.getElementById('start-time-box').style.display = isAllDay ? 'none' : 'inline-block';
             document.getElementById('end-time-box').style.display = isAllDay ? 'none' : 'inline-block';
         });
-        // 通知設定画面に遷移
-        document.querySelector('.notification-row').addEventListener('click', () => {
-            window.location.href = 'Alarm.html';
+
+        document.getElementById('modal-back-button').addEventListener('click', () => {
+            document.getElementById('modal-overlay').classList.remove('active');
         });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelector('.notification-row').addEventListener('click', () => {
+                document.getElementById('modal-overlay').classList.add('active');
+            });
+            document.querySelectorAll('.notification-options .form-row').forEach(row => {
+                row.addEventListener('click', () => {
+                    row.classList.toggle('selected');
+                });
+            });
+
+        });
+
     </script>
 </body>
 

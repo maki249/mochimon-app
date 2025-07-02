@@ -56,6 +56,30 @@ header {
   background-color: #8fc0c0;
 }
 
+.use-template {
+  position: fixed;
+  bottom: 80px;   /* 下からの位置（add-event-btnと同じ高さ） */
+  left: 20px;     /* 左寄せ */
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: #a2d0d0;
+  color: white;
+  font-size: 24px;
+  border: none;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  cursor: pointer;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.use-template:hover {
+  background-color: #8fc0c0;
+}
+
 /* モーダルの背景 */
 .modal-overlay {
   position: fixed;
@@ -141,4 +165,11 @@ header {
 
 .checklist input[type="checkbox"] {
   transform: scale(1.2);
+}
+
+.empty-message {
+  color: #999;
+  text-align: center;
+  margin-top: 40px;
+  font-size: 14px;
 }

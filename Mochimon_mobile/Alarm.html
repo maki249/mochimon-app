@@ -67,6 +67,14 @@
         document.querySelector('.cancel-button').addEventListener('click', () => {
             window.location.href = 'EventCreate.html';
         });
+        document.querySelectorAll('.notification-options .form-row').forEach(row => {
+            row.addEventListener('click', () => {
+                row.classList.toggle('selected');
+                const minutes = row.dataset.minutes;
+                console.log(`${minutes} 分前が ${row.classList.contains('selected') ? '選択された' : '解除された'}`);
+            });
+        });
+
     </script>
 </body>
 

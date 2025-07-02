@@ -98,10 +98,15 @@
                         }
                     });
                 }
+                //デバッグ
+                if (auth) {
+                    console.log("ユーザーID（UID）:", auth.uid);
+                } else {
+                    console.log("ユーザーはログインしていません");
+                }
 
         </script>
         
-        <script type="module" src="../login.js">
-        </script>
+        <script type="module" src="../login.js"></script>
 </body>
 </html>

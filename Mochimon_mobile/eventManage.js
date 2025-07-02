@@ -1,7 +1,43 @@
-/*import * as List from '../database.js';
-import * as Event from '../EventDataBaseOperaion.js';
-List
-Event*/
+import { addEvent } from '../EventDataBaseOperaion.js';
+// キャンセルボタン
+document.querySelector('.cancel-button').addEventListener('click', () => {
+    window.location.href = 'Calendar.html';
+});
+// 保存ボタン
+document.querySelector('.save-button').addEventListener('click', () => {
+    const title = document.getElementById('event-title').value;
+    const allDay = document.getElementById('all-day-toggle').checked;
+    let startDate = document.getElementById('start-date-box').value;
+    let endDate = document.getElementById('end-date-box').value;
+    if(allDay){
+        starDate += document.getElementById('start-time-box').value;
+        
+        endDate += document.getElementById('end-time-box').value;
+    }
+    const start = new Date(startDate)
+    const end = new Date(endDate)
+    //const notify = document.getElementById('notification-toggle').checked;
+
+    console.log({ title, startDate, endDate });
+    addEvent(title, allDay, start, end, false)
+    alert('保存処理をここに追加');
+});
+//  持ち物リスト追加ボタン
+document.getElementById('add-item-button').addEventListener('click', () => {
+    alert('持ち物追加画面に遷移（未実装）');
+});
+//  終日トグル
+document.getElementById('all-day-toggle').addEventListener('change', () => {
+    const isAllDay = document.getElementById('all-day-toggle').checked;
+    document.getElementById('start-time-box').style.display = isAllDay ? 'none' : 'inline-block';
+    document.getElementById('end-time-box').style.display = isAllDay ? 'none' : 'inline-block';
+});
+// 通知設定画面に遷移
+document.querySelector('.notification-row').addEventListener('click', () => {
+    window.location.href = 'Alarm.html';
+});
+
+/*
 //キャンセル
 document.querySelector('.cancel-button').addEventListener('click', () => {
     window.location.href = 'Calendar.html';
@@ -75,4 +111,4 @@ function stringToDate(str, allDay){
     if (allDay) date = new Date(parts[1], parts[2] - 1, parts[3]);
     else date = new Date(parts[1], parts[2] - 1, parts[3], parts[4], parts[5]);
     return date; 
-}
+}*/

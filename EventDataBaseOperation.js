@@ -15,7 +15,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const user = getAuth(app).currentUser();
-async function addEvent(name,start,end,isNotify,id){
+async function addEvent(name,start,end,isNotify){
     try{
         //データ登録
         const docRef = await addDoc(collection(db, user.uid), {
@@ -23,7 +23,6 @@ async function addEvent(name,start,end,isNotify,id){
             startDate: start,   //開始日時
             endDate: end,       //終了日時
             notify: isNotify,   //通知設定
-            docID: id           //持ち物リスト参照
         });
         const docID = docRef.id
         alert("登録成功: ");
@@ -39,7 +38,8 @@ async function updateEvent(date, id, docID){
         //データ更新
         await updateDoc(collection(db, user.uid, docID), {
             Name: listName,
-            IsDone: isDone
+            IsDone: isDone,
+            docID: id           //持ち物リスト参照
         })
     } catch(e){
         alert("更新に失敗しました: " + error.message);

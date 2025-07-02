@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>持ち物リスト作成</title>
+    <link rel="stylesheet" href="ListCreate.css" />
+</head>
+
+<body>
+    <header>
+        <button class="cancel-button">キャンセル</button>
+        <div class="title">持ち物リスト</div>
+        <button class="save-button">保存</button>
+    </header>
+    <ul class="checklist" id="checklist">
+        <!-- 持ち物リストがここに追加される -->
+    </ul>
+
+    <button class="add-event-btn" id="open-add-item-modal">
+        ＋
+    </button>
+
+    <!-- 下から出てくるモーダル -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal">
+            <h2>持ち物を追加</h2>
+            <input type="text" id="item-title" placeholder="持ち物名を入力" />
+            <button id="add-item-btn">追加</button>
+        </div>
+    </div>
+
+    <script src="ListCreate.js"></script>
+</body>
+
+</html>

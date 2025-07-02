@@ -1,0 +1,144 @@
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background-color: #fff;
+}
+
+header {
+    height: 50px;
+  background-color: #a2d0d0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  position: relative;
+}
+
+.title{
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 18px;
+  color: #fff;
+}
+
+.cancel-button,
+.save-button {
+  background: none;
+  border: none;
+  font-size: 16px;
+  padding: 8px 12px;
+  cursor: pointer;
+  color: #fff;
+}
+
+.add-event-btn {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: #a2d0d0;
+  color: white;
+  font-size: 24px;
+  border: none;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  cursor: pointer;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.add-event-btn:hover {
+  background-color: #8fc0c0;
+}
+
+/* モーダルの背景 */
+.modal-overlay {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 0;
+  background: rgba(0,0,0,0.3);
+  overflow: hidden;
+  transition: height 0.3s ease;
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+/* モーダル本体 */
+.modal {
+  background: #fff;
+  height: 50vh;
+  width: 100%;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+/* モーダルが開いているとき */
+.modal-overlay.active {
+  height: 100%;
+}
+
+.modal-overlay.active .modal {
+  transform: translateY(0);
+}
+
+.modal h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.modal input[type="text"] {
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.modal button {
+  background-color: #a2d0d0;
+  color: #fff;
+  border: none;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.modal button:hover {
+  background-color: #8fc0c0;
+}
+
+.checklist {
+  list-style: none;
+  margin: 20px;
+  padding: 0;
+}
+
+.checklist li {
+  background: #fff;
+  padding: 12px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid #ccc;
+}
+
+.checklist input[type="checkbox"] {
+  transform: scale(1.2);
+}

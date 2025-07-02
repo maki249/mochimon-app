@@ -79,22 +79,33 @@ body {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  box-sizing: border-box;
 }
 
 .form-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 8px;
+  padding: 10px 8px;
+  box-sizing: border-box;
+  min-height: 40px;
+  border-top: 1px solid #ededed;
 }
 
-.form-row + .form-row {
-      border-top: 1px solid #ededed;
+/* 最初の行だけ線を消す */
+.form-row:first-child {
+  border-top: none;
 }
 
 .form-label {
   font-size: 14px;
   color: #3e3e3e;
+}
+
+.datetime-display{
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .form-arrow {
@@ -110,11 +121,6 @@ input[type="text"] {
   border-radius: 8px;
   width: 100%;
   box-sizing: border-box;
-}
-
-.datetime-display {
-  display: flex;
-  gap: 8px;
 }
 
 .box {

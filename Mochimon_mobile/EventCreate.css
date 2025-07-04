@@ -1,7 +1,7 @@
 body {
   margin: 0;
   font-family: sans-serif;
-  background-color: #f2f8f8;
+  background-color: #f3f6f6;
   overflow: hidden;
 }
 
@@ -79,22 +79,33 @@ body {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  box-sizing: border-box;
 }
 
 .form-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 8px;
+  padding: 10px 8px;
+  box-sizing: border-box;
+  min-height: 40px;
+  border-top: 1px solid #ededed;
 }
 
-.form-row + .form-row {
-      border-top: 1px solid #ededed;
+/* 最初の行だけ線を消す */
+.form-row:first-child {
+  border-top: none;
 }
 
 .form-label {
   font-size: 14px;
   color: #3e3e3e;
+}
+
+.datetime-display{
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .form-arrow {
@@ -110,11 +121,6 @@ input[type="text"] {
   border-radius: 8px;
   width: 100%;
   box-sizing: border-box;
-}
-
-.datetime-display {
-  display: flex;
-  gap: 8px;
 }
 
 .box {
@@ -190,4 +196,93 @@ input[type="text"] {
 
 #add-item-button:hover{
   filter: brightness(85%);
+}
+
+/* 通知パネル（右からスライド） */
+#modal-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  overflow: hidden;
+  z-index: 2000;
+  pointer-events: none; /* 初期は無効 */
+}
+
+#modal-overlay.active {
+  pointer-events: auto;
+}
+
+/* モーダル自体 */
+.modal {
+  position: absolute;
+  top: 0;
+  right: -100%; /* 初期位置：画面外 */
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.2);
+  transition: right 0.3s ease;
+}
+
+/* 表示状態（右にスライド） */
+#modal-overlay.active .modal {
+  right: 0;
+}
+
+/* 通知のチェックマーク部分 */
+.notification-options .checkmark {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: transparent;
+  border: 2px solid #a2d0d0;
+  display: inline-block;
+  transition: all 0.2s;
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* チェックがついたとき */
+.notification-options .form-row.selected .checkmark {
+  background-color: #a2d0d0;
+}
+
+.notification-options .form-row.selected .checkmark::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+
+.notification-body {
+  padding: 16px;
+}
+
+.notification-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.notification-options .form-label {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.notification-options input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
 }

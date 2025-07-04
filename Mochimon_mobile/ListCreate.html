@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <title>持ち物リスト作成</title>
+    <link rel="stylesheet" href="ListCreate.css" />
+</head>
+
+<body>
+    <header>
+        <button class="cancel-button">キャンセル</button>
+        <div class="title">持ち物リスト</div>
+        <button class="save-button">保存</button>
+    </header>
+    <p id="empty-message" class="empty-message">
+        ＋ボタンから持ち物を追加してください
+    </p>
+    <ul id="checklist"></ul>
+    <ul class="checklist" id="checklist">
+        <!-- 持ち物リストがここに追加される -->
+    </ul>
+
+    <!-- テンプレートを使うボタン -->
+    <button class="use-template" id="use-template-btn" aria-label="テンプレートを使う">
+        <i class="fa-solid fa-bookmark"></i>
+    </button>
+
+    <button class="add-event-btn" id="open-add-item-modal" aria-label="予定を追加">
+        <i class="fa-solid fa-plus"></i>
+    </button>
+
+    <!-- 下から出てくるモーダル -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal">
+            <h2>持ち物を追加</h2>
+            <input type="text" id="item-title" placeholder="持ち物名を入力" />
+            <button id="add-item-btn">追加</button>
+        </div>
+    </div>
+
+    <script src="ListCreate.js"></script>
+</body>
+
+</html>

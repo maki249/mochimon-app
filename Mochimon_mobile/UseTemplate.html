@@ -1,94 +1,105 @@
 <!DOCTYPE html>
 <html lang="ja">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="UseTemplate.css">
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
-        <title>テンプレート</title>
-    </head>
 
-    <body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="UseTemplate.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <title>テンプレート</title>
+</head>
 
-        <main class="main-content">
-            <div class="main-card">
-                <div class="small-cards-grid">
-                   
-                        <div class="small-card">
-                            <img src="tempIcon/akasan.svg" alt="アイコン" class="card-icon">
-                        </div>
-                       
-                    
-                        <div class="small-card">
-                            <img src="tempIcon/foreign.svg" alt="アイコン" class="card-icon">
-                        </div>
-                       
-                    <div class="small-card">
-                        <img src="tempIcon/sports.svg" alt="アイコン" class="card-icon">
-                    </div>
-                    
-                    <div class="small-card">
-                        <img src="tempIcon/umi.svg" alt="アイコン" class="card-icon">
-                    </div>
-                    
-                    <div class="small-card">
-                        <img src="tempIcon/yama.svg" alt="アイコン" class="card-icon">
-                    </div>
-                    
-                    <div class="small-card">
-                        <img src="tempIcon/kyanpu.svg" alt="アイコン" class="card-icon">
-                    </div>
-                    
-                    <div class="small-card">
-                        <img src="tempIcon/pikuniku.svg" alt="アイコン" class="card-icon">
-                    </div>
-                    
-                    <div class="small-card">
-                        <img src="tempIcon/yuenti.svg" alt="アイコン" class="card-icon">
-                    </div>
-                    
-                    <div class="small-card">
-                        <img src="tempIcon/maturi.svg" alt="アイコン" class="card-icon">
-                    </div>
-                    <div class="small-card">
-                        <img src="tempIcon/onsen.svg" alt="アイコン" class="card-icon">
-                    </div>
+<body>
+    <header>
+        <button class="cancel-button">キャンセル</button>
+        <div class="title">テンプレートから追加</div>
+        <button class="save-button">保存</button>
+    </header>
+    <main class="main-content">
+        <div class="main-card">
+            <div class="small-cards-grid">
+
+                <div class="small-card">
+                    <img src="tempIcon/akasan.svg" alt="アイコン" class="card-icon">
+                </div>
+
+
+                <div class="small-card">
+                    <img src="tempIcon/foreign.svg" alt="アイコン" class="card-icon">
+                </div>
+
+                <div class="small-card">
+                    <img src="tempIcon/sports.svg" alt="アイコン" class="card-icon">
+                </div>
+
+                <div class="small-card">
+                    <img src="tempIcon/umi.svg" alt="アイコン" class="card-icon">
+                </div>
+
+                <div class="small-card">
+                    <img src="tempIcon/yama.svg" alt="アイコン" class="card-icon">
+                </div>
+
+                <div class="small-card">
+                    <img src="tempIcon/kyanpu.svg" alt="アイコン" class="card-icon">
+                </div>
+
+                <div class="small-card">
+                    <img src="tempIcon/pikuniku.svg" alt="アイコン" class="card-icon">
+                </div>
+
+                <div class="small-card">
+                    <img src="tempIcon/yuenti.svg" alt="アイコン" class="card-icon">
+                </div>
+
+                <div class="small-card">
+                    <img src="tempIcon/maturi.svg" alt="アイコン" class="card-icon">
+                </div>
+                <div class="small-card">
+                    <img src="tempIcon/onsen.svg" alt="アイコン" class="card-icon">
                 </div>
             </div>
-        </main>
-
-        <div class="button-container">
-            <button id="use-button" class="no-use-button">使用しない</button>
         </div>
+    </main>
+
+    <div class="button-container">
+        <button id="use-button" class="no-use-button">追加</button>
+    </div>
 
 
-        <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                const cards = document.querySelectorAll('.small-card');
-                const useButton = document.getElementById('use-button');
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.small-card');
+            const useButton = document.getElementById('use-button');
 
-                function updateButtonState() {
+            function updateButtonState() {
                 const anySelected = document.querySelectorAll('.small-card.selected').length > 0;
 
                 if (anySelected) {
-                    useButton.textContent = '使用する';
                     useButton.classList.add('active');
                 } else {
-                    useButton.textContent = '使用しない';
                     useButton.classList.remove('active');
                 }
-                }
+            }
 
-                cards.forEach(card => {
+            cards.forEach(card => {
                 card.addEventListener('click', () => {
                     card.classList.toggle('selected');
                     updateButtonState();
                 });
-                });
             });
-        </script>
+        });
+        // キャンセルボタン
+        document.querySelector('.cancel-button').addEventListener('click', () => {
+            window.location.href = 'ListCreate.html';
+        });
+        // 保存ボタン
+        document.querySelector('.save-button').addEventListener('click', () => {
+            alert('保存処理をここに追加');
+        });
+    </script>
 
 
-    </body>
+</body>
 
 </html>

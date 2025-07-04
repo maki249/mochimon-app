@@ -1,135 +1,122 @@
 <!DOCTYPE html>
 <html lang="ja">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="Calendar.css">
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
-        <!-- FullCalendar CSS & JS -->
-        <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css' rel='stylesheet' />
-        <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
 
-        <title>カレンダー</title>
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="Calendar.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <!-- FullCalendar の CSS と JS をCDNで読み込み -->
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css' rel='stylesheet' />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js'></script>
 
-    <body>
-        <div class="header-area">
-            <button class="hamburger-button" aria-label="menu">
-                <span>
-                    <i class="fa-solid fa-bars"></i>
-                </span>
-            </button>
-            
-            <h1>Mochimon</h1>
 
-            <a id="user-icon-btn" href="#" class="login-button">
-                <span>
-                    <i class="fa-regular fa-user"></i>
-                </span>
-            </a>
-        </div>
+    <title>カレンダー</title>
+</head>
 
-        <nav class="bottom-menu">
-            <a href="Home.html" class="menu-button">
-                <span>
-                    <i class="fa-solid fa-house"></i>
-                </span>
-                <p>ホーム</p>
-            </a>
-            <a href="#" class="menu-button">
-                <span  class="select">
-                    <i class="fa-regular fa-calendar-days"></i>
-                </span>
-                <p>カレンダー</p>
-            </a>
-            <a href="Template.html" class="menu-button">
-                <span>
-                    <i class="fa-solid fa-bookmark"></i>
-                </span>
-                <p>テンプレート</p>
-            </a>
-            <a href="Shopping.html" class="menu-button">
-                <span>
-                    <i class="fa-solid fa-cart-shopping"></i>
-                </span>
-                <p>買い物リスト</p>
-            </a>
-            <a href="Share.html" class="menu-button">
-                <span>
-                    <i class="fa-solid fa-share-nodes"></i>
-                </span>
-                <p>共有</p>
-            </a>
-        </nav>
-        <!-- Firebase SDK -->
-        <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js";
+<body>
+    <div class="header-area">
+        <button class="hamburger-button" aria-label="menu">
+            <span>
+                <i class="fa-solid fa-bars"></i>
+            </span>
+        </button>
 
-        // Firebase 設定（プロジェクト情報に応じて変更）
-        const firebaseConfig = {
-            apiKey: "AIzaSyChPt5NDvgd4okxbUQalZtrS7w6Tm30fgg",
-            authDomain: "mochimon-base.firebaseapp.com",
-            projectId: "mochimon-base",
-            storageBucket: "mochimon-base.appspot.com",
-            messagingSenderId: "5202457046",
-            appId: "1:5202457046:web:7233c6b556a7d260803477",
-            measurementId: "G-GPT541EW6S"
-        };
+        <h1>Mochimon</h1>
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const analytics = getAnalytics(app);
-        let selectedDateStr = null; // 選択された日付
+        <a href="../Login.html" class="login-button">
+            <span>
+                <i class="fa-regular fa-user"></i>
+            </span>
+        </a>
+    </div>
 
-        // カレンダーを表示
-        document.addEventListener('DOMContentLoaded', async () => {
-            const calendarEl = document.createElement('div');
-            calendarEl.id = 'calendar';
-            document.body.appendChild(calendarEl); // カレンダーをbodyに追加
+    <nav class="bottom-menu">
+        <a href="Home.html" class="menu-button">
+            <span>
+                <i class="fa-solid fa-house"></i>
+            </span>
+            <p>ホーム</p>
+        </a>
+        <a href="#" class="menu-button">
+            <span class="select">
+                <i class="fa-regular fa-calendar-days"></i>
+            </span>
+            <p>カレンダー</p>
+        </a>
+        <a href="Template.html" class="menu-button">
+            <span>
+                <i class="fa-solid fa-bookmark"></i>
+            </span>
+            <p>テンプレート</p>
+        </a>
+        <a href="Shopping.html" class="menu-button">
+            <span>
+                <i class="fa-solid fa-cart-shopping"></i>
+            </span>
+            <p>買い物リスト</p>
+        </a>
+        <a href="Share.html" class="menu-button">
+            <span>
+                <i class="fa-solid fa-share-nodes"></i>
+            </span>
+            <p>共有</p>
+        </a>
+    </nav>
+    <div id='calendar'></div>
 
-        // Firestoreからイベント読み込み
-            const snapshot = await getDocs(collection(db, "events"));
-            const events = snapshot.docs.map(doc => doc.data());
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const calendarEl = document.getElementById('calendar');
+            let selectedDateStr = null;
 
             const calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
-            locale: 'ja',
-            headerToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth,listWeek'
-            },
-            events: events,
-            dateClick: function(info) {
-                // すでに選択されていた日付のハイライトをリセット
-                document.querySelectorAll('.fc-day').forEach(el => {
-                    el.classList.remove('selected-date');
-                });
-                selectedDateStr = info.dateStr;
-                // クリックされた日付にハイライトを追加
-                info.dayEl.classList.add('selected-date');
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,listWeek'
+                },
+                locale: 'ja',
+                events: [
+                    {
+                        title: '買い物',
+                        start: '2025-06-20'
+                    },
+                    {
+                        title: '会議',
+                        start: '2025-06-22T14:00:00'
+                    }
+                ],
+                dateClick: function (info) {
+                    // 既存の選択クラスを全て削除
+                    document.querySelectorAll('.fc-day').forEach(el => {
+                        el.classList.remove('selected-date');
+                    });
+
+                    // 選択した日付を保存
+                    selectedDateStr = info.dateStr;
+
+                    // 選択したセルにクラスを追加して枠を表示
+                    info.dayEl.classList.add('selected-date');
                 }
             });
 
             calendar.render();
+
+            document.getElementById("add-event-btn").addEventListener("click", () => {
+                // 日付が未選択の場合は今日を使う
+                const date = selectedDateStr || new Date().toISOString().split('T')[0];
+                window.location.href = `EventCreate.html?date=${date}`;
+            });
         });
-        // プラスボタンをクリックして予定作成画面に遷移
-        document.getElementById("add-event-btn").addEventListener("click", () => {
-            const date = selectedDateStr || new Date().toISOString().split('T')[0];
-            window.location.href = `EventCreate.html?date=${date}`;
-        });
+    </script>
 
-        </script>
+    <!-- プラスボタン -->
+    <button id="add-event-btn" class="add-event-btn" aria-label="予定を追加">
+        <i class="fa-solid fa-plus"></i>
+    </button>
 
-        <script type="module" src="../login.js">
-        </script>
-        <!-- プラスボタン -->
-        <button id="add-event-btn" class="add-event-btn" aria-label="予定を追加">
-            <i class="fa-solid fa-plus"></i>
-        </button>
-
-    </body>
+</body>
 
 </html>

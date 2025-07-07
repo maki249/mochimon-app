@@ -31,14 +31,147 @@
         </nav>
 
         <main class="content">
-            <h2>コンテンツ表示</h2>
-            <p>ここに選択したメニューのコンテンツが表示されます。</p>
+            <div class="schedule-list">
+                
+                <div class="card-wrapper">
+                    <span class="owner-label">Aさん</span>
+                    <div class="schedule-card" data-id="trip">
+                        <div class="schedule-details">
+                            <h3>2025年7月10日（木）</h3>
+                            <h3>出張</h3>
+                            <p>10:00〜17:00</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-wrapper">
+                    <span class="owner-label">Bさん</span>
+                    <div class="schedule-card" data-id="meeting">
+                        <div class="schedule-details">
+                            <h3>2025年7月12日（土）</h3>
+                            <h3>会議</h3>
+                            <p> 14:00〜15:30</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-wrapper">
+                    <span class="owner-label">Cさん</span>
+                    <div class="schedule-card" data-id="travel">
+                        <div class="schedule-details">
+                            <h3>2025年7月15日（月）〜2025年7月18日（木）</h3>
+                            <h3>旅行</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </main>
 
+
+
+
         <aside class="right-sidebar">
-            <h2>編集</h2>
-            <p>編集用のツールや情報をここに配置します。</p>
+            
         </aside>
+    </div>
+            <script type="module">
+            // Import the functions you need from the SDKs you need
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+            import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js";
+            import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+
+            // TODO: Add SDKs for Firebase products that you want to use
+            // https://firebase.google.com/docs/web/setup#available-libraries
+
+            // Your web app's Firebase configuration
+            // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+            const firebaseConfig = {
+                apiKey: "AIzaSyChPt5NDvgd4okxbUQalZtrS7w6Tm30fgg",
+                authDomain: "mochimon-base.firebaseapp.com",
+                projectId: "mochimon-base",
+                storageBucket: "mochimon-base.firebasestorage.app",
+                messagingSenderId: "5202457046",
+                appId: "1:5202457046:web:7233c6b556a7d260803477",
+                measurementId: "G-GPT541EW6S"
+            };
+
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            const analytics = getAnalytics(app);
+            const auth = getAuth(app);
+            const iconBtn = document.getElementById("login-button");
+            let currentUser = null;
+
+            // ユーザーの認証状態が変わるたびにcurrentUserにセット
+            onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            console.log("Auth state changed:", user);
+            });
+            
+            
+                if (iconBtn) {
+                    iconBtn.addEventListener("click", async (e) => {
+                        e.preventDefault();
+                        console.log("Clicked. currentUser:", currentUser);
+                        if (currentUser) {
+                        console.log("認証済みなのでマイページへ遷移");
+                        window.location.href = "../Mypage.html";
+                        } else {
+                        console.log("未認証なのでログインへ遷移");
+                        window.location.href = "../Login.html";
+                        }
+                    });
+                }
+
+
+                const checklistData = {
+                    trip: ["ノートPC", "名刺", "スーツ", "筆記用具"],
+                    meeting: ["メモ帳", "資料", "飲み物"],
+                    travel: ["パスポート", "チケット", "充電器", "服"]
+                };
+
+                const scheduleInfo = {
+                    trip: {
+                    title: "Aさん",
+                    time: "2025年7月10日（木） 10:00〜17:00"
+                    },
+                    meeting: {
+                    title: "Bさん",
+                    time: "2025年7月12日（土） 14:00〜15:30"
+                    },
+                    travel: {
+                    title: "Cさん",
+                    time: "2025年7月15日（月）〜2025年7月18日（木）"
+                    }
+                };
+
+                const cards = document.querySelectorAll(".schedule-card");
+                const sidebar = document.querySelector(".right-sidebar");
+
+                cards.forEach(card => {
+                    card.addEventListener("click", () => {
+                    const id = card.getAttribute("data-id");
+                    const info = scheduleInfo[id];
+                    const items = checklistData[id] || [];
+
+                    if (!info) return;
+
+                    // 予定タイトル＋日時＋チェックリストをまとめて表示
+                    sidebar.innerHTML = `
+                        <h2>${info.title}</h2>
+                        <p>${info.time}</p>
+                        <hr>
+                        <ul class="checklist">
+                        ${items.map(item => `
+                            <li>
+                            <label><input type="checkbox"> ${item}</label>
+                            </li>
+                        `).join('')}
+                        </ul>
+                    `;
+                    });
+                });
+        </script>
     </div>
 
     <script type="module" src="../login.js">

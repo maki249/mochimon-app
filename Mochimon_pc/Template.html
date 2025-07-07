@@ -31,15 +31,210 @@
         </nav>
 
         <main class="content">
-            <h2>コンテンツ表示</h2>
-            <p>ここに選択したメニューのコンテンツが表示されます。</p>
+            <div class="main-card">
+                <!-- 9個の小カード -->
+                <div class="small-cards-grid">
+                    
+                    <div class="small-card" data-id="akasan">
+                        <img src="tempIcon/akasan.svg" alt="アイコン" class="card-icon">
+                    </div>
+                 
+                    <div class="small-card" data-id="foreign">
+                        <img src="tempIcon/foreign.svg" alt="アイコン" class="card-icon">
+                    </div>
+                        
+                    <div class="small-card" data-id="sports">
+                        <img src="tempIcon/sports.svg" alt="アイコン" class="card-icon">
+                    </div>
+                    <div class="small-card" data-id="umi">
+                        <img src="tempIcon/umi.svg" alt="アイコン" class="card-icon">
+                    </div>
+                    <div class="small-card" data-id="yama">
+                        <img src="tempIcon/yama.svg" alt="アイコン" class="card-icon">
+                    </div>
+                    <div class="small-card" data-id="kyanpu">
+                        <img src="tempIcon/kyanpu.svg" alt="アイコン" class="card-icon">
+                    </div>
+                    <div class="small-card"  data-id="pikuniku">
+                        <img src="tempIcon/pikuniku.svg" alt="アイコン" class="card-icon">
+                    </div>
+                    <div class="small-card"  data-id="yuenti">
+                        <img src="tempIcon/yuenti.svg" alt="アイコン" class="card-icon">
+                    </div>
+                    <div class="small-card"  data-id="maturi">
+                        <img src="tempIcon/maturi.svg" alt="アイコン" class="card-icon">
+                    </div>
+                    <div class="small-card"  data-id="onsen">
+                        <img src="tempIcon/onsen.svg" alt="アイコン" class="card-icon">
+                    </div>
+                </div>
+            </div>
         </main>
 
         <aside class="right-sidebar">
-            <h2>編集</h2>
-            <p>編集用のツールや情報をここに配置します。</p>
+            <button class="sidebar-add-button" id="add-item-button" title="項目を追加" style="display: none;">
+                <i class="fa-solid fa-plus"></i>
+            </button>
         </aside>
     </div>
+
+    <!-- 入力モーダル -->
+    <div id="input-modal" class="modal">
+        <div class="modal-content">
+            <h3>持ち物を追加</h3>
+            <input type="text" id="new-item-input" placeholder="新しい持ち物を入力">
+            <div class="modal-buttons">
+                <button id="add-item-confirm">追加</button>
+                <button id="add-item-cancel">キャンセル</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // data-id とタイトルの対応
+        const titles = {
+            akasan: "赤さんグッズ",
+            foreign: "海外旅行",
+            sports: "スポーツ",
+            umi: "海",
+            yama: "登山",
+            kyanpu: "キャンプ",
+            pikuniku: "ピクニック",
+            yuenti: "遊園地",
+            maturi: "お祭り",
+            onsen: "温泉"
+        };
+
+        const itemsData = {
+            akasan: ["哺乳瓶", "ミルク", "おむつ"],
+            foreign: ["パスポート", "ビザ", "ガイドブック"],
+            sports: ["運動靴", "スポーツウェア", "タオル"],
+            umi: ["水着", "日焼け止め", "ビーチタオル"],
+            yama: ["登山靴", "リュック", "地図"],
+            kyanpu: ["テント", "寝袋", "ランタン"],
+            pikuniku: ["お弁当", "レジャーシート", "虫除けスプレー"],
+            yuenti: ["レンズ", "三脚", "カメラバッグ"],
+            maturi: ["浴衣", "お祭り財布", "団扇"],
+            onsen: ["タオル", "着替え", "スキンケア用品"]
+        };
+
+        const smallCards = document.querySelectorAll(".small-card");
+        const sidebar = document.querySelector(".right-sidebar");
+        const addButton = document.getElementById("add-item-button");
+
+        smallCards.forEach(card => {
+            card.addEventListener("click", () => {
+            const id = card.dataset.id;
+            const title = titles[id] || "タイトルなし";
+            const items = itemsData[id] || [];
+
+            sidebar.innerHTML = `
+                <h2>${title}</h2>
+                <ul class="checklist">
+                ${items.map(item => `
+                    <li>
+                        <label>
+                            <input type="checkbox" disabled> ${item}
+                        </label>
+                        <button class="delete-button"><i class="fa-solid fa-trash"></i></button>
+                    </li>
+                `).join('')}
+                </ul>
+            `;
+
+            // サイドバーに再度プラスボタンを追加           
+            sidebar.appendChild(addButton);
+            addButton.style.display = "flex"; // 表示させる
+            });
+        });
+
+        smallCards.forEach(card => {
+            card.addEventListener("click", () => {
+                const id = card.dataset.id;
+                const title = titles[id] || "タイトルなし";
+                const items = itemsData[id] || [];
+
+                sidebar.innerHTML = `
+                    <h2>${title}</h2>
+                    <ul class="checklist">
+                    ${items.map(item => `
+                        <li>
+                            <label>
+                                <input type="checkbox" disabled> ${item}
+                            </label>
+                            <button class="delete-button"><i class="fa-solid fa-trash"></i></button>
+                        </li>
+                    `).join('')}
+                    </ul>
+                `;
+
+                // 再度ボタンを追加
+                sidebar.appendChild(addButton);
+                addButton.style.display = "flex";
+
+                // 削除機能
+                const deleteButtons = sidebar.querySelectorAll(".delete-button");
+                deleteButtons.forEach(button => {
+                    button.addEventListener("click", (e) => {
+                        e.preventDefault();
+                        const li = button.closest("li");
+                        if (li) {
+                            li.remove();
+                        }
+                    });
+                });
+            });
+        });
+
+
+            const modal = document.getElementById("input-modal");
+            const cancelButton = document.getElementById("add-item-cancel");
+            const addItemButton = document.getElementById("add-item-button");
+            const confirmButton = document.getElementById("add-item-confirm");
+            const newItemInput = document.getElementById("new-item-input");
+
+            // モーダル表示
+            addItemButton.addEventListener("click", () => {
+                modal.style.display = "flex";
+                newItemInput.value = ""; // 入力を初期化
+            });
+
+            // モーダル閉じる
+            cancelButton.addEventListener("click", () => {
+                modal.style.display = "none";
+            });
+
+            // モーダルの外側クリックで閉じる
+                window.addEventListener("click", (e) => {
+                    if (e.target === modal) {
+                        modal.style.display = "none";
+                    }
+                });
+
+                // 追加ボタンでチェックリストに項目追加
+                confirmButton.addEventListener("click", () => {
+                    const value = newItemInput.value.trim();
+                    if (value === "") return;
+
+                    const checklist = sidebar.querySelector(".checklist");
+                    if (checklist) {
+                        const li = document.createElement("li");
+                        li.innerHTML = `
+                            <label>
+                                <input type="checkbox" disabled> ${value}
+                            </label>
+                            <button class="delete-button"><i class="fa-solid fa-trash"></i></button>
+                        `;
+                        checklist.appendChild(li);
+                    }
+
+                    modal.style.display = "none"; // モーダル閉じる
+                });
+
+        </script>
+
+
 
     <script type="module" src="../login.js">
     </script>

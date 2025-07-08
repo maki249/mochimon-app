@@ -136,16 +136,16 @@
             checkboxes.forEach(cb => {
                 cb.addEventListener("change", () => {
                 updateCardState(checklist);
-                saveList();  // ← 保存機能があるなら呼び出す
+                //saveList();   ← 保存機能があるなら呼び出す
                 });
             });
 
-            // チェック状態を復元（もし保存されていれば）
+            /* チェック状態を復元（もし保存されていれば）
             const saved = JSON.parse(localStorage.getItem("shoppingListChecked")) || [];
             const allCheckboxes = document.querySelectorAll(".checklist input[type='checkbox']");
             allCheckboxes.forEach((checkbox, index) => {
             checkbox.checked = saved[index] || false;
-            });
+            });*/
 
             // ページ読み込み時にも状態チェック
             updateCardState(checklist);
@@ -160,11 +160,13 @@
             card.classList.toggle("completed", allChecked);
         }
 
+        /*
         function saveList() {
             const allCheckboxes = document.querySelectorAll(".checklist input[type='checkbox']");
             const state = Array.from(allCheckboxes).map(cb => cb.checked);
             localStorage.setItem("shoppingListChecked", JSON.stringify(state));
         }
+        */
 
         function toggleChecklist(button) {
             const checklist = button.closest('.card').querySelector('.checklist');

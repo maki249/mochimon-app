@@ -117,7 +117,39 @@
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
+        import { getFirestore, addDoc, updateDoc, deleteDoc, collection } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyChPt5NDvgd4okxbUQalZtrS7w6Tm30fgg",
+            authDomain: "mochimon-base.firebaseapp.com",
+            projectId: "mochimon-base",
+            storageBucket: "mochimon-base.firebasestorage.app",
+            messagingSenderId: "5202457046",
+            appId: "1:5202457046:web:7233c6b556a7d260803477",
+            measurementId: "G-GPT541EW6S"
+        };
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        let currentUser = null;
+        // ユーザーの認証状態が変わるたびにcurrentUserにセット
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            console.log("auth state changed:", user);
+        });
+
         // キャンセルボタン
         document.querySelector('.cancel-button').addEventListener('click', () => {
             window.location.href = 'Calendar.html';
@@ -136,19 +168,21 @@
             const start = new Date(startDate)
             const end = new Date(endDate)
 
-            const notify = document.getElementById('notification-toggle').checked;
+            //const notify = document.getElementById('notification-toggle').checked;
 
-            console.log({ title, allDay, notify });
+            console.log({ title, allDay });
             try{
                 //データ登録
-                console.log(user.uid)
                 while(!currentUser);
+                
+                console.log(currentUser.uid)
                 const docRef = await addDoc(collection(db, currentUser.uid), {
                     tag: "Event",
                     eventName: title,    //タイトル
+                    isAllDay:allDay,
                     startDate: start,   //開始日時
                     endDate: end,       //終了日時
-                    //notify: isNotify,   //通知設定
+                    //notify: notify,   //通知設定
                 });
                 const docID = docRef.id
                 alert("登録成功: ");

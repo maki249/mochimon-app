@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="EventEdit.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="overlay">
+        <div class="event-form">
+            <div class="form-header">
+                <button class="cancel-button">キャンセル</button>
+                <div class="form-title">予定の編集</div>
+                <button class="save-button">保存</button>
+            </div>
+
+            <div class="form-body">
+                <div class="form-section">
+                    <input type="text" id="event-title" placeholder="タイトル" />
+                </div>
+
+                <div class="form-section">
+                    <div class="form-row">
+                        <span class="form-label">終日予定</span>
+                        <label class="toggle-container">
+                            <input type="checkbox" id="all-day-toggle" />
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="form-row">
+                        <span class="form-label">開始</span>
+                        <div class="datetime-display">
+                            <input type="date" class="box" id="start-date-box" />
+                            <input type="time" class="box" id="start-time-box" step="300" />
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <span class="form-label">終了</span>
+                        <div class="datetime-display">
+                            <input type="date" class="box" id="end-date-box" />
+                            <input type="time" class="box" id="end-time-box" step="300" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="form-row notification-row">
+                        <span class="form-label">通知</span>
+                        <span class="form-arrow">></span>
+                    </div>
+                </div>
+
+                <button id="add-item-button">
+                    <i class="fa-solid fa-plus"></i> 持ち物を追加
+                </button>
+            </div>
+            <div class="form-footer">
+                <button class="delete-button">
+                    <i class="fas fa-trash"></i>　削除
+                </button>
+                <button class="copy-button">
+                    <i class="fas fa-copy"></i>　コピー
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 通知設定画面が右から出てくる -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal">
+            <div class="form-header">
+                <button class="cancel-button" id="modal-back-button">＜戻る</button>
+                <div class="form-title">通知</div>
+            </div>
+            <div class="notification-body">
+                <div class="form-section notification-options">
+                    <div class="form-row" data-value="0">
+                        <span class="form-label">予定時間</span>
+                        <span class="checkmark"></span>
+                    </div>
+                    <div class="form-row" data-value="5">
+                        <span class="form-label">5分前</span>
+                        <span class="checkmark"></span>
+                    </div>
+                    <div class="form-row" data-value="10">
+                        <span class="form-label">10分前</span>
+                        <span class="checkmark"></span>
+                    </div>
+                    <div class="form-row" data-value="15">
+                        <span class="form-label">15分前</span>
+                        <span class="checkmark"></span>
+                    </div>
+                    <div class="form-row" data-value="30">
+                        <span class="form-label">30分前</span>
+                        <span class="checkmark"></span>
+                    </div>
+                    <div class="form-row" data-value="60">
+                        <span class="form-label">1時間前</span>
+                        <span class="checkmark"></span>
+                    </div>
+                    <div class="form-row" data-value="120">
+                        <span class="form-label">2時間前</span>
+                        <span class="checkmark"></span>
+                    </div>
+                    <div class="form-row" data-value="180">
+                        <span class="form-label">3時間前</span>
+                        <span class="checkmark"></span>
+                    </div>
+                    <div class="form-row" data-value="360">
+                        <span class="form-label">6時間前</span>
+                        <span class="checkmark"></span>
+                    </div>
+                    <div class="form-row" data-value="1440">
+                        <span class="form-label">1日前</span>
+                        <span class="checkmark"></span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // キャンセルボタン
+        document.querySelector('.cancel-button').addEventListener('click', () => {
+            window.location.href = 'Calendar.html';
+        });
+        // 保存ボタン
+        document.querySelector('.save-button').addEventListener('click', () => {
+            const title = document.getElementById('event-title').value;
+            const allDay = document.getElementById('all-day-toggle').checked;
+            const notify = document.getElementById('notification-toggle').checked;
+
+            console.log({ title, allDay, notify });
+            alert('保存処理をここに追加');
+        });
+        //  持ち物リスト追加ボタン
+        document.getElementById('add-item-button').addEventListener('click', () => {
+            window.location.href = 'ListCreate.html';
+        });
+        //  終日トグル
+        document.getElementById('all-day-toggle').addEventListener('change', () => {
+            const isAllDay = document.getElementById('all-day-toggle').checked;
+            document.getElementById('start-time-box').style.display = isAllDay ? 'none' : 'inline-block';
+            document.getElementById('end-time-box').style.display = isAllDay ? 'none' : 'inline-block';
+        });
+
+        document.getElementById('modal-back-button').addEventListener('click', () => {
+            document.getElementById('modal-overlay').classList.remove('active');
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelector('.notification-row').addEventListener('click', () => {
+                document.getElementById('modal-overlay').classList.add('active');
+            });
+            document.querySelectorAll('.notification-options .form-row').forEach(row => {
+                row.addEventListener('click', () => {
+                    row.classList.toggle('selected');
+                });
+            });
+
+        });
+
+    </script>
+</body>
+
+</html>

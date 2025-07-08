@@ -58,7 +58,7 @@ html, body {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 32px;
+    font-size: 30px;
 }
 
 .left-menu {
@@ -85,6 +85,9 @@ html, body {
 }
 
 .content {
+    display: flex;
+    justify-content: center; /* 水平方向中央 */
+    align-items: center;     /* 垂直方向中央 */
     padding: 1.5rem;
 }
 
@@ -96,4 +99,84 @@ html, body {
 
 .select{
     background-color: #DDDDDD;
+}
+
+
+
+/* ダッシュボードコンテナ */
+.dashboard {
+  width: 90%;
+  max-width: 400px;
+  margin-top: 30px;
+
+  /* スクロールエリア */
+  height: 90vh;               /* 画面高の90% */
+  overflow-y: auto;           /* 縦スクロール可 */
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+}
+
+.dashboard::-webkit-scrollbar {
+  width: 6px;
+}
+.dashboard::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 10px;
+}
+
+
+/* 予定カード */
+.card {
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 2px solid #a2d0d0;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+}
+
+.checklist {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 10px;
+}
+
+.checklist li {
+  margin-bottom: 10px;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.checklist input[type="checkbox"] {
+  margin-right: 10px;
+  transform: scale(1.2);
+}
+
+.card.completed {
+  background-color: #e0f0f0; /* 完了時の背景色（薄緑） */
+}
+
+/*折り畳みボタン*/
+.toggle-button {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #555;
 }

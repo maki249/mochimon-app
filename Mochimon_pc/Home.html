@@ -2,12 +2,6 @@
 <html lang="ja">
 <head>
     <script type="text/javascript">
-        /*
-        if (navigator.userAgent.match(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i)) {
-
-            window.location.href = "../Mochimon_mobile/Home.html";
-        }
-        */
     </script>
     
 
@@ -17,40 +11,84 @@
     <link rel="stylesheet" href="Home.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
 </head>
-<body>
+    <body>
 
-    <div class="container">
-        <header class="header-area">
-            <h1>Mochimon</h1>
+        <div class="container">
+            <header class="header-area">
+                <h1>Mochimon</h1>
 
-            <a id="user-icon-btn" href="#" class="login-button">
-                <span>
-                    <i class="fa-regular fa-user"></i>
-                </span>
-            </a>
-        </header>
+                <a id="user-icon-btn" href="#" class="login-button">
+                    <span>
+                        <i class="fa-regular fa-user"></i>
+                    </span>
+                </a>
+            </header>
 
-        <nav class="left-menu">
-            <ul>
-                <li><a href="#" class="select">ホーム</a></li>
-                <li><a href="Calendar.html">カレンダー</a></li>
-                <li><a href="Template.html">テンプレート</a></li>
-                <li><a href="Shopping.html">買い物リスト</a></li>
-                <li><a href="Share.html">共有</a></li>
-            </ul>
-        </nav>
+            <nav class="left-menu">
+                <ul>
+                    <li><a href="#" class="select">ホーム</a></li>
+                    <li><a href="Calendar.html">カレンダー</a></li>
+                    <li><a href="Template.html">テンプレート</a></li>
+                    <li><a href="Shopping.html">買い物リスト</a></li>
+                    <li><a href="Share.html">共有</a></li>
+                </ul>
+            </nav>
 
-        <main class="content">
-            <h2>コンテンツ表示</h2>
-            <p>ここに選択したメニューのコンテンツが表示されます。</p>
-        </main>
+            <main class="content">
+                <div class="schedule-list">
+                    <div class="schedule-card" data-id="trip">
+                        <div class="schedule-details">
+                            <h3>2025年7月10日（木）</h3>
+                            <h3>出張</h3>
+                            <p>10:00〜17:00</p>
+                        </div>
+                    </div>
 
-        <aside class="right-sidebar">
-            <h2>編集</h2>
-            <p>編集用のツールや情報をここに配置します。</p>
-        </aside>
-    </div>
-            <script type="module">
+                    <div class="schedule-card" data-id="meeting">
+                        <div class="schedule-details">
+                            <h3>2025年7月12日（土）</h3>
+                            <h3>会議</h3>
+                            <p> 14:00〜15:30</p>
+                        </div>
+                    </div>
+
+                    <div class="schedule-card" data-id="travel">
+                        <div class="schedule-details">
+                            <h3>2025年7月15日（月）〜2025年7月18日（木）</h3>
+                            <h3>旅行</h3>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+
+
+
+            <aside class="right-sidebar">
+                <div id="sidebar-content">
+                    <!-- ここに選択された予定とチェックリストが表示される -->
+                </div>
+
+                <button class="sidebar-add-button" id="add-item-button" title="持ち物を追加" style="display: none;">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+            </aside>
+        </div>
+
+        <!-- 入力モーダル -->
+        <div id="input-modal" class="modal">
+            <div class="modal-content">
+                <h3>持ち物を追加</h3>
+                <input type="text" id="new-item-input" placeholder="新しい持ち物を入力">
+                <div class="modal-buttons">
+                    <button id="add-item-confirm">追加</button>
+                    <button id="add-item-cancel">キャンセル</button>
+                </div>
+            </div>
+        </div>
+
+
+        <script type="module">
             // Import the functions you need from the SDKs you need
             import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
             import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js";
@@ -99,9 +137,142 @@
                     });
                 }
 
+
+                const checklistData = {
+                    trip: ["ノートPC", "名刺", "スーツ", "筆記用具"],
+                    meeting: ["メモ帳", "資料", "飲み物"],
+                    travel: ["パスポート", "チケット", "充電器", "服"]
+                };
+
+                const scheduleInfo = {
+                    trip: {
+                    title: "出張",
+                    time: "2025年7月10日（木） 10:00〜17:00"
+                    },
+                    meeting: {
+                    title: "会議",
+                    time: "2025年7月12日（土） 14:00〜15:30"
+                    },
+                    travel: {
+                    title: "旅行",
+                    time: "2025年7月15日（月）〜2025年7月18日（木）"
+                    }
+                };
+
+                const cards = document.querySelectorAll(".schedule-card");
+                const sidebarContent = document.getElementById("sidebar-content");
+                const addButton = document.getElementById("add-item-button");
+
+                cards.forEach(card => {
+                    card.addEventListener("click", () => {
+                        const id = card.getAttribute("data-id");
+                        currentScheduleId = id;
+
+                        const info = scheduleInfo[id];
+                        const items = checklistData[id] || [];
+
+                        if (!info) return;
+
+                        // 保存されたチェック状態を取得
+                        const savedState = JSON.parse(localStorage.getItem(`checklist-${id}`)) || [];
+
+                        // チェックリストHTMLを生成
+                        sidebarContent.innerHTML = `
+                            <h2>${info.title}</h2>
+                            <p>${info.time}</p>
+                            <hr>
+                            <ul class="checklist">
+                                ${items.map((item, index) => `
+                                    <li data-index="${index}">
+                                        <label>
+                                            <input type="checkbox" data-index="${index}" ${savedState[index] ? 'checked' : ''}>
+                                            ${item}
+                                        </label>
+                                        <button class="delete-button">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        `;
+
+                        // プラスボタンを表示
+                        addButton.style.display = "flex";
+
+                        // チェック状態の保存
+                        const checkboxes = sidebarContent.querySelectorAll('input[type="checkbox"]');
+                        checkboxes.forEach(cb => {
+                            cb.addEventListener("change", () => {
+                                const updatedState = Array.from(checkboxes).map(c => c.checked);
+                                localStorage.setItem(`checklist-${id}`, JSON.stringify(updatedState));
+                            });
+                        });
+
+                        // 削除ボタン処理
+                        const deleteButtons = sidebarContent.querySelectorAll('.delete-button');
+                        deleteButtons.forEach(btn => {
+                            btn.addEventListener("click", (e) => {
+                                const li = e.target.closest("li");
+                                const index = parseInt(li.getAttribute("data-index"));
+
+                                // データから削除
+                                checklistData[id].splice(index, 1);
+
+                                // チェック状態も更新
+                                const saved = JSON.parse(localStorage.getItem(`checklist-${id}`)) || [];
+                                saved.splice(index, 1);
+                                localStorage.setItem(`checklist-${id}`, JSON.stringify(saved));
+
+                                // 再描画
+                                card.click();
+                            });
+                        });
+                    });
+                });
+
+
+            // モーダル関連要素取得
+            const modal = document.getElementById("input-modal");
+            const inputField = document.getElementById("new-item-input");
+            const confirmBtn = document.getElementById("add-item-confirm");
+            const cancelBtn = document.getElementById("add-item-cancel");
+
+            let currentScheduleId = null;
+
+            // プラスボタン押下でモーダル表示
+            addButton.addEventListener("click", () => {
+                modal.style.display = "flex";
+                inputField.value = "";
+            });
+
+            // キャンセルボタンで非表示
+            cancelBtn.addEventListener("click", () => {
+                modal.style.display = "none";
+            });
+
+            // 確定ボタン押下時の処理
+            confirmBtn.addEventListener("click", () => {
+                const newItem = inputField.value.trim();
+                if (!newItem || !currentScheduleId) return;
+
+                // ローカルストレージの既存データ取得・更新
+                const key = `checklist-${currentScheduleId}`;
+                const checklist = checklistData[currentScheduleId] || [];
+                checklist.push(newItem);
+                checklistData[currentScheduleId] = checklist;
+                localStorage.removeItem(key); // 状態クリア（再構築されるため）
+
+                // 強制的にクリックして再描画
+                document.querySelector(`.schedule-card[data-id="${currentScheduleId}"]`)?.click();
+
+                modal.style.display = "none";
+            });
+
+
+
         </script>
-        
+            
         <script type="module" src="../login.js">
         </script>
-</body>
+    </body>
 </html>

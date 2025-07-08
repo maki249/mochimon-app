@@ -123,13 +123,40 @@
             window.location.href = 'Calendar.html';
         });
         // 保存ボタン
-        document.querySelector('.save-button').addEventListener('click', () => {
+        document.querySelector('.save-button').addEventListener('click', async () => {
             const title = document.getElementById('event-title').value;
             const allDay = document.getElementById('all-day-toggle').checked;
+            let startDate = document.getElementById('start-date-box').value;
+            let endDate = document.getElementById('end-date-box').value;
+            if(allDay){
+                startDate += document.getElementById('start-time-box').value;
+                
+                endDate += document.getElementById('end-time-box').value;
+            }
+            const start = new Date(startDate)
+            const end = new Date(endDate)
+
             const notify = document.getElementById('notification-toggle').checked;
 
             console.log({ title, allDay, notify });
-            alert('保存処理をここに追加');
+            try{
+                //データ登録
+                console.log(user.uid)
+                while(!currentUser);
+                const docRef = await addDoc(collection(db, currentUser.uid), {
+                    tag: "Event",
+                    eventName: title,    //タイトル
+                    startDate: start,   //開始日時
+                    endDate: end,       //終了日時
+                    //notify: isNotify,   //通知設定
+                });
+                const docID = docRef.id
+                alert("登録成功: ");
+                return docID
+            } catch(error){
+                alert("登録に失敗しました: " + error.message);
+                console.error("エラー", error);
+            }     
         });
         //  持ち物リスト追加ボタン
         document.getElementById('add-item-button').addEventListener('click', () => {

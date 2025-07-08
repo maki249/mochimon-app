@@ -242,7 +242,7 @@
                 
                 const docID = docRef.id
                 alert("登録成功: ");
-                return docID
+                window.location.href = 'Calendar.html';
             } catch(error){
                 alert("登録に失敗しました: " + error.message);
                 console.error("エラー", error);

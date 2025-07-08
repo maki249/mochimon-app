@@ -156,7 +156,14 @@
         });
         // 保存ボタン
         document.querySelector('.save-button').addEventListener('click', async () => {
-            const title = document.getElementById('event-title').value;
+            
+            /*タイトル名未入力の際の警告*/
+            const title = document.getElementById('event-title').value.trim();
+            if (!title) {
+                alert("タイトルを入力してください。");
+                return; // 処理を中断
+            }
+            
             const allDay = document.getElementById('all-day-toggle').checked;
             let startDate = document.getElementById('start-date-box').value;
             let endDate = document.getElementById('end-date-box').value;

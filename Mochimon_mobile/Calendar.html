@@ -16,15 +16,10 @@
 
 <body>
     <div class="header-area">
-        <button class="hamburger-button" aria-label="menu">
-            <span>
-                <i class="fa-solid fa-bars"></i>
-            </span>
-        </button>
 
         <h1>Mochimon</h1>
 
-        <a href="../Login.html" class="login-button">
+        <a id="user-icon-btn" href="../Login.html" class="login-button">
             <span>
                 <i class="fa-regular fa-user"></i>
             </span>
@@ -42,7 +37,7 @@
             <span class="select">
                 <i class="fa-regular fa-calendar-days"></i>
             </span>
-            <p>カレンダー</p>
+            <p class="select">カレンダー</p>
         </a>
         <a href="Template.html" class="menu-button">
             <span>
@@ -64,7 +59,6 @@
         </a>
     </nav>
     <div id='calendar'></div>
-
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
@@ -98,7 +92,7 @@
             currentUser = user;
             console.log("auth state changed:", user);
         });
-
+        
         document.addEventListener('DOMContentLoaded', function () {
             const calendarEl = document.getElementById('calendar');
             let selectedDateStr = null;

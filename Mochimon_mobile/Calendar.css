@@ -25,26 +25,22 @@ body {
     background-color: #e0f0f0;
 }
 
+.header-area h1{
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+}
+
 .login-button {
     background-color: #e0f0f0;
+    margin-left: auto;
     color: #333; /* ボタンの文字色 */
     padding: 8px 16px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-size: 32px;
-}
-
-/*ハンバーガーボタン*/
-.hamburger-button {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 10px; /* クリックエリアを確保 */
-    font-size: 32px;
-    box-sizing: border-box;
-    width: auto;  /* アイコンサイズに合わせるためautoに、または固定値を指定 */
-    height: auto; /* アイコンサイズに合わせるためautoに、または固定値を指定 */
 }
 
 .bottom-menu {

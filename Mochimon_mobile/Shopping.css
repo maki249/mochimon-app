@@ -66,6 +66,7 @@ body {
   flex-direction: column;
   gap: 20px;
   padding: 20px;
+  height: calc(65vh);
 }
 
 .dashboard::-webkit-scrollbar {

@@ -215,7 +215,7 @@
             const end = new Date(endDate)
             console.log("sss"+start);
             const dict = {
-                "予定時刻": start,
+                "予定時間": calcNotifyTime(start,0, 0, 0),
                 "5分前": calcNotifyTime(start, 0, 0, 5),
                 "10分前": calcNotifyTime(start, 0, 0, 10),
                 "15分前": calcNotifyTime(start, 0, 0, 15),

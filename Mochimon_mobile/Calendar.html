@@ -42,7 +42,7 @@
             <span class="select">
                 <i class="fa-regular fa-calendar-days"></i>
             </span>
-            <p class="select">カレンダー</p>
+            <p>カレンダー</p>
         </a>
         <a href="Template.html" class="menu-button">
             <span>
@@ -64,6 +64,7 @@
         </a>
     </nav>
     <div id='calendar'></div>
+
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
@@ -97,7 +98,7 @@
             currentUser = user;
             console.log("auth state changed:", user);
         });
-        
+
         document.addEventListener('DOMContentLoaded', function () {
             const calendarEl = document.getElementById('calendar');
             let selectedDateStr = null;

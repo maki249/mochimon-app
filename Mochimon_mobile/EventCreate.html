@@ -51,7 +51,7 @@
                 <div class="form-section">
                     <div class="form-row notification-row">
                         <span class="form-label">通知</span>
-                        <span class="form-arrow">></span>
+                        <span class="form-arrow" id="arrow">></span>
                     </div>
                 </div>
 
@@ -71,43 +71,43 @@
             </div>
             <div class="notification-body">
                 <div class="form-section notification-options">
-                    <div class="form-row" data-value="0">
+                    <div class="form-row" data-value="予定時間">
                         <span class="form-label">予定時間</span>
                         <span class="checkmark"></span>
                     </div>
-                    <div class="form-row" data-value="5">
+                    <div class="form-row" data-value="5分前">
                         <span class="form-label">5分前</span>
                         <span class="checkmark"></span>
                     </div>
-                    <div class="form-row" data-value="10">
+                    <div class="form-row" data-value="10分前">
                         <span class="form-label">10分前</span>
                         <span class="checkmark"></span>
                     </div>
-                    <div class="form-row" data-value="15">
+                    <div class="form-row" data-value="15分前">
                         <span class="form-label">15分前</span>
                         <span class="checkmark"></span>
                     </div>
-                    <div class="form-row" data-value="30">
+                    <div class="form-row" data-value="30分前">
                         <span class="form-label">30分前</span>
                         <span class="checkmark"></span>
                     </div>
-                    <div class="form-row" data-value="60">
+                    <div class="form-row" data-value="1時間前">
                         <span class="form-label">1時間前</span>
                         <span class="checkmark"></span>
                     </div>
-                    <div class="form-row" data-value="120">
+                    <div class="form-row" data-value="2時間前">
                         <span class="form-label">2時間前</span>
                         <span class="checkmark"></span>
                     </div>
-                    <div class="form-row" data-value="180">
+                    <div class="form-row" data-value="3時間前">
                         <span class="form-label">3時間前</span>
                         <span class="checkmark"></span>
                     </div>
-                    <div class="form-row" data-value="360">
+                    <div class="form-row" data-value="6時間前">
                         <span class="form-label">6時間前</span>
                         <span class="checkmark"></span>
                     </div>
-                    <div class="form-row" data-value="1440">
+                    <div class="form-row" data-value="1日前">
                         <span class="form-label">1日前</span>
                         <span class="checkmark"></span>
                     </div>
@@ -145,9 +145,44 @@
         const db = getFirestore(app);
         let currentUser = null;
         // ユーザーの認証状態が変わるたびにcurrentUserにセット
-        onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(auth, async (user) => {
             currentUser = user;
             console.log("auth state changed:", user);
+            
+            //持ち物の取得
+            try{
+                const getItem = await getDocs(query(collection(db, currentUser.uid), where("tag", "==", "item")));
+                const items = getItem.docs.map(doc => ({
+                    id: doc.id,
+                    ... doc.data()
+                }));
+
+                //持ち物の表示
+                if(items){
+                    const itemList = document.createElement('div');
+                    itemList.setAttribute('class', 'form-section');
+                    itemList.textContent = "持ち物";
+                    const itemButton = document.getElementById('add-item-button');
+                    itemButton.before(itemList);
+                    items.forEach(item =>{
+                        if(item.unlisted == false){
+                            const form = document.createElement('div');
+                            form.setAttribute('class', 'form-row');
+                            const li = document.createElement('li');
+                            const span = document.createElement('span');
+                            span.textContent = item.name;
+                            span.setAttribute('id', item.id);
+                            span.setAttribute('class', 'mochimon');
+                            itemList.appendChild(form);
+                            form.appendChild(li);
+                            li.appendChild(span);
+                        }
+                    })
+                }else console.log("item is null");
+
+            }catch(error){
+                console.log(error);
+            }
         });
 
         // キャンセルボタン
@@ -164,25 +199,43 @@
                 return; // 処理を中断
             }
             
-            const isAllDay = document.getElementById('all-day-toggle').checked;
 
-            const startDateStr = document.getElementById('start-date-box').value;
-            const startTimeStr = isAllDay ? "00:00" : document.getElementById('start-time-box').value;
-            const endDateStr = document.getElementById('end-date-box').value;
-            const endTimeStr = isAllDay ? "23:59" : document.getElementById('end-time-box').value;
-
-            // 日付と時刻を結合して Date オブジェクトに変換
-            function jstToUtc(dateStr, timeStr) {
-                const jstDate = new Date(`${dateStr}T${timeStr}:00+09:00`);
-                return new Date(jstDate.getTime());
+            const allDay = document.getElementById('all-day-toggle').checked;
+            let startDate = document.getElementById('start-date-box').value;
+            let endDate = document.getElementById('end-date-box').value;
+            if(!allDay){
+                startDate += "T" + document.getElementById('start-time-box').value + ":00";
+                
+                endDate += "T" + document.getElementById('end-time-box').value + ":00";
             }
-
-            const start = jstToUtc(startDateStr, startTimeStr);
-            const end = jstToUtc(endDateStr, endTimeStr);
-
+            
+            const notifyList = Array.from(document.querySelectorAll('.form-row.selected'))
+                                        .map(row => row.dataset.value);
+            const start = new Date(startDate)
+            const end = new Date(endDate)
+            console.log("sss"+start);
+            const dict = {
+                "予定時刻": start,
+                "1分前": calcNotifyTime(start, 0, 0, 5),
+                "10分前": calcNotifyTime(start, 0, 0, 10),
+                "15分前": calcNotifyTime(start, 0, 0, 15),
+                "30分前": calcNotifyTime(start, 0, 0, 30),
+                "1時間前": calcNotifyTime(start, 0, 1, 0),
+                "2時間前": calcNotifyTime(start, 0, 2, 0),
+                "3時間前": calcNotifyTime(start, 0, 3, 0),
+                "6時間前": calcNotifyTime(start, 0, 6, 0),
+                "1日前": calcNotifyTime(start, 1, 0, 0),
+            };
             //const notify = document.getElementById('notification-toggle').checked;
-
-            console.log({ title, isAllDay });
+            const notify = [];
+            console.log("notifyList:" + notifyList);
+            for(const notifyElement of notifyList){
+                console.log(notifyElement);
+                console.log(dict[notifyElement] + "aaa");
+                const notifyTime = dict[notifyElement];
+                console.log(notifyTime);
+                notify.push(notifyTime);
+            }
             try{
                 //データ登録
                 if (!currentUser) {
@@ -194,14 +247,28 @@
                 const docRef = await addDoc(collection(db, currentUser.uid), {
                     tag: "Event",
                     eventName: title,    //タイトル
-                    isAllDay:isAllDay,
-                    startDate: Timestamp.fromDate(start),
-                    endDate: Timestamp.fromDate(end)
-                    //notify: notify,   //通知設定
+                    isAllDay: allDay,
+                    startDate: start,   //開始日時
+                    endDate: end,       //終了日時
+                    notify: notify,   //通知設定
                 });
+                const mochimonList = document.getElementsByClassName('mochimon');
+                const idList = [];
+                for(const itemId of mochimonList) {
+                    console.log(itemId.id);
+                    idList.push(itemId.id);
+                    await updateDoc(doc(db, currentUser.uid, itemId.id),{
+                            unlisted: deleteField()
+                        }
+                    )
+                }
+                await updateDoc(docRef, {
+                   itemList: idList 
+                });
+                
                 const docID = docRef.id
                 alert("登録成功: ");
-                return docID
+                window.location.href = 'Calendar.html';
             } catch(error){
                 alert("登録に失敗しました: " + error.message);
                 console.error("エラー", error);
@@ -229,11 +296,30 @@
             document.querySelectorAll('.notification-options .form-row').forEach(row => {
                 row.addEventListener('click', () => {
                     row.classList.toggle('selected');
+                    const notifies = Array.from(document.querySelectorAll('.form-row.selected'))
+                                        .map(row => row.dataset.value);
+                    const preNotfyArea = document.getElementsByClassName('notifyList');
+                    while (preNotfyArea.length > 0){
+                        preNotfyArea[0].remove();
+                    }
+                    if(notifies){
+                        const arrow = document.getElementById('arrow');
+                        for(const notify of notifies){
+                            const notifyArea = document.createElement('span');
+                            notifyArea.textContent = notify + " ";
+                            notifyArea.setAttribute('class', 'notifyList');
+                            arrow.appendChild(notifyArea);
+                        }
+                    }
                 });
             });
-
         });
 
+        function calcNotifyTime(start, day, hour, minute){
+            const loss = (((day * 24) + hour) * 60 + minute) * 60000;
+            const time = new Date(start.getTime() - loss)
+            return time;
+        }
     </script>
 </body>
 

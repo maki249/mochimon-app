@@ -1,0 +1,24 @@
+{
+  "name": "mochimon-app",
+  "version": "1.0.0",
+  "main": "addData.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maki249/mochimon-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/maki249/mochimon-app/issues"
+  },
+  "homepage": "https://github.com/maki249/mochimon-app#readme",
+  "description": "",
+  "devDependencies": {
+    "eslint": "^9.30.1"
+  }
+}

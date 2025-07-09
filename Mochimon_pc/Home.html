@@ -173,10 +173,7 @@
 
                         if (!info) return;
 
-                        // 保存されたチェック状態を取得
-                        const savedState = JSON.parse(localStorage.getItem(`checklist-${id}`)) || [];
-
-                        // チェックリストHTMLを生成
+                        // チェックリストHTMLを生成（保存されたチェック状態は考慮しない）
                         sidebarContent.innerHTML = `
                             <h2>${info.title}</h2>
                             <p>${info.time}</p>
@@ -185,7 +182,7 @@
                                 ${items.map((item, index) => `
                                     <li data-index="${index}">
                                         <label>
-                                            <input type="checkbox" data-index="${index}" ${savedState[index] ? 'checked' : ''}>
+                                            <input type="checkbox" data-index="${index}">
                                             ${item}
                                         </label>
                                         <button class="delete-button">
@@ -199,15 +196,6 @@
                         // プラスボタンを表示
                         addButton.style.display = "flex";
 
-                        // チェック状態の保存
-                        const checkboxes = sidebarContent.querySelectorAll('input[type="checkbox"]');
-                        checkboxes.forEach(cb => {
-                            cb.addEventListener("change", () => {
-                                const updatedState = Array.from(checkboxes).map(c => c.checked);
-                                localStorage.setItem(`checklist-${id}`, JSON.stringify(updatedState));
-                            });
-                        });
-
                         // 削除ボタン処理
                         const deleteButtons = sidebarContent.querySelectorAll('.delete-button');
                         deleteButtons.forEach(btn => {
@@ -218,17 +206,13 @@
                                 // データから削除
                                 checklistData[id].splice(index, 1);
 
-                                // チェック状態も更新
-                                const saved = JSON.parse(localStorage.getItem(`checklist-${id}`)) || [];
-                                saved.splice(index, 1);
-                                localStorage.setItem(`checklist-${id}`, JSON.stringify(saved));
-
                                 // 再描画
                                 card.click();
                             });
                         });
                     });
                 });
+
 
 
             // モーダル関連要素取得
@@ -255,18 +239,17 @@
                 const newItem = inputField.value.trim();
                 if (!newItem || !currentScheduleId) return;
 
-                // ローカルストレージの既存データ取得・更新
-                const key = `checklist-${currentScheduleId}`;
+                // checklistDataに追加
                 const checklist = checklistData[currentScheduleId] || [];
                 checklist.push(newItem);
                 checklistData[currentScheduleId] = checklist;
-                localStorage.removeItem(key); // 状態クリア（再構築されるため）
 
-                // 強制的にクリックして再描画
+                // 再描画
                 document.querySelector(`.schedule-card[data-id="${currentScheduleId}"]`)?.click();
 
                 modal.style.display = "none";
             });
+
 
 
 

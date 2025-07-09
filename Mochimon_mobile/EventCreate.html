@@ -199,6 +199,7 @@
                 return; // 処理を中断
             }
             
+
             const allDay = document.getElementById('all-day-toggle').checked;
             let startDate = document.getElementById('start-date-box').value;
             let endDate = document.getElementById('end-date-box').value;
@@ -237,7 +238,10 @@
             }
             try{
                 //データ登録
-                while(!currentUser);
+                if (!currentUser) {
+                    alert("ログインしていません。もう一度お試しください。");
+                    return;
+                }
                 
                 console.log(currentUser.uid)
                 const docRef = await addDoc(collection(db, currentUser.uid), {

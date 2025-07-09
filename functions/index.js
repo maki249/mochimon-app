@@ -1,5 +1,6 @@
 const {initializeApp} = require("firebase-admin/app");
 const {getFirestore} = require("firebase-admin/firestore");
+const {getFirestore} = require("firebase-admin/firestore");
 const {onSchedule} = require("firebase-functions/v2/scheduler");
 const {getMessaging} = require("firebase-admin/messaging");
 
@@ -7,9 +8,11 @@ initializeApp();
 
 const admin = require("firebase-admin");
 
+const admin = require("firebase-admin");
+
 exports.sendNotification = onSchedule("every 1 minutes", async (event) => {
   const db = getFirestore();
-    const now = admin.firestore.Timestamp.now();
+  const now = admin.firestore.Timestamp.now();
   const oneMinuteLater = admin.firestore.Timestamp.fromDate(
       new Date(Date.now() + 60 * 1000));
 
@@ -17,10 +20,10 @@ exports.sendNotification = onSchedule("every 1 minutes", async (event) => {
 
   for (const userDoc of usersSnapshot.docs) {
     const {fcmToken} = userDoc.data();
-    if(!fcmToken) continue;
-    
+    if (!fcmToken) continue;
+
     const snapshot = await db
-            .collection("users")
+        .collection("users")
         .doc(userDoc.id)
         .collection("events")
         .where("tag", "==", "Event")

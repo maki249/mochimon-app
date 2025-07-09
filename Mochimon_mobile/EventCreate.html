@@ -121,7 +121,7 @@
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
-        import { getFirestore, addDoc, updateDoc, deleteDoc, collection } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+        import { getFirestore, addDoc, updateDoc, deleteDoc, collection,Timestamp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 
         // TODO: Add SDKs for Firebase products that you want to use
@@ -164,31 +164,39 @@
                 return; // 処理を中断
             }
             
-            const allDay = document.getElementById('all-day-toggle').checked;
-            let startDate = document.getElementById('start-date-box').value;
-            let endDate = document.getElementById('end-date-box').value;
-            if(allDay){
-                startDate += document.getElementById('start-time-box').value;
-                
-                endDate += document.getElementById('end-time-box').value;
+            const isAllDay = document.getElementById('all-day-toggle').checked;
+
+            const startDateStr = document.getElementById('start-date-box').value;
+            const startTimeStr = isAllDay ? "00:00" : document.getElementById('start-time-box').value;
+            const endDateStr = document.getElementById('end-date-box').value;
+            const endTimeStr = isAllDay ? "23:59" : document.getElementById('end-time-box').value;
+
+            // 日付と時刻を結合して Date オブジェクトに変換
+            function jstToUtc(dateStr, timeStr) {
+                const jstDate = new Date(`${dateStr}T${timeStr}:00+09:00`);
+                return new Date(jstDate.getTime());
             }
-            const start = new Date(startDate)
-            const end = new Date(endDate)
+
+            const start = jstToUtc(startDateStr, startTimeStr);
+            const end = jstToUtc(endDateStr, endTimeStr);
 
             //const notify = document.getElementById('notification-toggle').checked;
 
-            console.log({ title, allDay });
+            console.log({ title, isAllDay });
             try{
                 //データ登録
-                while(!currentUser);
+                if (!currentUser) {
+                    alert("ログインしていません。もう一度お試しください。");
+                    return;
+                }
                 
                 console.log(currentUser.uid)
                 const docRef = await addDoc(collection(db, currentUser.uid), {
                     tag: "Event",
                     eventName: title,    //タイトル
-                    isAllDay:allDay,
-                    startDate: start,   //開始日時
-                    endDate: end,       //終了日時
+                    isAllDay:isAllDay,
+                    startDate: Timestamp.fromDate(start),
+                    endDate: Timestamp.fromDate(end)
                     //notify: notify,   //通知設定
                 });
                 const docID = docRef.id

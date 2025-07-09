@@ -216,7 +216,7 @@
             console.log("sss"+start);
             const dict = {
                 "予定時刻": start,
-                "1分前": calcNotifyTime(start, 0, 0, 5),
+                "5分前": calcNotifyTime(start, 0, 0, 5),
                 "10分前": calcNotifyTime(start, 0, 0, 10),
                 "15分前": calcNotifyTime(start, 0, 0, 15),
                 "30分前": calcNotifyTime(start, 0, 0, 30),
@@ -236,6 +236,7 @@
                 console.log(notifyTime);
                 notify.push(notifyTime);
             }
+            console.log(notify);
             try{
                 //データ登録
                 if (!currentUser) {

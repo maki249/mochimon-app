@@ -58,7 +58,7 @@ onAuthStateChanged(auth, async (user) => {
             let start;
             let end;
             if(item.isAllDay){
-                if(startDate === endDate){
+                if(dayjs(startDate).format("YYYY年MM月DD日") === dayjs(endDate).format("YYYY年MM月DD日")){
                     start = dayjs(startDate).format("YYYY年MM月DD日")
                     end = "終日"
                 }else{
@@ -66,7 +66,7 @@ onAuthStateChanged(auth, async (user) => {
                     end = dayjs(endDate).format("~ YYYY年MM月DD日")
                 }
             }else{
-                if(startDate === endDate){
+                if(dayjs(startDate).format("YYYY年MM月DD日") === dayjs(endDate).format("YYYY年MM月DD日")){
                     start = dayjs(startDate).format("YYYY年MM月DD日 HH時mm分")
                     end = dayjs(endDate).format("~ HH時mm分")
                 }else{

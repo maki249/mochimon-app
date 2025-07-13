@@ -121,7 +121,7 @@
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
-        import { getFirestore, addDoc, updateDoc, deleteDoc, collection, doc, getDocs, where, query, deleteField } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+        import { getFirestore, addDoc, updateDoc, deleteDoc, collection, doc, getDocs, where, query, deleteField,Timestamp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 
         // TODO: Add SDKs for Firebase products that you want to use
@@ -203,6 +203,7 @@
             const allDay = document.getElementById('all-day-toggle').checked;
             let startDate = document.getElementById('start-date-box').value;
             let endDate = document.getElementById('end-date-box').value;
+            console.log(startDate, endDate)
             if(!allDay){
                 startDate += "T" + document.getElementById('start-time-box').value + ":00";
                 
@@ -211,20 +212,21 @@
             
             const notifyList = Array.from(document.querySelectorAll('.form-row.selected'))
                                         .map(row => row.dataset.value);
-            const start = new Date(startDate)
-            const end = new Date(endDate)
+            const start = Timestamp.fromDate(new Date(startDate));
+            console.log("start Timestamp", start); // ここで _seconds が入ってるか確認
+            const end = Timestamp.fromDate(new Date(endDate));
             console.log("sss"+start);
             const dict = {
                 "予定時刻": start,
-                "1分前": calcNotifyTime(start, 0, 0, 5),
-                "10分前": calcNotifyTime(start, 0, 0, 10),
-                "15分前": calcNotifyTime(start, 0, 0, 15),
-                "30分前": calcNotifyTime(start, 0, 0, 30),
-                "1時間前": calcNotifyTime(start, 0, 1, 0),
-                "2時間前": calcNotifyTime(start, 0, 2, 0),
-                "3時間前": calcNotifyTime(start, 0, 3, 0),
-                "6時間前": calcNotifyTime(start, 0, 6, 0),
-                "1日前": calcNotifyTime(start, 1, 0, 0),
+                "5分前": Timestamp.fromDate(calcNotifyTime(new Date(startDate), 0, 0, 5)),
+                "10分前": Timestamp.fromDate(calcNotifyTime(new Date(startDate), 0, 0, 10)),
+                "15分前": Timestamp.fromDate(calcNotifyTime(new Date(startDate), 0, 0, 15)),
+                "30分前": Timestamp.fromDate(calcNotifyTime(new Date(startDate), 0, 0, 30)),
+                "1時間前": Timestamp.fromDate(calcNotifyTime(new Date(startDate), 0, 1, 0)),
+                "2時間前": Timestamp.fromDate(calcNotifyTime(new Date(startDate), 0, 2, 0)),
+                "3時間前": Timestamp.fromDate(calcNotifyTime(new Date(startDate), 0, 3, 0)),
+                "6時間前": Timestamp.fromDate(calcNotifyTime(new Date(startDate), 0, 6, 0)),
+                "1日前": Timestamp.fromDate(calcNotifyTime(new Date(startDate), 1, 0, 0)),
             };
             //const notify = document.getElementById('notification-toggle').checked;
             const notify = [];
@@ -234,7 +236,7 @@
                 console.log(dict[notifyElement] + "aaa");
                 const notifyTime = dict[notifyElement];
                 console.log(notifyTime);
-                notify.push(notifyTime);
+                notify.push((notifyTime));
             }
             try{
                 //データ登録
@@ -244,7 +246,7 @@
                 }
                 
                 console.log(currentUser.uid)
-                const docRef = await addDoc(collection(db, currentUser.uid), {
+                const docRef = await addDoc(collection(db,"users", currentUser.uid,"events"), {
                     tag: "Event",
                     eventName: title,    //タイトル
                     isAllDay: allDay,
@@ -252,6 +254,7 @@
                     endDate: end,       //終了日時
                     notify: notify,   //通知設定
                 });
+                console.log();
                 const mochimonList = document.getElementsByClassName('mochimon');
                 const idList = [];
                 for(const itemId of mochimonList) {
@@ -315,10 +318,12 @@
             });
         });
 
-        function calcNotifyTime(start, day, hour, minute){
-            const loss = (((day * 24) + hour) * 60 + minute) * 60000;
-            const time = new Date(start.getTime() - loss)
-            return time;
+        function calcNotifyTime(startDate, days, hours, minutes) {
+            const notifyDate = new Date(startDate);
+            notifyDate.setDate(notifyDate.getDate() - days);
+            notifyDate.setHours(notifyDate.getHours() - hours);
+            notifyDate.setMinutes(notifyDate.getMinutes() - minutes);
+            return notifyDate;
         }
     </script>
 </body>

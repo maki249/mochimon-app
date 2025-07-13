@@ -112,7 +112,7 @@
 
             // ユーザーIDを使って、そのユーザーのイベントをFirestoreから取得
             // 例：Firestoreでコレクション名をユーザーUIDにしている場合
-            const eventsCol = collection(db, user.uid);
+            const eventsCol = collection(db, "users", user.uid, "events");
             const snapshot = await getDocs(eventsCol);
 
             const events = [];

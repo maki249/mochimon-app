@@ -159,43 +159,8 @@
             </div>
         </div>
 
-        <script>
-        document.getElementById("add-event-btn").addEventListener("click", () => {
-            document.getElementById("modal-overlay").style.display = "flex";
-        });
+        <script type="module" src="Share.js">
 
-        document.getElementById("close-modal").addEventListener("click", () => {
-            document.getElementById("modal-overlay").style.display = "none";
-        });
-
-        document.getElementById("submit-event").addEventListener("click", () => {
-            const title = document.getElementById("event-title").value;
-            if (title.trim() !== "") {
-                alert("共有しました" + title);
-                document.getElementById("modal-overlay").style.display = "none";
-                document.getElementById("event-title").value = "";
-            }
-        });
-
-        // すべてのオーバーレイカードを取得
-        const overlayCards = document.querySelectorAll('.overlay-card');
-
-        let selectedCard = null;  // 現在選択されているカードを記憶
-
-        overlayCards.forEach(card => {
-        card.addEventListener('click', (e) => {
-            e.preventDefault(); // もしリンク動作を抑制したい場合
-
-            // すでに選択されているカードがあれば選択解除
-            if (selectedCard) {
-            selectedCard.classList.remove('selected');
-            }
-
-            // 新しくクリックしたカードを選択状態に
-            card.classList.add('selected');
-            selectedCard = card;
-        });
-        });
 
         </script>
 

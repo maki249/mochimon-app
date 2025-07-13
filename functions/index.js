@@ -1,6 +1,5 @@
 const {initializeApp} = require("firebase-admin/app");
 const {getFirestore} = require("firebase-admin/firestore");
-const {getFirestore} = require("firebase-admin/firestore");
 const {onSchedule} = require("firebase-functions/v2/scheduler");
 const {getMessaging} = require("firebase-admin/messaging");
 
@@ -8,7 +7,6 @@ initializeApp();
 
 const admin = require("firebase-admin");
 
-const admin = require("firebase-admin");
 
 exports.sendNotification = onSchedule("every 1 minutes", async (event) => {
   const db = getFirestore();
@@ -26,7 +24,7 @@ exports.sendNotification = onSchedule("every 1 minutes", async (event) => {
         .collection("users")
         .doc(userDoc.id)
         .collection("events")
-        .where("tag", "==", "Event")
+        // .where("tag", "==", "Event")
         .where("startDate", ">=", now)
         .where("startDate", "<=", oneMinuteLater)
         .get();
@@ -43,8 +41,8 @@ exports.sendNotification = onSchedule("every 1 minutes", async (event) => {
       console.log(`通知送信: ${userDoc.id}`);
     } else {
       console.log(`通知なし: ${userDoc.id}`);
-      }
     }
+  }
 
   return null;
 });

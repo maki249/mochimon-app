@@ -21,10 +21,18 @@
         </div>
 
 
-        <div class="dashboard" id="dashboard">
-        
-
+        <div class="dashboard">
+            <div class="card" onclick="goToViewPage()">
+                <div class="edit-button" onclick="goToEditPage(event)">
+                    <i class="fa-solid fa-pen"></i>
+                    <span>編集する</span>
+                </div>
+                <h2>会議</h2>
+                <p>2025年6月20日</p>
+                <p>14:00 ～ 15:00</p>
+            </div>
         </div>
+
         <nav class="bottom-menu">
             <a href="#" class="menu-button">
                 <span class="select">
@@ -58,8 +66,20 @@
             </a>
         </nav>
 
-        <script type="module" src="home.js">
+        <script type="module" src="../login.js">
         </script>
+
+        <script>
+        function goToViewPage() {
+            window.location.href = "SelectDate.html";  
+        }
+
+        function goToEditPage(event) {
+            event.stopPropagation(); 
+            window.location.href = "EventEdit.html";
+        }
+        </script>
+
     </body>
 
 </html>

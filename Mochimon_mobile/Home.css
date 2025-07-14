@@ -75,6 +75,7 @@ body {
 
 /* 予定カード */
 .card {
+  position: relative;
   background-color: #fff;
   border-radius: 16px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
@@ -94,6 +95,27 @@ body {
 .card p {
   margin: 4px 0;
   color: #666;
+}
+
+.edit-button {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-size: 0.9em;
+    color: #888;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background-color: #f8f8f8;
+    padding: 4px 8px;
+    
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.edit-button:hover {
+    background-color: #e0f0f0;
 }
 
 

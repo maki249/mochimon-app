@@ -51,10 +51,14 @@ onAuthStateChanged(auth, async (user) => {
             console.log(item);
             const itemCard = document.createElement('div');
             itemCard.setAttribute('class', 'card');
+            itemCard.setAttribute('id', item.id);
+
             const eventTitle = document.createElement('h2');
             eventTitle.textContent = item.eventName;
+
             const startDate = new Date(item.startDate.seconds * 1000);
             const endDate = new Date(item.endDate.seconds * 1000);
+
             let start;
             let end;
             if(item.isAllDay){
@@ -74,15 +78,32 @@ onAuthStateChanged(auth, async (user) => {
                     end = dayjs(endDate).format("~ YYYY年MM月DD日 HH時mm分")
                 }
             }
-            itemCard.setAttribute('id', item.id)
+            
             const p1 = document.createElement('p');
             const p2 = document.createElement('p');
             p1.textContent = start;
             p2.textContent = end;
+
             itemList.appendChild(itemCard);
             itemCard.appendChild(eventTitle);
             itemCard.appendChild(p1);
             itemCard.appendChild(p2);
+
+            itemCard.addEventListener('click', () => {
+            // イベント情報を localStorage に保存
+            localStorage.setItem('selectedEvent', JSON.stringify({
+                id: item.id,
+                eventName: item.eventName,
+                startDate: item.startDate,
+                endDate: item.endDate,
+                isAllDay: item.isAllDay
+            }));
+
+            // EventEdit.html に遷移
+            window.location.href = "EventEdit.html";
+        });
+
+            
         })
 
     }catch(error){

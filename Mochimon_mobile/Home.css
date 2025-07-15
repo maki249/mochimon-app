@@ -57,7 +57,7 @@ body {
   height: 90vh;               /* 画面高の90% */
   overflow-y: auto;           /* 縦スクロール可 */
   padding: 8px 20px;
-  height: calc(70vh);
+  height: calc(68vh);
 }
 
 .dashboard::-webkit-scrollbar {

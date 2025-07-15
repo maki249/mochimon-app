@@ -47,6 +47,7 @@ function updateEmptyMessage() {
 // 初期表示
 updateEmptyMessage();
 
+// アイテム名入力
 document.getElementById('add-item-btn').addEventListener('click', () => {
     const title = document.getElementById('item-title').value.trim();
 

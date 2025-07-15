@@ -25,6 +25,14 @@ body {
     background-color: #e0f0f0;
 }
 
+.header-area h3 {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  line-height: 1.4;
+}
+
 .login-button {
     background-color: #e0f0f0;
     color: #333; /* ボタンの文字色 */
@@ -36,18 +44,13 @@ body {
 }
 
 
-/*ハンバーガーボタン*/
-.hamburger-button {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 10px; /* クリックエリアを確保 */
-    font-size: 32px;
-    box-sizing: border-box;
-    width: auto;  /* アイコンサイズに合わせるためautoに、または固定値を指定 */
-    height: auto; /* アイコンサイズに合わせるためautoに、または固定値を指定 */
+.cancel-button{
+  background: none;
+  border: none;
+  font-size: 16px;
+  padding: 8px 12px;
+  cursor: pointer;
 }
-
 .main-content {
     display: flex;
     justify-content: center;

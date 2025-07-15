@@ -45,19 +45,6 @@ body {
     font-size: 32px;
 }
 
-
-/*ハンバーガーボタン*/
-.hamburger-button {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 10px; /* クリックエリアを確保 */
-    font-size: 32px;
-    box-sizing: border-box;
-    width: auto;  /* アイコンサイズに合わせるためautoに、または固定値を指定 */
-    height: auto; /* アイコンサイズに合わせるためautoに、または固定値を指定 */
-}
-
 /* チェックリスト全体を包むラッパー */
 .checklist-container {
     display: flex;

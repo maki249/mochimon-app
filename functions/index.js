@@ -7,6 +7,7 @@ initializeApp();
 
 const admin = require("firebase-admin");
 
+
 exports.sendNotification = onSchedule("every 1 minutes", async (event) => {
   const db = getFirestore();
   const now = admin.firestore.Timestamp.now();
@@ -23,7 +24,7 @@ exports.sendNotification = onSchedule("every 1 minutes", async (event) => {
         .collection("users")
         .doc(userDoc.id)
         .collection("events")
-        .where("tag", "==", "Event")
+        // .where("tag", "==", "Event")
         .where("startDate", ">=", now)
         .where("startDate", "<=", oneMinuteLater)
         .get();

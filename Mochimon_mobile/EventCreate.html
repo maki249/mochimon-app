@@ -259,7 +259,7 @@
                     console.log(itemId.id);
                     idList.push(itemId.id);
                     await updateDoc(doc(db, currentUser.uid, itemId.id),{
-                            unlisted: deleteField()
+                            unlisted: false
                         }
                     )
                 }

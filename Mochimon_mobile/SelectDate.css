@@ -45,6 +45,14 @@ body {
     font-size: 32px;
 }
 
+.cancel-button{
+  background: none;
+  border: none;
+  font-size: 16px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
 /* チェックリスト全体を包むラッパー */
 .checklist-container {
     display: flex;

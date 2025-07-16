@@ -1,5 +1,8 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import dayjs from "https://esm.sh/dayjs";
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+import { getFirestore, getDocs, query, collection, where, Timestamp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
 // Firebase設定（apiKeyは実際のものに置き換えてください）
 const firebaseConfig = {
@@ -13,7 +16,60 @@ const firebaseConfig = {
     measurementId: "G-GPT541EW6S"
 };
 const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+const auth = getAuth(app);
+const db = getFirestore(app);
+let currentUser = null;
+
+// ユーザーの認証状態が変わるたびにcurrentUserにセット
+onAuthStateChanged(auth, async (user) => {
+    currentUser = user;
+    console.log("Auth state changed:", user);
+    
+    // 現在以降の予定の取得
+    try{
+        const nowDate = Timestamp.now();
+        const getList = await getDocs(query(collection(db, user.uid), where("tag" , "==", "Event"), where("startDate", ">=", nowDate)));
+        console.log(getList);
+        const dashBoard = document.getElementById('dashboard');
+        getList.forEach(doc => {
+            const card = document.createElement('div');
+            card.setAttribute('class', 'overlay-card');
+            card.setAttribute('id', doc.id);
+            const title = document.createElement('h2');
+            title.textContent = doc.data().eventName;
+            
+            const date = document.createElement('p');
+            const time = document.createElement('p');
+            const start = new Date(doc.data().startDate.seconds * 1000);
+            const end = new Date(doc.data().endDate.seconds * 1000);
+            if(start.toISOString().split('T')[0] == end.toISOString().split('T')[0]){
+                date.textContent = dayjs(start).format("YYYY年MM月DD日")
+                if(doc.data().isAllday){
+                    time.textContent = "終日";
+                }else{
+                    time.textContent = dayjs(start).format("HH:mm")
+                                        + " ~ " + 
+                                        dayjs(end).format("HH:mm")
+                }
+            }else{
+                if(doc.data().isAllday){
+                    date.textContent = dayjs(start).format("YYYY年MM月DD日") + " 終日";
+                    time.textContent = "~ " + dayjs(end).format("YYYY年MM月DD日 HH:mm") + " 終日";
+                    
+                }else{
+                    date.textContent = dayjs(start).format("YYYY年MM月DD日 HH:mm");
+                    time.textContent = "~ " + dayjs(end).format("YYYY年MM月DD日 HH:mm");
+                }
+            }
+            card.appendChild(title);
+            card.appendChild(date);
+            card.appendChild(time)
+            dashBoard.appendChild(card);
+        })
+    }catch(error){
+        console.log(error);
+    }
+});
 
 document.getElementById("add-event-btn").addEventListener("click", () => {
     document.getElementById("modal-overlay").style.display = "flex";

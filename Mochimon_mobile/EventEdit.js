@@ -96,6 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
       tag:       "Event"
     });
     alert("保存しました");
+    window.location.href = "Calendar.html";
   });
 
   // 持ち物リスト追加ボタン

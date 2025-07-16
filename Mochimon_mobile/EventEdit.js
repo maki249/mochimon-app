@@ -1,39 +1,132 @@
-// キャンセルボタン
-document.querySelector('.cancel-button').addEventListener('click', () => {
-    window.location.href = 'Calendar.html';
-});
-// 保存ボタン
-document.querySelector('.save-button').addEventListener('click', () => {
-    const title = document.getElementById('event-title').value;
-    const allDay = document.getElementById('all-day-toggle').checked;
-    const notify = document.getElementById('notification-toggle').checked;
+// --- Firebase の読み込み（CDN を使う場合は firebaseConfig.js ではなくここで初期化してください） ---
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+import { getFirestore, doc, getDoc, updateDoc, Timestamp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 
-    console.log({ title, allDay, notify });
-    alert('保存処理をここに追加');
-});
-//  持ち物リスト追加ボタン
-document.getElementById('add-item-button').addEventListener('click', () => {
-    window.location.href = 'ListCreate.html';
-});
-//  終日トグル
-document.getElementById('all-day-toggle').addEventListener('change', () => {
-    const isAllDay = document.getElementById('all-day-toggle').checked;
-    document.getElementById('start-time-box').style.display = isAllDay ? 'none' : 'inline-block';
-    document.getElementById('end-time-box').style.display = isAllDay ? 'none' : 'inline-block';
+
+const firebaseConfig = {
+    apiKey: "AIzaSyChPt5NDvgd4okxbUQalZtrS7w6Tm30fgg",
+    authDomain: "mochimon-base.firebaseapp.com",
+    projectId: "mochimon-base",
+    storageBucket: "mochimon-base.firebasestorage.app",
+    messagingSenderId: "5202457046",
+    appId: "1:5202457046:web:7233c6b556a7d260803477",
+    measurementId: "G-GPT541EW6S"
+};
+
+const app  = initializeApp(firebaseConfig);
+const db   = getFirestore(app);
+const auth = getAuth(app);
+
+// URL から eventId を取得
+const params  = new URLSearchParams(window.location.search);
+const eventId = params.get("eventId");
+
+// Firestore から読み込んでフォームに反映する関数
+async function loadEventData(user) {
+  const ref     = doc(db, "users", user.uid, "events", eventId);
+  const snap    = await getDoc(ref);
+  console.log("🔎 getDoc 結果 exists =", snap.exists());
+  if (!snap.exists()) {
+    alert("該当のイベントが見つかりません");
+    return;
+  }
+  const data = snap.data();
+  console.log("✅ イベントデータ:", snap.data());
+  // タイトル
+  document.getElementById("event-title").value = data.eventName || "";
+
+  // 終日
+  document.getElementById("all-day-toggle").checked = !!data.isAllDay;
+
+  // 開始日時
+  if (data.startDate) {
+    const start = data.startDate.toDate();
+    document.getElementById("start-date-box").value = start.toISOString().slice(0, 10);
+    document.getElementById("start-time-box").value = start.toTimeString().slice(0, 5);
+  }
+  // 終了日時
+  if (data.endDate) {
+    const end = data.endDate.toDate();
+    document.getElementById("end-date-box").value = end.toISOString().slice(0, 10);
+    document.getElementById("end-time-box").value = end.toTimeString().slice(0, 5);
+  }
+}
+
+// 認証が確定したらデータを読み込む
+onAuthStateChanged(auth, user => {
+  if (!user) {
+    alert("ログインしてください");
+    location.href = "Login.html";
+    return;
+  }
+  if (!eventId) {
+    alert("eventId が指定されていません");
+    location.href = "home.html";
+    return;
+  }
+  loadEventData(user);
 });
 
-document.getElementById('modal-back-button').addEventListener('click', () => {
-    document.getElementById('modal-overlay').classList.remove('active');
-});
+document.addEventListener("DOMContentLoaded", () => {
+  // 保存ボタン
+  document.querySelector(".save-button").addEventListener("click", async () => {
+    const user = auth.currentUser;
+    if (!user) return alert("再度ログインしてください");
 
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelector('.notification-row').addEventListener('click', () => {
-        document.getElementById('modal-overlay').classList.add('active');
+    // フォーム値を取得
+    const title   = document.getElementById("event-title").value;
+    const allDay  = document.getElementById("all-day-toggle").checked;
+    const sd      = document.getElementById("start-date-box").value;
+    const st      = document.getElementById("start-time-box").value;
+    const ed      = document.getElementById("end-date-box").value;
+    const et      = document.getElementById("end-time-box").value;
+
+    // Date に変換
+    const start = new Date(`${sd}T${st}`);
+    const end   = new Date(`${ed}T${et}`);
+
+    // 更新
+    const ref = doc(db, "users", user.uid, "events", eventId);
+    await updateDoc(ref, {
+      eventName: title,
+      isAllDay:  allDay,
+      startDate: Timestamp.fromDate(start),
+      endDate:   Timestamp.fromDate(end),
+      tag:       "Event"
     });
-    document.querySelectorAll('.notification-options .form-row').forEach(row => {
-        row.addEventListener('click', () => {
-            row.classList.toggle('selected');
-        });
-    });
+    alert("保存しました");
+  });
 
+  // 持ち物リスト追加ボタン
+  document.getElementById("add-item-button").addEventListener("click", () => {
+    location.href = "ListCreate.html";
+  });
+
+  // 終日トグル
+  document.getElementById("all-day-toggle").addEventListener("change", () => {
+    const isAllDay = document.getElementById("all-day-toggle").checked;
+    document.getElementById("start-time-box").style.display = isAllDay ? "none" : "inline-block";
+    document.getElementById("end-time-box").style.display   = isAllDay ? "none" : "inline-block";
+  });
+
+  // モーダル戻るボタン
+  document.getElementById("modal-back-button").addEventListener("click", () => {
+    document.getElementById("modal-overlay").classList.remove("active");
+  });
+
+  // 通知モーダルの表示
+  document.querySelector(".notification-row").addEventListener("click", () => {
+    document.getElementById("modal-overlay").classList.add("active");
+  });
+
+  // 通知オプションの選択
+  document.querySelectorAll(".notification-options .form-row").forEach(row => {
+    row.addEventListener("click", () => row.classList.toggle("selected"));
+  });
+
+  // キャンセルボタン
+  document.querySelector(".cancel-button").addEventListener("click", () => {
+    location.href = "Calendar.html";
+  });
 });

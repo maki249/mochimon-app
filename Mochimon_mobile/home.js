@@ -36,7 +36,7 @@ onAuthStateChanged(auth, async (user) => {
     console.log("Auth state changed:", user);
     //持ち物の取得
     try{
-        const getList = await getDocs(query(collection(db, currentUser.uid), where("tag", "==", "Event")));
+        const getList = await getDocs(query(collection(db, "users", user.uid, "events"), where("tag", "==", "Event")));
         const items = getList.docs.map(doc => ({
             id: doc.id,
             ... doc.data()
@@ -100,7 +100,7 @@ onAuthStateChanged(auth, async (user) => {
             }));
 
             // EventEdit.html に遷移
-            window.location.href = "EventEdit.html";
+            window.location.href = `EventEdit.html?eventId=${item.id}`;
         });
 
             

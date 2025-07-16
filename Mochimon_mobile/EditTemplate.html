@@ -13,7 +13,13 @@
             <a href="Template.html">
                 <button class="cancel-button">＜戻る</button>
             </a>
-            <h3>赤ちゃん</h3>            
+            <div class="title-with-icon">
+                <h3>赤ちゃん</h3>   
+                <i class="fa-solid fa-pencil"></i> 
+            </div>   
+            <a href="Template.html">
+                <button class="save-button">保存</button>
+            </a>      
         </div>
 
 
@@ -96,6 +102,29 @@
             </a>
         </nav>
 
+        <!-- テンプレート名編集モーダル -->
+        <div id="editModal" class="modal">
+            <div class="modal-content">
+                <h2>タイトルを変更</h2>
+                <input type="text" id="templateNameInput" placeholder="テンプレート名を入力" />
+                <div class="modal-buttons">
+                    <button id="cancelModal">キャンセル</button>
+                    <button id="saveModal">保存</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 持ち物追加モーダル -->
+        <div id="addModalOverlay" class="add-modal-overlay">
+            <div class="add-modal">
+                <h2>持ち物を追加</h2>
+                <input type="text" id="addItemInput" placeholder="持ち物を入力してください" />
+                <button id="addItemSaveBtn">追加</button>
+                <button id="addItemCancelBtn" style="margin-top:8px; background:#ccc; color:#000;">キャンセル</button>
+            </div>
+        </div>
+
+        <script type="module" src="EditTemplate.js"></script>
     </body>
 
 </html>

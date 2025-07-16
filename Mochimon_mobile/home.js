@@ -114,7 +114,7 @@ onAuthStateChanged(auth, async (user) => {
             }));
 
             // EventEdit.html に遷移
-            window.location.href = "SelectDate.html";
+            window.location.href = `SelectDate.html?eventId=${item.id}`;
         });
 
             

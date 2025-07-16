@@ -1,6 +1,6 @@
 // --- Firebase の読み込み（CDN を使う場合は firebaseConfig.js ではなくここで初期化してください） ---
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-import { getFirestore, doc, getDoc, updateDoc, Timestamp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, updateDoc, deleteDoc,Timestamp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 
 
@@ -127,6 +127,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // キャンセルボタン
   document.querySelector(".cancel-button").addEventListener("click", () => {
-    location.href = "Calendar.html";
-  });
+        location.href = "Calendar.html";
+    });
+    document.querySelector(".delete-button").addEventListener("click", async () => {
+    const user = auth.currentUser;
+    if (!user) return alert("再度ログインしてください");
+    if (!eventId) return alert("eventIdがありません");
+
+    const confirmed = confirm("この予定を本当に削除しますか？");
+    if (!confirmed) return;
+
+    try {
+        const ref = doc(db, "users", user.uid, "events", eventId);
+        await deleteDoc(ref);
+        alert("予定を削除しました");
+        location.href = "Calendar.html";  // 削除後に戻るページ
+    } catch (error) {
+        console.error("削除に失敗しました:", error);
+        alert("削除に失敗しました");
+    }
+    });
+
 });

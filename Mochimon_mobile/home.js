@@ -4,7 +4,7 @@ import dayjs from "https://esm.sh/dayjs";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
-import { getFirestore, collection, doc, getDocs, where, query, deleteField, Timestamp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+import { getFirestore, collection, doc, getDocs, getDoc, where, query, deleteField, Timestamp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
     
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -89,14 +89,29 @@ onAuthStateChanged(auth, async (user) => {
             itemCard.appendChild(p1);
             itemCard.appendChild(p2);
 
-            itemCard.addEventListener('click', () => {
+            itemCard.addEventListener('click', async () => {
+                // 持ち物リストの一時保存
+                const itemArray = [];
+                for (const anyItemId of item.itemList) {
+                    const getItemSnap = await getDoc(doc(db, currentUser.uid, anyItemId));
+
+                    if (getItemSnap.exists()) {
+                        const data = getItemSnap.data();
+                        const anyItemArray = [anyItemId, data.name, data.isChecked];
+                        itemArray.push(anyItemArray);
+                    }
+                }
+
+
             // イベント情報を localStorage に保存
             localStorage.setItem('selectedEvent', JSON.stringify({
                 id: item.id,
                 eventName: item.eventName,
                 startDate: item.startDate,
                 endDate: item.endDate,
-                isAllDay: item.isAllDay
+                isAllDay: item.isAllDay,
+                notify: item.notify,
+                itemList: itemArray
             }));
 
             // EventEdit.html に遷移

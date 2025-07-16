@@ -1,3 +1,5 @@
+import dayjs from "https://esm.sh/dayjs";
+
 // --- Firebase の読み込み（CDN を使う場合は firebaseConfig.js ではなくここで初期化してください） ---
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
 import { getFirestore, doc, getDoc, updateDoc, deleteDoc,Timestamp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
@@ -50,6 +52,23 @@ async function loadEventData(user) {
     const end = data.endDate.toDate();
     document.getElementById("end-date-box").value = end.toISOString().slice(0, 10);
     document.getElementById("end-time-box").value = end.toTimeString().slice(0, 5);
+  }
+
+  // 通知
+  if (data.notify) {
+    const notifyToggleArray = [];
+     for(const notifyTime of data.notify){
+        const dif = (data.startDate.seconds - notifyTime.seconds) / 60;
+        notifyToggleArray.push(dif);
+    }
+    document.querySelectorAll(".notification-options .form-row").forEach(row => {
+        const value = parseInt(row.dataset.value, 10);
+        if (notifyToggleArray.includes(value)) {
+            row.classList.add("selected");
+        } else {
+            row.classList.remove("selected");
+        }
+    });
   }
 }
 
@@ -122,7 +141,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 通知オプションの選択
   document.querySelectorAll(".notification-options .form-row").forEach(row => {
-    row.addEventListener("click", () => row.classList.toggle("selected"));
+    row.addEventListener("click", () => {
+      row.classList.toggle("selected");
+      const notifies = Array.from(document.querySelectorAll('.form-row.selected'))
+                          .map(row => row.dataset.value);
+      const preNotifyArea = document.getElementsByClassName('notifyList');
+      while (preNotifyArea.length > 0){
+          preNotifyArea[0].remove();
+      }
+      if(notifies){
+          const arrow = document.getElementById('arrow');
+          for(const notify of notifies){
+              const notifyArea = document.createElement('span');
+              notifyArea.textContent = notify + " ";
+              notifyArea.setAttribute('class', 'notifyList');
+              arrow.appendChild(notifyArea);
+          }
+      }
+    });
   });
 
   // キャンセルボタン

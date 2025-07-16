@@ -111,11 +111,11 @@ onAuthStateChanged(auth, async (user) => {
                     isAllDay: item.isAllDay,
                     notify: item.notify,
                     itemList: itemArray
-            }));
+                }));
 
-            // EventEdit.html に遷移
-            window.location.href = "EventEdit.html";
-        });
+                // EventEdit.html に遷移
+                window.location.href = "EventEdit.html";
+            });
 
             
         })

@@ -71,43 +71,43 @@
             </div>
             <div class="notification-body">
                 <div class="form-section notification-options">
-                    <div class="form-row" data-value="予定時間">
+                    <div class="form-row" data-value="0">
                         <span class="form-label">予定時間</span>
                         <span class="checkmark"></span>
                     </div>
-                    <div class="form-row" data-value="5分前">
+                    <div class="form-row" data-value="5">
                         <span class="form-label">5分前</span>
                         <span class="checkmark"></span>
                     </div>
-                    <div class="form-row" data-value="10分前">
+                    <div class="form-row" data-value="10">
                         <span class="form-label">10分前</span>
                         <span class="checkmark"></span>
                     </div>
-                    <div class="form-row" data-value="15分前">
+                    <div class="form-row" data-value="15">
                         <span class="form-label">15分前</span>
                         <span class="checkmark"></span>
                     </div>
-                    <div class="form-row" data-value="30分前">
+                    <div class="form-row" data-value="30">
                         <span class="form-label">30分前</span>
                         <span class="checkmark"></span>
                     </div>
-                    <div class="form-row" data-value="1時間前">
+                    <div class="form-row" data-value="60">
                         <span class="form-label">1時間前</span>
                         <span class="checkmark"></span>
                     </div>
-                    <div class="form-row" data-value="2時間前">
+                    <div class="form-row" data-value="120">
                         <span class="form-label">2時間前</span>
                         <span class="checkmark"></span>
                     </div>
-                    <div class="form-row" data-value="3時間前">
+                    <div class="form-row" data-value="180">
                         <span class="form-label">3時間前</span>
                         <span class="checkmark"></span>
                     </div>
-                    <div class="form-row" data-value="6時間前">
+                    <div class="form-row" data-value="360">
                         <span class="form-label">6時間前</span>
                         <span class="checkmark"></span>
                     </div>
-                    <div class="form-row" data-value="1日前">
+                    <div class="form-row" data-value="1440">
                         <span class="form-label">1日前</span>
                         <span class="checkmark"></span>
                     </div>
@@ -118,6 +118,7 @@
     </div>
 
     <script type="module">
+        import dayjs from "https://esm.sh/dayjs";
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
@@ -144,6 +145,62 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
         let currentUser = null;
+
+        // 現在の状態の保持
+
+        const strage = JSON.parse(localStorage.getItem('addEvent'));
+        if(false){
+            console.log(strage);
+            document.getElementById('event-title').value = strage.eventName;
+            document.getElementById('all-day-toggle').checked = strage.isAllDay;
+            document.getElementById('start-time-box').style.display = strage.isAllDay ? 'none' : 'inline-block';
+            document.getElementById('end-time-box').style.display = strage.isAllDay ? 'none' : 'inline-block';
+
+            const startDate = new Date(strage.startDate.seconds * 1000);
+            const endDate = new Date(strage.endDate.seconds * 1000);
+            document.getElementById('start-date-box').value = dayjs(startDate).format("YYYY-MM-DD");
+            document.getElementById('start-time-box').value = dayjs(startDate).format("HH:mm");
+
+            document.getElementById('end-date-box').value = dayjs(endDate).format("YYYY-MM-DD");
+            document.getElementById('end-time-box').value = dayjs(endDate).format("HH:mm");
+
+            const notifyToggleArray = [];
+            for(const notifyTime of strage.notify){
+                const dif = notifyTimeReplace(strage.startDate.seconds, notifyTime.seconds);
+                notifyToggleArray.push(dif);
+            }
+            document.querySelectorAll(".notification-options .form-row").forEach(row => {
+                const value = parseInt(row.dataset.value, 10);
+                if (notifyToggleArray.includes(value)) {
+                    row.classList.add("selected");
+                } else {
+                    row.classList.remove("selected");
+                }
+            });
+
+            const itemList = document.createElement('div');
+            itemList.setAttribute('class', 'form-section');
+            itemList.setAttribute('id', 'item-list');
+            itemList.textContent = "持ち物";
+            const itemButton = document.getElementById('add-item-button');
+            itemButton.before(itemList);
+            strage.itemList.forEach(item =>{
+                const form = document.createElement('div');
+                form.setAttribute('class', 'form-row');
+                const li = document.createElement('span');
+                li.setAttribute('class', 'checkmark');
+                li.textContent = '・';
+
+                const span = document.createElement('span');
+                span.textContent = item[1];
+                span.setAttribute('id', item[0]);
+                span.setAttribute('class', 'mochimon');
+                itemList.appendChild(form);
+                form.appendChild(li);
+                li.appendChild(span);
+            })
+        }
+
         // ユーザーの認証状態が変わるたびにcurrentUserにセット
         onAuthStateChanged(auth, async (user) => {
             currentUser = user;
@@ -216,19 +273,18 @@
             console.log("sss"+start);
             const dict = {
                 "予定時間": calcNotifyTime(start,0, 0, 0),
-                "5分前": calcNotifyTime(start, 0, 0, 5),
-                "10分前": calcNotifyTime(start, 0, 0, 10),
-                "15分前": calcNotifyTime(start, 0, 0, 15),
-                "30分前": calcNotifyTime(start, 0, 0, 30),
-                "1時間前": calcNotifyTime(start, 0, 1, 0),
-                "2時間前": calcNotifyTime(start, 0, 2, 0),
-                "3時間前": calcNotifyTime(start, 0, 3, 0),
-                "6時間前": calcNotifyTime(start, 0, 6, 0),
-                "1日前": calcNotifyTime(start, 1, 0, 0),
+                "5": calcNotifyTime(start, 0, 0, 5),
+                "10": calcNotifyTime(start, 0, 0, 10),
+                "15": calcNotifyTime(start, 0, 0, 15),
+                "30": calcNotifyTime(start, 0, 0, 30),
+                "60": calcNotifyTime(start, 0, 1, 0),
+                "120": calcNotifyTime(start, 0, 2, 0),
+                "180": calcNotifyTime(start, 0, 3, 0),
+                "360": calcNotifyTime(start, 0, 6, 0),
+                "1440": calcNotifyTime(start, 1, 0, 0),
             };
             //const notify = document.getElementById('notification-toggle').checked;
             const notify = [];
-            console.log("notifyList:" + notifyList);
             for(const notifyElement of notifyList){
                 console.log(notifyElement);
                 console.log(dict[notifyElement] + "aaa");
@@ -259,7 +315,7 @@
                     console.log(itemId.id);
                     idList.push(itemId.id);
                     await updateDoc(doc(db, currentUser.uid, itemId.id),{
-                            unlisted: false
+                            unlisted: true
                         }
                     )
                 }
@@ -277,6 +333,7 @@
         });
         //  持ち物リスト追加ボタン
         document.getElementById('add-item-button').addEventListener('click', () => {
+            saveData();
             window.location.href = 'ListCreate.html';
         });
         //  終日トグル
@@ -316,10 +373,62 @@
             });
         });
 
+
+
+        function saveData(){
+            localStorage.removeItem('addEvent');
+            const eventName = document.getElementById('event-title').value;
+            const allDay = document.getElementById('all-day-toggle').checked;
+            const startDate = document.getElementById('start-date-box').value;
+            const endDate = document.getElementById('end-date-box').value;
+            
+            const notifyList = Array.from(document.querySelectorAll('.form-row.selected'))
+                                        .map(row => row.dataset.value);
+            const start = new Date(startDate + "T" + document.getElementById('start-time-box').value + ":00");
+            const dict = {
+                "予定時間": calcNotifyTime(start,0, 0, 0),
+                "5": calcNotifyTime(start, 0, 0, 5),
+                "10": calcNotifyTime(start, 0, 0, 10),
+                "15": calcNotifyTime(start, 0, 0, 15),
+                "30": calcNotifyTime(start, 0, 0, 30),
+                "60": calcNotifyTime(start, 0, 1, 0),
+                "120": calcNotifyTime(start, 0, 2, 0),
+                "180": calcNotifyTime(start, 0, 3, 0),
+                "360": calcNotifyTime(start, 0, 6, 0),
+                "1440": calcNotifyTime(start, 1, 0, 0),
+            };
+            //const notify = document.getElementById('notification-toggle').checked;
+            const notify = [];
+            for(const notifyElement of notifyList){
+                const notifyTime = dict[notifyElement];
+                notify.push(notifyTime);
+            }
+            const itemArray = [];
+            const itemsList = document.getElementsByClassName('mochimon');
+            for(const item of itemsList){
+                const itemList = [item.id, item.textContent];
+                itemArray.push(itemList);
+            }
+            localStorage.setItem('addEvent', JSON.stringify({
+                eventName: eventName,
+                startDate: startDate,
+                endDate: endDate,
+                isAllDay: allDay,
+                notify: notify,
+                itemList: itemArray
+            }));
+            alert();
+        }
+
         function calcNotifyTime(start, day, hour, minute){
             const loss = (((day * 24) + hour) * 60 + minute) * 60000;
             const time = new Date(start.getTime() - loss)
             return time;
+        }
+        
+        function notifyTimeReplace(startTime, notifyTime){
+            const dif = startTime - notifyTime;
+            return dif / 60;
         }
     </script>
 </body>

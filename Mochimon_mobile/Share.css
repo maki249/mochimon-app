@@ -57,7 +57,7 @@ body {
   height: 90vh;               /* 画面高の90% */
   overflow-y: auto;           /* 縦スクロール可 */
   padding: 8px 20px;
-  height: calc(70vh);
+  height: calc(68vh);
 }
 
 .dashboard::-webkit-scrollbar {
@@ -71,7 +71,6 @@ body {
 .dashboard a{
   text-decoration: none;
 }
-
 
 /* 予定カード */
 .card {
@@ -129,11 +128,10 @@ body {
   background-color: #8fc0c0;
 }
 
-
-
 .overlay-dashboard::-webkit-scrollbar {
   width: 6px;
 }
+
 .overlay-dashboard::-webkit-scrollbar-thumb {
   background-color: #ccc;
   border-radius: 10px;
@@ -172,7 +170,6 @@ body {
   background-color: #a2d0d0;
 }
 
-
 /* モーダルの背景オーバーレイ */
 .modal-overlay {
     display: none; /* 初期は非表示 */
@@ -184,7 +181,8 @@ body {
     background-color: rgba(0,0,0,0.5);
     z-index: 2000;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;  
+    padding-top: 5vh;
 }
 
 /* モーダル内容 */
@@ -196,6 +194,8 @@ body {
     text-align: center;
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     width: 300px;
+    max-height: 80vh;
+    
 }
 
 /* 入力欄 */
@@ -237,14 +237,15 @@ body {
     right: 10px;
     background: none;
     border: none;
-    font-size: 24px;
+    font-size: 32px;
+    padding: 10px 20px; 
     color: #888;
     cursor: pointer;
 }
 
 /* オーバーレイ内のダッシュボード一覧の調整 */
 .overlay-dashboard {
-    max-height: 300px;     /* 高さを制限（必要に応じて調整） */
+    max-height: 200px;     /* 高さを制限（必要に応じて調整） */
     overflow-y: auto;      /* 内容がはみ出たらスクロール */
     margin-top: 20px;
     display: flex;

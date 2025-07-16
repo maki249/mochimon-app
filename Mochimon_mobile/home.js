@@ -84,7 +84,21 @@ onAuthStateChanged(auth, async (user) => {
             p1.textContent = start;
             p2.textContent = end;
 
+            // 編集ボタンの作成
+            const editBtn = document.createElement('div');
+            editBtn.classList.add('edit-button');
+            editBtn.innerHTML = `
+                <i class="fa-solid fa-pen"></i>
+                <span>編集する</span>
+            `;
+
+            editBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // カード本体クリックと分離
+                window.location.href = `EventEdit.html?id=${item.id}`;
+            });
+
             itemList.appendChild(itemCard);
+            itemCard.appendChild(editBtn);
             itemCard.appendChild(eventTitle);
             itemCard.appendChild(p1);
             itemCard.appendChild(p2);
@@ -100,7 +114,9 @@ onAuthStateChanged(auth, async (user) => {
             }));
 
             // EventEdit.html に遷移
+              
             window.location.href = `EventEdit.html?eventId=${item.id}`;
+
         });
 
             

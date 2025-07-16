@@ -28,43 +28,45 @@ onAuthStateChanged(auth, async (user) => {
     // 現在以降の予定の取得
     try{
         const nowDate = Timestamp.now();
-        const getList = await getDocs(query(collection(db, user.uid), where("tag" , "==", "Event"), where("startDate", ">=", nowDate)));
+        const getList = await getDocs(query(collection(db, user.uid), where("tag" , "==", "Event")));
         console.log(getList);
         const dashBoard = document.getElementById('dashboard');
         getList.forEach(doc => {
-            const card = document.createElement('div');
-            card.setAttribute('class', 'overlay-card');
-            card.setAttribute('id', doc.id);
-            const title = document.createElement('h2');
-            title.textContent = doc.data().eventName;
-            
-            const date = document.createElement('p');
-            const time = document.createElement('p');
-            const start = new Date(doc.data().startDate.seconds * 1000);
-            const end = new Date(doc.data().endDate.seconds * 1000);
-            if(start.toISOString().split('T')[0] == end.toISOString().split('T')[0]){
-                date.textContent = dayjs(start).format("YYYY年MM月DD日")
-                if(doc.data().isAllday){
-                    time.textContent = "終日";
+                if(doc.data().startDate >= nowDate){
+                const card = document.createElement('div');
+                card.setAttribute('class', 'overlay-card');
+                card.setAttribute('id', doc.id);
+                const title = document.createElement('h2');
+                title.textContent = doc.data().eventName;
+                
+                const date = document.createElement('p');
+                const time = document.createElement('p');
+                const start = new Date(doc.data().startDate.seconds * 1000);
+                const end = new Date(doc.data().endDate.seconds * 1000);
+                if(start.toISOString().split('T')[0] == end.toISOString().split('T')[0]){
+                    date.textContent = dayjs(start).format("YYYY年MM月DD日")
+                    if(doc.data().isAllday){
+                        time.textContent = "終日";
+                    }else{
+                        time.textContent = dayjs(start).format("HH:mm")
+                                            + " ~ " + 
+                                            dayjs(end).format("HH:mm")
+                    }
                 }else{
-                    time.textContent = dayjs(start).format("HH:mm")
-                                        + " ~ " + 
-                                        dayjs(end).format("HH:mm")
+                    if(doc.data().isAllday){
+                        date.textContent = dayjs(start).format("YYYY年MM月DD日") + " 終日";
+                        time.textContent = "~ " + dayjs(end).format("YYYY年MM月DD日 HH:mm") + " 終日";
+                        
+                    }else{
+                        date.textContent = dayjs(start).format("YYYY年MM月DD日 HH:mm");
+                        time.textContent = "~ " + dayjs(end).format("YYYY年MM月DD日 HH:mm");
+                    }
                 }
-            }else{
-                if(doc.data().isAllday){
-                    date.textContent = dayjs(start).format("YYYY年MM月DD日") + " 終日";
-                    time.textContent = "~ " + dayjs(end).format("YYYY年MM月DD日 HH:mm") + " 終日";
-                    
-                }else{
-                    date.textContent = dayjs(start).format("YYYY年MM月DD日 HH:mm");
-                    time.textContent = "~ " + dayjs(end).format("YYYY年MM月DD日 HH:mm");
-                }
+                card.appendChild(title);
+                card.appendChild(date);
+                card.appendChild(time)
+                dashBoard.appendChild(card);
             }
-            card.appendChild(title);
-            card.appendChild(date);
-            card.appendChild(time)
-            dashBoard.appendChild(card);
         })
     }catch(error){
         console.log(error);

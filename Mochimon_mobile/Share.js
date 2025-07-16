@@ -32,7 +32,7 @@ onAuthStateChanged(auth, async (user) => {
         console.log(getList);
         const dashBoard = document.getElementById('dashboard');
         getList.forEach(doc => {
-                if(doc.data().startDate >= nowDate){
+            if(doc.data().startDate >= nowDate){
                 const card = document.createElement('div');
                 card.setAttribute('class', 'overlay-card');
                 card.setAttribute('id', doc.id);

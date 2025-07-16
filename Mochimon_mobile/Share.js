@@ -2,7 +2,7 @@ import dayjs from "https://esm.sh/dayjs";
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
-import { getFirestore, getDocs, query, collection, where, Timestamp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+import { getFirestore, addDoc, getDocs, query, collection, where, Timestamp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
 // Firebase設定（apiKeyは実際のものに置き換えてください）
 const firebaseConfig = {
@@ -122,10 +122,10 @@ onAuthStateChanged(auth, async (user) => {
             timestamp: new Date().toISOString()
         };
 
-        const sharedEventsRef = ref(db, "sharedEvents");
+        const sharedEventsRef = collection(db, "sharedEvents");
 
         // Firebaseにデータ登録
-        push(sharedEventsRef, sharedEventData)
+        addDoc(sharedEventsRef, sharedEventData)
             .then(() => {
                 alert("予定を共有しました！");
                 // モーダル閉じてフォームや選択リセット

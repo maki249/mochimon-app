@@ -24,7 +24,7 @@ const eventId = params.get("eventId");
 
 // Firestore から読み込んでフォームに反映する関数
 async function loadEventData(user) {
-  const ref     = doc(db, "users", user.uid, "events", eventId);
+  const ref     = doc(db, user.uid, eventId);
   const snap    = await getDoc(ref);
   console.log("🔎 getDoc 結果 exists =", snap.exists());
   if (!snap.exists()) {
@@ -87,7 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const end   = new Date(`${ed}T${et}`);
 
     // 更新
-    const ref = doc(db, "users", user.uid, "events", eventId);
+    const ref = doc(db, user.uid, eventId);
     await updateDoc(ref, {
       eventName: title,
       isAllDay:  allDay,

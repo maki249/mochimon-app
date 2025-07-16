@@ -80,6 +80,12 @@ document.addEventListener('DOMContentLoaded', function () {
         document.querySelectorAll('.fc-day').forEach(el => el.classList.remove('selected-date'));
         info.dayEl.classList.add('selected-date');
         selectedDateStr = info.dateStr;
+        },
+        eventClick: function (info) {
+                // クリックした予定のIDを取得
+                const eventId = info.event.id;
+                // EventEdit.html に eventId を渡して遷移
+                window.location.href = `EventEdit.html?eventId=${eventId}`;
         }
     });
 

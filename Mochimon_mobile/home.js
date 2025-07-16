@@ -93,8 +93,8 @@ onAuthStateChanged(auth, async (user) => {
             `;
 
             editBtn.addEventListener('click', (e) => {
-                e.stopPropagation(); // カード本体クリックと分離
-                window.location.href = `EventEdit.html?id=${item.id}`;
+                e.stopPropagation(); // カード本体クリック
+                window.location.href = `EventEdit.html?eventId=${item.id}`;
             });
 
             itemList.appendChild(itemCard);
@@ -114,9 +114,7 @@ onAuthStateChanged(auth, async (user) => {
             }));
 
             // EventEdit.html に遷移
-              
-            window.location.href = `EventEdit.html?eventId=${item.id}`;
-
+            window.location.href = "SelectDate.html";
         });
 
             

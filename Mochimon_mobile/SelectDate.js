@@ -37,8 +37,16 @@ async function loadChecklistItems(user, eventId) {
 
       const header = document.getElementById('eventHeader');
       const startDate = eventData.startDate.toDate(); 
+      const endDate = eventData.endDate.toDate();
       const formattedDate = `${startDate.getFullYear()}年${startDate.getMonth() + 1}月${startDate.getDate()}日`;
-      header.innerHTML = `${formattedDate}<br>${eventData.eventName}`;
+      const formattedendDate = `${endDate.getFullYear()}年${endDate.getMonth() + 1}月${endDate.getDate()}日`;
+      if(formattedDate != formattedendDate){
+            header.innerHTML = `${formattedDate}~${formattedendDate}<br>${eventData.eventName}`;
+      }
+      else{
+            header.innerHTML = `${formattedDate}<br>${eventData.eventName}`;
+      }
+    
   }
 
   const data     = docSnap.data();

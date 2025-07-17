@@ -31,9 +31,14 @@ async function loadChecklistItems(user, eventId) {
   const docRef  = doc(db, user.uid, eventId);
   const docSnap = await getDoc(docRef);
 
-  if (!docSnap.exists()) {
-    console.error("ドキュメントが見つかりませんでした");
-    return;
+  if (docSnap.exists()) {
+      const eventData = docSnap.data();
+      
+
+      const header = document.getElementById('eventHeader');
+      const startDate = eventData.startDate.toDate(); 
+      const formattedDate = `${startDate.getFullYear()}年${startDate.getMonth() + 1}月${startDate.getDate()}日`;
+      header.innerHTML = `${formattedDate}<br>${eventData.eventName}`;
   }
 
   const data     = docSnap.data();

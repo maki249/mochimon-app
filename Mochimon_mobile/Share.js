@@ -34,6 +34,7 @@ onAuthStateChanged(auth, async (user) => {
         // リストの参照
         if(shareListsData.length > 0){
             const dashboard = document.getElementById('share-dashboard');
+            const bodies = [];
             for(const shareListData of shareListsData){
                 const shareEvents = await getDoc(doc(db, shareListData.fromId, shareListData.list));
                 console.log(shareEvents.data())
@@ -42,7 +43,7 @@ onAuthStateChanged(auth, async (user) => {
                 const body = document.createElement('div');
                 body.setAttribute('class', 'card-group');
                 body.setAttribute('id', shareListData.fromId + '?' + shareListData.list);
-                dashboard.appendChild(body);
+                bodies.push(body);
                 
                 const title = document.createElement('span');
                 title.setAttribute('class', 'owner-label');
@@ -81,6 +82,9 @@ onAuthStateChanged(auth, async (user) => {
                 });
             }
             
+            for(const cardBody of bodies){
+                dashboard.appendChild(cardBody);
+            }
             
         }
         

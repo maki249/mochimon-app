@@ -104,17 +104,17 @@ onAuthStateChanged(auth, async (user) => {
             itemCard.appendChild(p2);
 
             itemCard.addEventListener('click', () => {
-            // イベント情報を localStorage に保存
-            localStorage.setItem('selectedEvent', JSON.stringify({
-                id: item.id,
-                eventName: item.eventName,
-                startDate: item.startDate,
-                endDate: item.endDate,
-                isAllDay: item.isAllDay
-            }));
+                // イベント情報を localStorage に保存
+                localStorage.setItem('selectedEvent', JSON.stringify({
+                    id: item.id,
+                    eventName: item.eventName,
+                    startDate: item.startDate,
+                    endDate: item.endDate,
+                    isAllDay: item.isAllDay
+                }));
 
             // EventEdit.html に遷移
-            window.location.href = "SelectDate.html";
+            window.location.href = `SelectDate.html?eventId=${item.id}`;
         });
 
             

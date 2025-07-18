@@ -34,6 +34,8 @@ onAuthStateChanged(auth, async (user) => {
         // リストの参照
         if(shareListsData.length > 0){
             const dashboard = document.getElementById('share-dashboard');
+
+            const bodies = [];
             for(const shareListData of shareListsData){
                 const shareEvents = await getDoc(doc(db, shareListData.fromId, shareListData.list));
                 console.log(shareEvents.data())
@@ -42,7 +44,7 @@ onAuthStateChanged(auth, async (user) => {
                 const body = document.createElement('div');
                 body.setAttribute('class', 'card-group');
                 body.setAttribute('id', shareListData.fromId + '?' + shareListData.list);
-                dashboard.appendChild(body);
+                bodies.push(body);
                 
                 const title = document.createElement('span');
                 title.setAttribute('class', 'owner-label');
@@ -64,8 +66,28 @@ onAuthStateChanged(auth, async (user) => {
                 const eventTitle = document.createElement('H2');
                 eventTitle.textContent = shareEvents.data().eventName;
                 card.appendChild(eventTitle);
+
+
+                console.log()
+                body.addEventListener('click', () => {
+                    // イベント情報を localStorage に保存
+                    localStorage.setItem('selectedShredEvent', JSON.stringify({
+                        id: shareEvents.data().id,
+                        eventName: shareEvents.data().eventName,
+                        startDate: shareEvents.data().startDate,
+                        endDate: shareEvents.data().endDate,
+                        isAllDay: shareEvents.data().isAllDay
+                    }));
+
+                    // EventEdit.html に遷移
+                    window.location.href = `SelectDate.html?eventId=${body.id}`;
+                });
             }
             
+            for(const cardBody of bodies){
+                dashboard.appendChild(cardBody);
+            }
+
             
         }
         

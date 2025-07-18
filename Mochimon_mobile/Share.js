@@ -64,6 +64,21 @@ onAuthStateChanged(auth, async (user) => {
                 const eventTitle = document.createElement('H2');
                 eventTitle.textContent = shareEvents.data().eventName;
                 card.appendChild(eventTitle);
+
+                        
+                body.addEventListener('click', () => {
+                    // イベント情報を localStorage に保存
+                    localStorage.setItem('selectedShredEvent', JSON.stringify({
+                        id: shareEvents.data().id,
+                        eventName: shareEvents.data().eventName,
+                        startDate: shareEvents.data().startDate,
+                        endDate: shareEvents.data().endDate,
+                        isAllDay: shareEvents.data().isAllDay
+                    }));
+
+                    // EventEdit.html に遷移
+                    window.location.href = "SelectDate.html";
+                });
             }
             
             

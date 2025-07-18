@@ -2,7 +2,7 @@ import dayjs from "https://esm.sh/dayjs";
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
-import { getFirestore, addDoc, getDocs, query, collection, where, Timestamp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+import { getFirestore, addDoc, getDoc, getDocs, query, collection, doc, where, Timestamp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
 // Firebase設定（apiKeyは実際のものに置き換えてください）
 const firebaseConfig = {
@@ -23,8 +23,56 @@ let currentUser = null;
 // ユーザーの認証状態が変わるたびにcurrentUserにセット
 onAuthStateChanged(auth, async (user) => {
     currentUser = user;
-    console.log("Auth state changed:", user);
     
+    // 送られてきたリストの取得
+    try{
+        const shareListId = await getDocs(query(collection(db, "sharedEvents"), where("to", "==", user.email)));
+        const shareListsData = shareListId.docs.map(doc => ({
+            id: doc.id,
+            ... doc.data()
+        }));
+        // リストの参照
+        if(shareListsData.length > 0){
+            const dashboard = document.getElementById('share-dashboard');
+            for(const shareListData of shareListsData){
+                const shareEvents = await getDoc(doc(db, shareListData.fromId, shareListData.list));
+                console.log(shareEvents.data())
+                
+                // リストの表示
+                const body = document.createElement('div');
+                body.setAttribute('class', 'card-group');
+                body.setAttribute('id', shareListData.fromId + '?' + shareListData.list);
+                dashboard.appendChild(body);
+                
+                const title = document.createElement('span');
+                title.setAttribute('class', 'owner-label');
+                title.textContent = shareListData.from + 'さん';
+                body.appendChild(title);
+
+                const ref = document.createElement('a');
+                body.appendChild(ref);
+
+                const card = document.createElement('div');
+                card.setAttribute('class', 'card');
+                body.appendChild(card);
+                
+                const date = document.createElement('H2');
+                const startDate = new Date(shareEvents.data().startDate.seconds *1000);
+                date.textContent = dayjs(startDate).format('YYYY年MM月DD日');
+                card.appendChild(date);
+
+                const eventTitle = document.createElement('H2');
+                eventTitle.textContent = shareEvents.data().eventName;
+                card.appendChild(eventTitle);
+            }
+            
+            
+        }
+        
+    }catch(error){
+        console.log(error);
+    }
+
     // 現在以降の予定の取得
     try{
         const nowDate = Timestamp.now();
@@ -97,7 +145,7 @@ onAuthStateChanged(auth, async (user) => {
         });
     });
 
-    document.getElementById("submit-event").addEventListener("click", () => {
+    document.getElementById("submit-event").addEventListener("click", async () => {
         // 入力フォームは your-name と receiver-email だと思うので取得
         const yourName = document.getElementById("your-name").value.trim();
         const receiverEmail = document.getElementById("receiver-email").value.trim();
@@ -107,23 +155,16 @@ onAuthStateChanged(auth, async (user) => {
             return;
         }
 
-        // 選択されたカードの情報取得
-        const eventTitle = selectedCard.querySelector("h2")?.textContent || "";
-        const eventDate = selectedCard.querySelectorAll("p")[0]?.textContent || "";
-        const eventTime = selectedCard.querySelectorAll("p")[1]?.textContent || "";
-
         // Firebaseに送るデータを作成
         const sharedEventData = {
-            from: yourName,
-            to: receiverEmail,
-            title: eventTitle,
-            date: eventDate,
-            time: eventTime,
-            timestamp: new Date().toISOString()
+            from: yourName, // 送り主の名前
+            fromId: user.uid, //送り主のユーザID
+            to: receiverEmail, //宛先メールアドレス
+            timestamp: new Date().toISOString(),
+            isRead: false,
+            list: selectedCard.id
         };
-
         const sharedEventsRef = collection(db, "sharedEvents");
-
         // Firebaseにデータ登録
         addDoc(sharedEventsRef, sharedEventData)
             .then(() => {

@@ -113,9 +113,11 @@ onAuthStateChanged(auth, async (user) => {
                     isAllDay: item.isAllDay
                 }));
 
-                // EventEdit.html に遷移
-                window.location.href = "SelectDate.html";
-            });
+            // EventEdit.html に遷移
+            window.location.href = `SelectDate.html?eventId=${item.id}`;
+        });
+
+            
         })
 
     }catch(error){

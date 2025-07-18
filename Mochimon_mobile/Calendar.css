@@ -58,19 +58,19 @@ body {
 }
 
 .menu-button {
-    background-color: transparent;
-    border: none;
-    color: #333; /* ボタンの文字色 */
-    cursor: pointer;
+    flex: 1 1 0;
     display: flex;
-    flex-direction: column; /* アイコンとテキストを縦に並べる場合 */
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    flex-grow: 1; /* 各ボタンが均等に幅を取るようにする */
     height: 100%;
+    background-color: transparent;
+    border: none;
+    color: #333;
+    cursor: pointer;
     padding: 5px 0;
     margin-top: 5px;
-    font-size: 24px; /* テキストのフォントサイズ */
+    font-size: 24px;
     text-decoration: none;
 }
 

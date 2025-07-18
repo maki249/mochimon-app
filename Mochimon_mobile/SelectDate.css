@@ -45,6 +45,14 @@ body {
     font-size: 32px;
 }
 
+.cancel-button{
+  background: none;
+  border: none;
+  font-size: 16px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
 /* チェックリスト全体を包むラッパー */
 .checklist-container {
     display: flex;
@@ -173,4 +181,29 @@ body {
 
 .menu-button span {
     display: block;
+}
+
+.save-area {
+  position: fixed;
+  bottom: 100px;
+  left: 0;
+  width: 100%;
+  padding: 10px;
+  background: #fff;
+  text-align: center;
+  z-index: 1000;
+}
+
+.save-button {
+  background-color: #a2d0d0;
+  color: #fff;
+  border: none;
+  padding: 12px 40px;
+  font-size: 16px;
+  border-radius: 30px;
+  cursor: pointer;
+}
+
+.save-button:hover {
+  background-color: #8fc0c0;
 }

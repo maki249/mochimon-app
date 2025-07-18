@@ -34,6 +34,7 @@ onAuthStateChanged(auth, async (user) => {
         // リストの参照
         if(shareListsData.length > 0){
             const dashboard = document.getElementById('share-dashboard');
+
             const bodies = [];
             for(const shareListData of shareListsData){
                 const shareEvents = await getDoc(doc(db, shareListData.fromId, shareListData.list));
@@ -66,6 +67,7 @@ onAuthStateChanged(auth, async (user) => {
                 eventTitle.textContent = shareEvents.data().eventName;
                 card.appendChild(eventTitle);
 
+
                 console.log()
                 body.addEventListener('click', () => {
                     // イベント情報を localStorage に保存
@@ -85,6 +87,7 @@ onAuthStateChanged(auth, async (user) => {
             for(const cardBody of bodies){
                 dashboard.appendChild(cardBody);
             }
+
             
         }
         

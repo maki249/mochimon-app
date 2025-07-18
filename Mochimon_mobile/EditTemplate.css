@@ -1,5 +1,6 @@
 body {
     margin: 0;
+    padding: 0;
     padding-top: 120px; /* ヘッダーエリアの高さ分、上に余白を持たせる */
     padding-bottom: 60px; /* 下部メニューの高さ分、下に余白を持たせる */
     font-family: sans-serif;
@@ -11,27 +12,41 @@ body {
 
 /*ヘッダー*/
 .header-area {
-    position: fixed; /* 画面上部に固定 */
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: 120px; /* ヘッダーの高さ */
+    height: 120px;
     display: flex;
-    justify-content: space-between; /* 左端と右端に要素を配置 */
+    justify-content: space-between;
     align-items: center;
-    padding: 0 20px; /* 左右にパディングを設定 */
-    box-sizing: border-box; /* paddingを含めて幅を計算 */
-    z-index: 1000; /* 下部メニューと同じか、必要に応じて調整 */
+    padding: 0 20px;
+    box-sizing: border-box;
+    z-index: 1000;
     background-color: #e0f0f0;
 }
 
-.header-area h3 {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
-  line-height: 1.4;
+/* 中央に配置したいラッパー */
+.title-with-icon {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 16px;
 }
+
+.title-with-icon h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.title-with-icon i {
+    font-size: 18px;
+    color: #333;
+}
+
+
 
 .login-button {
     background-color: #e0f0f0;
@@ -45,12 +60,21 @@ body {
 
 
 .cancel-button{
-  background: none;
-  border: none;
-  font-size: 16px;
-  padding: 8px 12px;
-  cursor: pointer;
+    background: none;
+    border: none;
+    font-size: 16px;
+    padding: 8px 12px;
+    cursor: pointer;
 }
+
+.save-button{
+    background: none;
+    border: none;
+    font-size: 16px;
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
 .main-content {
     display: flex;
     justify-content: center;
@@ -205,3 +229,131 @@ body {
 .menu-button span {
     display: block;
 }
+
+/*テンプレート名変更モーダル*/
+.modal {
+  display: none; /* 初期は非表示 */
+  position: fixed;
+  z-index: 2000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.4);
+
+  /* ★ ここが中央配置のポイント */
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  width: 80%;
+  max-width: 300px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.modal-buttons button {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+#cancelModal {
+  background-color: #ccc;
+}
+
+#saveModal {
+  background-color: #a2d0d0;
+  color: white;
+}
+
+
+/* 持ち物の追加モーダル */
+/* 持ち物の追加モーダル */
+.add-modal-overlay {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 0;
+  background: rgba(0,0,0,0.3);
+  overflow: hidden;
+  transition: height 0.3s ease;
+  z-index: 1500; /* 既存モーダルより低めに */
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+/* モーダル本体 */
+.add-modal {
+  background: #fff;
+  height: 50vh;
+  width: 100%;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+/* モーダルが開いているとき */
+.add-modal-overlay.active {
+  height: 100%;
+}
+
+.add-modal-overlay.active .add-modal {
+  transform: translateY(0);
+}
+
+.add-modal h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.add-modal input[type="text"] {
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.add-modal button {
+  background-color: #a2d0d0;
+  color: #fff;
+  border: none;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.add-modal button:hover {
+  background-color: #8fc0c0;
+}
+

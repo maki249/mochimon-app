@@ -65,7 +65,7 @@ onAuthStateChanged(auth, async (user) => {
                 eventTitle.textContent = shareEvents.data().eventName;
                 card.appendChild(eventTitle);
 
-                        
+                console.log()
                 body.addEventListener('click', () => {
                     // イベント情報を localStorage に保存
                     localStorage.setItem('selectedShredEvent', JSON.stringify({
@@ -77,7 +77,7 @@ onAuthStateChanged(auth, async (user) => {
                     }));
 
                     // EventEdit.html に遷移
-                    window.location.href = "SelectDate.html";
+                    window.location.href = `SelectDate.html?eventId=${body.id}`;
                 });
             }
             

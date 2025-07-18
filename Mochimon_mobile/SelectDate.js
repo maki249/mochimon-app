@@ -20,15 +20,22 @@ const auth = getAuth(app);
 
 // ── URL パラメータから eventId を取得 ────────────────────────
 const urlParams = new URLSearchParams(window.location.search);
-const eventId   = urlParams.get('eventId');
+let userId, eventId;
+if(urlParams.get('eventId').includes('?')){
+  userId  = urlParams.get('eventId').split('?')[0];
+  eventId = urlParams.get('eventId').split('?')[1];
+}else{
+  eventId = urlParams.get('eventId');
+}
+
 if (!eventId) {
   console.error("eventId が指定されていません");
 }
 
 // ── チェックリストを読み込んで表示 ─────────────────────────────
-async function loadChecklistItems(user, eventId) {
+async function loadChecklistItems(userId, eventId) {
   // Firestore のパス構造: users/{uid}/checklists/{eventId}
-  const docRef  = doc(db, user.uid, eventId);
+  const docRef  = doc(db, userId, eventId);
   const docSnap = await getDoc(docRef);
 
   if (docSnap.exists()) {
@@ -56,7 +63,7 @@ async function loadChecklistItems(user, eventId) {
   checklist.innerHTML = '';  // 一旦クリア
 
   itemList.forEach(async itemText =>  {
-    const docRef  = doc(db, user.uid, itemText);
+    const docRef  = doc(db, userId, itemText);
     const item = await getDoc(docRef);
     
     const li = document.createElement('li');
@@ -127,6 +134,9 @@ document.addEventListener('DOMContentLoaded', () => {
       console.error("eventId が指定されていません");
       return;
     }
-    await loadChecklistItems(user, eventId);
+    if(!userId){
+      userId = user.uid;
+    }
+    await loadChecklistItems(userId, eventId);
   });
 });

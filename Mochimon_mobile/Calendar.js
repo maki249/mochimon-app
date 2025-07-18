@@ -70,9 +70,9 @@ document.addEventListener('DOMContentLoaded', function () {
     calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
         headerToolbar: {
-        left: 'prev,next today',
+        left: 'prev',
         center: 'title',
-        right: 'dayGridMonth,timeGridWeek,listWeek'
+        right: 'next'
         },
         locale: 'ja',
         events: events,

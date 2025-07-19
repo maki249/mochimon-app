@@ -32,3 +32,37 @@ function updateCardState(checklist) {
 
     card.classList.toggle("completed", allChecked);
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  const container = document.getElementById('shoppingListContainer');
+  const shoppingData = JSON.parse(localStorage.getItem('shoppingList')) || [];
+
+  // グループ化：{ "2025年7月20日|旅行": [item1, item2] ... }
+  const grouped = {};
+
+  shoppingData.forEach(entry => {
+    const key = `${entry.date}|${entry.eventName}`;
+    if (!grouped[key]) {
+      grouped[key] = [];
+    }
+    grouped[key].push(entry.item);
+  });
+
+  // カードを生成
+  Object.entries(grouped).forEach(([key, items]) => {
+    const [date, eventName] = key.split('|');
+
+    const card = document.createElement('div');
+    card.classList.add('card');
+    card.innerHTML = `
+      <h3>${date}</h3>
+      <h4>${eventName}</h4>
+      <ul>
+        ${items.map(item => `<li><input type="checkbox" checked> ${item}</li>`).join('')}
+      </ul>
+    `;
+
+    container.appendChild(card);
+  });
+});
+

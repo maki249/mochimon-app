@@ -40,8 +40,6 @@ async function loadChecklistItems(userId, eventId) {
 
   if (docSnap.exists()) {
       const eventData = docSnap.data();
-      
-
       const header = document.getElementById('eventHeader');
       const startDate = eventData.startDate.toDate(); 
       const endDate = eventData.endDate.toDate();
@@ -58,14 +56,13 @@ async function loadChecklistItems(userId, eventId) {
 
   const data     = docSnap.data();
   const itemList = data.itemList || [];
-
   const checklist = document.querySelector('.checklist');
   checklist.innerHTML = '';  // 一旦クリア
 
-  itemList.forEach(async itemText =>  {
+  await Promise.all(itemList.map(async itemText => {
     const docRef  = doc(db, userId, itemText);
     const item = await getDoc(docRef);
-    
+
     const li = document.createElement('li');
     li.innerHTML = `
       <div class="item">
@@ -73,12 +70,42 @@ async function loadChecklistItems(userId, eventId) {
       </div>
       <span class="icon"><i class="fa-solid fa-cart-shopping"></i></span>
     `;
-    //console.log(item);
     checklist.appendChild(li);
-  });
+  }));
 
   setupEvents();
   updateProgress();
+}
+
+function addToShoppingList(date, eventName, item) {
+  const shoppingData = JSON.parse(localStorage.getItem('shoppingList')) || [];
+
+  shoppingData.push({
+    date,
+    eventName,
+    item
+  });
+
+  localStorage.setItem('shoppingList', JSON.stringify(shoppingData));
+}
+
+
+function removeFromShoppingList(date, eventName, item) {
+  let shoppingData = JSON.parse(localStorage.getItem('shoppingList')) || [];
+
+  // 指定アイテムを削除
+  shoppingData = shoppingData.filter(entry => !(entry.date === date && entry.eventName === eventName && entry.item === item));
+
+  // 残った同じイベントのデータがあるかチェック
+  const remainingItems = shoppingData.filter(entry => entry.date === date && entry.eventName === eventName);
+
+  // localStorage 上書き保存
+  if (remainingItems.length === 0) {
+    // このイベントのカードも削除される（Shopping.html 側で）
+    console.log(`🧹 イベント「${eventName}」の日付「${date}」はすべて削除されました`);
+  }
+
+  localStorage.setItem('shoppingList', JSON.stringify(shoppingData));
 }
 
 // ── チェックボックス＆アイコンにイベント登録 ───────────────
@@ -91,13 +118,24 @@ function setupEvents() {
   const icons = document.querySelectorAll('.icon i');
   icons.forEach(icon => {
     icon.addEventListener('click', () => {
+      console.log('🛒 icon clicked');
       const isAdded = icon.classList.contains('fa-circle-check');
+      const itemText = icon.closest('li').innerText.trim();
+      // イベント情報を取得
+      const header = document.getElementById('eventHeader').innerText.split('\n');
+      const eventDate = header[0];   // "日付"
+      const eventName = header[1];   // "タイトル"
+
       if (isAdded) {
         icon.classList.replace('fa-circle-check', 'fa-cart-shopping');
+        
         icon.parentElement.classList.remove('added');
+        removeFromShoppingList(eventDate, eventName, itemText);
       } else {
+
         icon.classList.replace('fa-cart-shopping', 'fa-circle-check');
         icon.parentElement.classList.add('added');
+        addToShoppingList(eventDate, eventName, itemText);
       }
     });
   });

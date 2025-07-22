@@ -25,7 +25,7 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 let currentUser = null;
 
-// URL から eventId を取得
+// URL から date を取得
 const params  = new URLSearchParams(window.location.search);
 const eventId = params.get("date");
 

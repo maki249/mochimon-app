@@ -1,3 +1,22 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyChPt5NDvgd4okxbUQalZtrS7w6Tm30fgg",
+    authDomain: "mochimon-base.firebaseapp.com",
+    projectId: "mochimon-base",
+    storageBucket: "mochimon-base.firebasestorage.app",
+    messagingSenderId: "5202457046",
+    appId: "1:5202457046:web:7233c6b556a7d260803477",
+    measurementId: "G-GPT541EW6S"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+let currentUser = null;
+
 const editIcon = document.querySelector('.fa-pencil');
 const modal = document.getElementById('editModal');
 const input = document.getElementById('templateNameInput');
@@ -11,6 +30,39 @@ const addItemInput = document.getElementById('addItemInput');
 const addItemSaveBtn = document.getElementById('addItemSaveBtn');
 const addItemCancelBtn = document.getElementById('addItemCancelBtn');
 const checklist = document.querySelector('.checklist');
+
+// URL から eventId を取得
+const params  = new URLSearchParams(window.location.search);
+const eventId = params.get("TempId");
+
+// ユーザーの認証状態が変わるたびにcurrentUserにセット
+onAuthStateChanged(auth, async (user) => {
+    currentUser = user;
+    console.log("auth state changed:", user);
+    
+    try{
+      // テンプレートリストの取得
+      const getItem = await getDoc(doc(db, user.uid, eventId));
+      
+      // テンプレートリストタイトルの表示
+      title.textContent = getItem.data().title;
+
+      // テンプレートリストの設計
+      const itemTagList = [];
+      for(const item of getItem.data().item){
+        const li = createItem(item.name);
+
+        itemTagList.push(li);
+      }
+
+      // テンプレートリストの表示
+      for(const itemTag of itemTagList){
+        checklist.appendChild(itemTag);
+      }
+    }catch(error){
+        console.log(error);
+    }
+});
 
 editIcon.addEventListener('click', () => {
   input.value = title.textContent; // 現在の名前をセット
@@ -64,27 +116,35 @@ addItemSaveBtn.addEventListener('click', () => {
     return;
   }
 
-  // 新しい<li>要素を作成
-  const li = document.createElement('li');
-
-  const itemDiv = document.createElement('div');
-  itemDiv.className = 'item';
-
-  const checkbox = document.createElement('input');
-  checkbox.type = 'checkbox';
-  checkbox.disabled = true;
-
-  itemDiv.appendChild(checkbox);
-  itemDiv.appendChild(document.createTextNode(' ' + newItem));
-
-  const iconSpan = document.createElement('span');
-  iconSpan.className = 'icon';
-  iconSpan.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
-
-  li.appendChild(itemDiv);
-  li.appendChild(iconSpan);
-
+  const li = createItem(newItem);
   checklist.appendChild(li);
 
   addModalOverlay.classList.remove('active');
 });
+
+// 新しい<li>要素(アイテム)を作成
+function createItem(name){
+  const li = document.createElement('li');
+  
+  const itemBox = document.createElement('div');
+  itemBox.setAttribute('class', 'item');
+
+  const checkbox = document.createElement('input');
+  checkbox.setAttribute('type', 'checkbox');
+  checkbox.disabled = true;
+
+  itemBox.appendChild(checkbox);
+  itemBox.appendChild(document.createTextNode(name));
+  li.appendChild(itemBox);
+  
+  const iconArea = document.createElement('span');
+  iconArea.setAttribute('class', 'icon');
+
+  const icon = document.createElement('i');
+  icon.setAttribute('class', 'fa-solid fa-trash-can');
+
+  iconArea.appendChild(icon);
+  li.appendChild(iconArea);
+  
+  return li;
+}

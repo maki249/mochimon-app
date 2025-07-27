@@ -110,7 +110,8 @@ onAuthStateChanged(auth, async (user) => {
                     eventName: item.eventName,
                     startDate: item.startDate,
                     endDate: item.endDate,
-                    isAllDay: item.isAllDay
+                    isAllDay: item.isAllDay,
+                    itemList: item.itemList
                 }));
 
             // EventEdit.html に遷移

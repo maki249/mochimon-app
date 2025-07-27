@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
-import { getFirestore, addDoc, updateDoc, deleteDoc, collection } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+import { getFirestore, addDoc, updateDoc, deleteDoc, collection, doc } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -24,6 +24,8 @@ const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const db = getFirestore(app);
 let currentUser = null;
+const params = new URLSearchParams(window.location.search);
+const eventId = params.get("eventId");
 // ユーザーの認証状態が変わるたびにcurrentUserにセット
 onAuthStateChanged(auth, (user) => {
     currentUser = user;
@@ -74,9 +76,9 @@ document.getElementById('modal-overlay').addEventListener('click', (e) => {
 });
 // キャンセルボタン
 document.querySelector('.cancel-button').addEventListener('click', () => {
-    window.location.href = 'EventCreate.html';
+    window.location.href = `EventEdit.html?eventId=${eventId}`;
 });
-// 保存ボタン
+//保存ボタン
 document.querySelector('.save-button').addEventListener('click', async () => {
     const checklistItems = document.querySelectorAll('#checklist li');
     const items = Array.from(checklistItems).map(li => {
@@ -85,31 +87,34 @@ document.querySelector('.save-button').addEventListener('click', async () => {
             checked: li.querySelector('input[type="checkbox"]').checked
         };
     });
-    for(const a of items){
-        console.log(a.name,a.checked);
-    }
 
-    try{
-        //データ登録
-        while(!currentUser);
-        
-        console.log(currentUser.uid)
-        for(const item of items){
-            const docRef = await addDoc(collection(db, currentUser.uid), {
+    try {
+        while (!currentUser);
+
+        // まず item を単独コレクションに保存（必要なら残す）
+        for (const item of items) {
+            await addDoc(collection(db, currentUser.uid), {
                 tag: "item",
                 unlisted: false,
                 name: item.name,
                 isChecked: item.checked
             });
         }
-        
-        alert("登録成功: ");
-        window.location.href = 'EventCreate.html';
-    } catch(error){
-        alert("登録に失敗しました: " + error.message);
-        console.error("エラー", error);
+
+        // ✅ イベント本体にも itemList を保存
+        const eventRef = doc(db, currentUser.uid, eventId);
+        await updateDoc(eventRef, {
+            itemList: items
+        });
+
+        alert("保存成功！");
+        window.location.href = `EventEdit.html?eventId=${eventId}`;
+    } catch (error) {
+        alert("保存に失敗しました: " + error.message);
+        console.error("保存エラー", error);
     }
 });
+
 // テンプレ画面へ遷移
 document.getElementById('use-template-btn').addEventListener('click', () => {
   window.location.href = 'UseTemplate.html';

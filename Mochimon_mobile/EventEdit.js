@@ -21,7 +21,7 @@ const auth = getAuth(app);
 // URL から eventId を取得
 const params  = new URLSearchParams(window.location.search);
 const eventId = params.get("eventId");
-
+let currentItemList = []; 
 // Firestore から読み込んでフォームに反映する関数
 async function loadEventData(user) {
   const ref     = doc(db, user.uid, eventId);
@@ -33,6 +33,7 @@ async function loadEventData(user) {
   }
   const data = snap.data();
   console.log("✅ イベントデータ:", snap.data());
+  currentItemList = data.itemList || [];
   // タイトル
   document.getElementById("event-title").value = data.eventName || "";
 
@@ -93,7 +94,8 @@ document.addEventListener("DOMContentLoaded", () => {
       isAllDay:  allDay,
       startDate: Timestamp.fromDate(start),
       endDate:   Timestamp.fromDate(end),
-      tag:       "Event"
+      tag:       "Event",
+      itemList:  currentItemList
     });
     alert("保存しました");
     window.location.href = "Calendar.html";
@@ -101,7 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // 持ち物リスト追加ボタン
   document.getElementById("add-item-button").addEventListener("click", () => {
-    location.href = "ListCreate.html";
+    location.href = `ListCreate.html?eventId=${eventId}`;
   });
 
   // 終日トグル

@@ -24,6 +24,17 @@ const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const db = getFirestore(app);
 let currentUser = null;
+
+// URL から date を取得
+const params  = new URLSearchParams(window.location.search);
+const eventId = params.get("date");
+
+// 選択した日付の自動設定
+window.onload = function(){
+    const startDate = document.getElementById('start-date-box');
+    startDate.value = eventId;
+}
+
 // ユーザーの認証状態が変わるたびにcurrentUserにセット
 onAuthStateChanged(auth, async (user) => {
     currentUser = user;
@@ -157,7 +168,7 @@ document.querySelector('.save-button').addEventListener('click', async () => {
 });
 //  持ち物リスト追加ボタン
 document.getElementById('add-item-button').addEventListener('click', () => {
-    window.location.href = 'ListCreate.html';
+    location.href = `ListCreate.html?eventId=${eventId}`;
 });
 //  終日トグル
 document.getElementById('all-day-toggle').addEventListener('change', () => {

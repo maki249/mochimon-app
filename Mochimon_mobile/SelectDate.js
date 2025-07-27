@@ -148,7 +148,8 @@ function setupEvents() {
       const isAdded = icon.classList.contains('fa-circle-check');
       // アイテム名をリスト要素から取得（改行や✓を除去）
       const itemName = icon.closest('li').innerText.trim().replace(/\n/g, '').replace(/^✓/, '');
-
+      const shoppingDocRef = doc(db, userId, `shoppingList_${eventId}`);
+      const docSnap = await getDoc(shoppingDocRef);
       if (isAdded) {
         
         icon.classList.replace('fa-circle-check', 'fa-cart-shopping');
@@ -197,6 +198,12 @@ function setupEvents() {
             }
           }
         }
+        shoppingData.items.push({ name: itemName, checked: true });
+
+        await setDoc(shoppingDocRef, shoppingData);
+        icon.classList.replace('fa-cart-shopping', 'fa-circle-check');
+        icon.parentElement.classList.add('added');
+        console.log("保存完了:", itemName);
 
         // 重複チェックして追加
         if (!shoppingData.items.some(item => item.name === itemName)) {

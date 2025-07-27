@@ -139,7 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!confirmed) return;
 
     try {
-        const ref = doc(db, eventId);
+        const ref = doc(db, user.uid,eventId);
         await deleteDoc(ref);
         alert("予定を削除しました");
         location.href = "Calendar.html";  // 削除後に戻るページ

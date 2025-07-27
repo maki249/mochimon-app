@@ -36,11 +36,18 @@ onAuthStateChanged(auth, async (user) => {
     console.log("Auth state changed:", user);
     //持ち物の取得
     try{
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
         const getList = await getDocs(query(collection(db, user.uid), where("tag", "==", "Event")));
         const items = getList.docs.map(doc => ({
             id: doc.id,
             ... doc.data()
-        }));
+
+        }))
+        .filter(item => {
+            const startDate = new Date(item.startDate.seconds * 1000);
+            return startDate >= today;
+        });
 
         //持ち物の表示
         const dashBoard = document.getElementById('dashboard');

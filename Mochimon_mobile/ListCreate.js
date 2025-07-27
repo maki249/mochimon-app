@@ -1,6 +1,5 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
 import { getFirestore, addDoc, updateDoc, deleteDoc, collection, doc ,getDoc} from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 
@@ -20,13 +19,16 @@ const firebaseConfig = {
 };
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const db = getFirestore(app);
 let currentUser = null;
 const params = new URLSearchParams(window.location.search);
 const eventId = params.get("eventId");
+const date = params.get("date");
 
+const movePageFlag = 0;
+
+const itemArray = JSON.parse(localStorage.getItem('item'))
 
 async function loadChecklistItems() {
   if (!currentUser) {
@@ -117,8 +119,12 @@ document.getElementById('modal-overlay').addEventListener('click', (e) => {
     }
 });
 // キャンセルボタン
-document.querySelector('.cancel-button').addEventListener('click', () => {
-    window.location.href = `EventEdit.html?eventId=${eventId}`;
+document.querySelector('.cancel-button').addEventListener('click', (e) => {
+    if(!eventId){
+      window.location.href = `EventCreate.html?date=${date}`; 
+    }else{
+      window.location.href = `EventEdit.html?eventId=${eventId}`;
+    }
 });
 //保存ボタン
 document.querySelector('.save-button').addEventListener('click', async () => {
@@ -133,24 +139,20 @@ document.querySelector('.save-button').addEventListener('click', async () => {
     try {
         while (!currentUser);
 
-        // まず item を単独コレクションに保存（必要なら残す）
+        // item localStrageに保存（必要なら残す）
+        const itemArray = [];
         for (const item of items) {
-            await addDoc(collection(db, currentUser.uid), {
-                tag: "item",
-                unlisted: false,
-                name: item.name,
-                isChecked: item.checked
-            });
+            itemArray.push(item);
         }
 
-        // ✅ イベント本体にも itemList を保存
-        const eventRef = doc(db, currentUser.uid, eventId);
-        await updateDoc(eventRef, {
-            itemList: items
-        });
-
         alert("保存成功！");
-        window.location.href = `EventEdit.html?eventId=${eventId}`;
+        movePageFlag = 1;
+        if(!eventId){
+          window.location.href = `EventCreate.html?date=${date}`;
+        }else{
+          window.location.href = `EventEdit.html?eventId=${eventId}`;
+        }
+        
     } catch (error) {
         alert("保存に失敗しました: " + error.message);
         console.error("保存エラー", error);
@@ -159,5 +161,18 @@ document.querySelector('.save-button').addEventListener('click', async () => {
 
 // テンプレ画面へ遷移
 document.getElementById('use-template-btn').addEventListener('click', () => {
+  movePageFlag = 2;
   window.location.href = 'UseTemplate.html';
 });
+
+window.addEventListener("beforeunload", function(e){
+  if(movePageFlag === 0){
+    e.preventDefault();
+  }else{
+    this.localStorage.setItem('item', JSON.stringify(itemArray));
+    if(movePageFlag === 2){
+      this.localStorage.setItem('eventId', eventId);
+      this.localStorage.setItem('date', date);
+    }
+  }
+})

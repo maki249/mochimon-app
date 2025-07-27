@@ -168,7 +168,7 @@ document.querySelector('.save-button').addEventListener('click', async () => {
 });
 //  持ち物リスト追加ボタン
 document.getElementById('add-item-button').addEventListener('click', () => {
-    window.location.href = 'ListCreate.html';
+    location.href = `ListCreate.html?eventId=${eventId}`;
 });
 //  終日トグル
 document.getElementById('all-day-toggle').addEventListener('change', () => {

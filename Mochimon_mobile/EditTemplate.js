@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 
 const firebaseConfig = {
@@ -16,6 +16,8 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 let currentUser = null;
+
+const save = document.getElementById('save');
 
 const editIcon = document.querySelector('.fa-pencil');
 const modal = document.getElementById('editModal');
@@ -62,6 +64,27 @@ onAuthStateChanged(auth, async (user) => {
     }catch(error){
         console.log(error);
     }
+
+    save.addEventListener('click', async () => {
+      const newTempItem = document.getElementsByClassName('item');
+      const item = []
+        
+      for(const ItemName of newTempItem){
+        const itemDict = {
+          name: ItemName.textContent,
+          isChecked: false
+        }
+        item.push(itemDict);
+      }
+
+      await setDoc(doc(db, user.uid, eventId), {
+        title: title.textContent,
+        item: item
+      });
+
+      alert("登録成功: ");
+      window.location.href = 'Template.html';
+    })
 });
 
 editIcon.addEventListener('click', () => {
@@ -142,6 +165,11 @@ function createItem(name){
 
   const icon = document.createElement('i');
   icon.setAttribute('class', 'fa-solid fa-trash-can');
+  icon.addEventListener('click', () => {
+    if(confirm('"' + name + '"をテンプレートリストから削除します')){
+      li.remove();
+    }
+  })
 
   iconArea.appendChild(icon);
   li.appendChild(iconArea);

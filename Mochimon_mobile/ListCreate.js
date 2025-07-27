@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
-import { getFirestore, addDoc, updateDoc, deleteDoc, collection, doc } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+import { getFirestore, addDoc, updateDoc, deleteDoc, collection, doc ,getDoc} from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -26,10 +26,52 @@ const db = getFirestore(app);
 let currentUser = null;
 const params = new URLSearchParams(window.location.search);
 const eventId = params.get("eventId");
+
+
+async function loadChecklistItems() {
+  if (!currentUser) {
+    console.log("ユーザー未認証なので読み込みを待つ");
+    return;
+  }
+  if (!eventId) {
+    console.error("eventIdがURLにありません");
+    return;
+  }
+  try {
+    const eventRef = doc(db, currentUser.uid, eventId);
+    const eventSnap = await getDoc(eventRef);
+
+    if (eventSnap.exists()) {
+      const eventData = eventSnap.data();
+      const items = eventData.itemList || [];
+      const checklist = document.getElementById('checklist');
+      checklist.innerHTML = '';  // 一旦リストを空に
+
+      items.forEach(item => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <input type="checkbox" ${item.checked ? 'checked' : ''} />
+          <span>${item.name}</span>
+        `;
+        checklist.appendChild(li);
+      });
+      updateEmptyMessage();
+    } else {
+      console.log("イベントが見つかりません");
+    }
+  } catch (error) {
+    console.error("チェックリスト読み込みエラー:", error);
+  }
+}
+
 // ユーザーの認証状態が変わるたびにcurrentUserにセット
+
 onAuthStateChanged(auth, (user) => {
     currentUser = user;
     console.log("auth state changed:", user);
+    if (user) {
+        loadChecklistItems();  // ここでFirestoreから読み込む
+    }
 });
 
 document.getElementById('open-add-item-modal').addEventListener('click', () => {

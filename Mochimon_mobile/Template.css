@@ -22,7 +22,7 @@ body {
     padding: 0 20px; /* 左右にパディングを設定 */
     box-sizing: border-box; /* paddingを含めて幅を計算 */
     z-index: 1000; /* 下部メニューと同じか、必要に応じて調整 */
-    background-color: #e0f0f0;
+    background-color: #a2d0d0;
 }
 
 .header-area h1{
@@ -33,7 +33,7 @@ body {
 }
 
 .login-button {
-    background-color: #e0f0f0;
+    background-color: #a2d0d0;
     margin-left: auto;
     color: #333; /* ボタンの文字色 */
     padding: 8px 16px;

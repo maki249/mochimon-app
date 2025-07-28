@@ -60,17 +60,28 @@ header {
     justify-content: center;
 }
 
+.small-cards-grid a{
+    text-decoration: none;
+}
+
 .small-card {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     background-color: #ffffff;
     border: 1px solid #ccc;
-    padding: 20px;
     text-align: center;
     border-radius: 12px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 1 / 1; /* 正方形を保つ */
+    overflow: hidden; /* はみ出し防止 */
+}
+
+.small-card p{
+    font-size: 12px;
+    margin: 0;
+    color: #333;
 }
 
 .card-icon{
@@ -78,6 +89,7 @@ header {
     width: 40px;
     height: 40px;
     object-fit: contain;
+    
 }
 
 .button-container {

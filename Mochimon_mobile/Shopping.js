@@ -111,3 +111,27 @@ onAuthStateChanged(auth, async (user) => {
 window.onload = function () {
     // このonload内は空でもOK。チェックボックスイベント登録は上のonAuthStateChanged内で行うため
 };
+
+const iconBtn = document.getElementById("user-icon-btn");
+let currentUser = null;
+
+// ユーザーの認証状態が変わるたびにcurrentUserにセット
+onAuthStateChanged(auth, (user) => {
+currentUser = user;
+console.log("Auth state changed:", user);
+});
+
+
+if (iconBtn) {
+    iconBtn.addEventListener("click", async (e) => {
+        e.preventDefault();
+        console.log("Clicked. currentUser:", currentUser);
+        if (currentUser) {
+        console.log("認証済みなのでマイページへ遷移");
+        window.location.href = "../Mypage.html";
+        } else {
+        console.log("未認証なのでログインへ遷移");
+        window.location.href = "../Login.html";
+        }
+    });
+}

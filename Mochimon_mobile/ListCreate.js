@@ -54,6 +54,7 @@ async function loadChecklistItems() {
         li.innerHTML = `
           <input type="checkbox" ${item.checked ? 'checked' : ''} />
           <span>${item.name}</span>
+          <i class="fas fa-trash delete-icon"></i>
         `;
         checklist.appendChild(li);
       });

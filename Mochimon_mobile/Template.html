@@ -188,7 +188,7 @@
                         <li><label><input type="checkbox" disabled> ウェットティッシュ</label></li>
                         <li><label><input type="checkbox" disabled> ゴミ袋</label></li>
                         <li><label><input type="checkbox" disabled> 日傘・帽子</label></li>
-                        <li><label><input type="checkbox" disabled> 小型テーブル・折りたたみ椅子（必要に応じて）</label></li>
+                        <li><label><input type="checkbox" disabled> 小型テーブル・折りたたみ椅子</label></li>
                         <li><label><input type="checkbox" disabled> ボール・シャボン玉など遊具</label></li>
                         </ul>
                     </div>
@@ -239,8 +239,13 @@
                     </div>
                 </div>
             </a> 
-
         </div>
+
+        <a href="EditTemplate.html">
+            <button id="add-event-btn" class="add-event-btn" aria-label="テンプレートを追加" title="新規テンプレート作成">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+        </a>    
 
         <nav class="bottom-menu">
             <a href="Home.html" class="menu-button">
@@ -274,6 +279,22 @@
                 <p>共有</p>
             </a>
         </nav>
+
+        <div class="modal" id="template-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">新規テンプレート作成</h2>
+                    <span class="close-btn" id="close-modal">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="template-name" class="modal-input" placeholder="テンプレート名を入力" />
+                    <button class="create-btn" id="create-template-btn">作成</button>
+                </div>
+            </div>
+        </div>
+
+
+
         <script type="module" src="Template.js"></script>
     </body>
 

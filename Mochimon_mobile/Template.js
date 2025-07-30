@@ -19,6 +19,41 @@ const auth = getAuth(app);
 const iconBtn = document.getElementById("user-icon-btn");
 let currentUser = null;
 
+const addButton = document.getElementById("add-event-btn");
+const modal = document.getElementById("template-modal");
+const closeBtn = document.getElementById("close-modal");
+
+// ＋ボタン押下時、モーダル表示
+addButton.addEventListener("click", (e) => {
+  e.preventDefault(); // aタグのリンクを無効化
+  modal.style.display = "flex"; // ← block → flex に修正
+});
+
+// モーダル外クリックで閉じる
+window.addEventListener("click", (e) => {
+  if (e.target === modal) {
+    modal.style.display = "none";
+  }
+});
+
+// ✕ボタンで閉じる（存在チェックも追加）
+if (closeBtn) {
+  closeBtn.addEventListener("click", () => {
+    modal.style.display = "none";
+  });
+}
+
+document.getElementById("create-template-btn").addEventListener("click", () => {
+    const input = document.getElementById("template-name").value.trim();
+    if (input) {
+      // URLにテンプレート名をクエリパラメータで渡す
+      location.href = `EditTemplate.html?name=${encodeURIComponent(input)}`;
+    } else {
+      alert("テンプレート名を入力してください");
+    }
+  });
+
+
 if (iconBtn) {
     iconBtn.addEventListener("click", async (e) => {
         e.preventDefault();

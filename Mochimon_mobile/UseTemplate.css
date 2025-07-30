@@ -1,17 +1,25 @@
 body {
-  margin: 0;
+  padding-top: 60px;
+  padding-bottom: 50px;
   font-family: sans-serif;
   background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 header {
-    height: 50px;
+  position: fixed;     
+  top: 0;              
+  left: 0;
+  right: 0;
+  height: 50px;
   background-color: #a2d0d0;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 16px;
-  position: relative;
+  z-index: 1000;
 }
 
 .title{
@@ -43,59 +51,116 @@ header {
     padding: 40px 0;
 }
 
-.main-card {
-    background-color: #f0f0f0;
-    width: 80%;
-    max-width: 600px;
-    padding: 10px;
-    border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+/* ダッシュボードコンテナ */
+.dashboard {
+  width: 90%;
+  max-width: 400px;
+  margin: 0 auto;           /* 中央揃え */
+  margin-top: 30px;
+  flex: 1;                  /* 空間を埋める */
+  overflow-y: auto;
+  padding: 16px 0;
 }
 
-.small-cards-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 80px);
-    gap: 16px;
-    margin-top: 10px;
-    justify-content: center;
+
+.dashboard::-webkit-scrollbar {
+  width: 6px;
+}
+.dashboard::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 10px;
 }
 
-.small-cards-grid a{
-    text-decoration: none;
+.dashboard a{
+  text-decoration: none;
 }
 
-.small-card {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-color: #ffffff;
-    border: 1px solid #ccc;
-    text-align: center;
-    border-radius: 12px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    aspect-ratio: 1 / 1; /* 正方形を保つ */
-    overflow: hidden; /* はみ出し防止 */
+
+/* 予定カード */
+.card {
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  padding: 16px;
+  margin-bottom: 16px;
+  border: 2px solid #a2d0d0;
 }
 
-.small-card p{
-    font-size: 12px;
-    margin: 0;
-    color: #333;
+.card.selected {
+  background-color: #e0f0f0;
+  border-color: #a2d0d0;
+}
+
+.card-content {
+  display: flex;
+  align-items: flex-start; /* 上端を揃える */
+  gap: 16px;
+}
+
+/* アイコンを固定幅で表示 */
+.icon-wrapper {
+  flex: 0 0 70px;
+}
+
+.card-icon {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* チェックリスト */
+.checklist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex: 1; /* 残りのスペースを使う */
+}
+
+.checklist li {
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.checklist input[type="checkbox"] {
+  margin-right: 6px;
+}
+
+.checklist label {
+  color: #000;         /* 黒文字に設定 */
+  text-decoration: none; /* 万が一下線がつく場合の防止 */
+}
+
+/* 予定のタイトル */
+.card h2 {
+  margin: 0 0 8px 0;
+  font-size: 1.2em;
+  color: #222;
+}
+
+/* 予定の詳細 */
+.card p {
+  margin: 4px 0;
+  color: #666;
 }
 
 .card-icon{
     color: #a2d0d0;
-    width: 40px;
-    height: 40px;
-    object-fit: contain;
-    
+    width: 70px;
+    height: 70px;
+    object-fit: contain;  
 }
 
 .button-container {
-    display: flex;
-    justify-content: center;
-    margin: 20px 0;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #fff;
+  padding: 12px 0;
+  display: flex;
+  justify-content: center;
+  box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
+  z-index: 1000;
 }
 
 /* 通常のグレースタイル */
@@ -115,7 +180,7 @@ header {
 
 /* 選択されたら「使用する」に変化 */
 .no-use-button.active {
-    background-color: #80c080; /* 緑っぽい色 */
+    background-color: #a2d0d0;
     color: white;
 }
 

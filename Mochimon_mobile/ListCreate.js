@@ -197,9 +197,9 @@ document.querySelector('.save-button').addEventListener('click', async () => {
 document.getElementById('use-template-btn').addEventListener('click', () => {
   movePageFlag = 2;
   if(!eventId){
-    window.location.href = `UseTemlate.html?date=${date}`;
+    window.location.href = `UseTemplate.html?date=${date}`;
   }else{
-    window.location.href = `UseTemlate.html?eventId=${eventId}`;
+    window.location.href = `UseTemplate.html?eventId=${eventId}`;
   }
 });
 

@@ -28,7 +28,7 @@ const date = params.get("date");
 
 let movePageFlag = 0;
 
-const itemArray = JSON.parse(localStorage.getItem('item'))
+const itemArray = JSON.parse(localStorage.getItem('item')) || [];
 
 async function loadChecklistItems() {
   if (!currentUser) {
@@ -141,9 +141,8 @@ document.querySelector('.save-button').addEventListener('click', async () => {
         while (!currentUser);
 
         // item localStrageに保存（必要なら残す）
-        const itemArray = [];
         for (const item of items) {
-            itemArray.push(item);
+            itemArray.push(item.name);
         }
 
         alert("保存成功！");
@@ -174,7 +173,6 @@ window.addEventListener("beforeunload", function(e){
   if(movePageFlag === 0){
     e.preventDefault();
   }else{
-    console.log("check");
     this.localStorage.setItem('item', JSON.stringify(itemArray));
     if(movePageFlag === 2){
       this.localStorage.setItem('eventId', eventId);

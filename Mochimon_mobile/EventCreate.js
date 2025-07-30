@@ -186,10 +186,8 @@ document.querySelector('.save-button').addEventListener('click', async () => {
 });
 //  持ち物リスト追加ボタン
 document.getElementById('add-item-button').addEventListener('click', () => {
-    if(confirm()){
-        storage();
-        location.href = `ListCreate.html?date=${date}`;
-    }
+    storage();
+    location.href = `ListCreate.html?date=${date}`;
 });
 //  終日トグル
 document.getElementById('all-day-toggle').addEventListener('change', () => {
@@ -253,4 +251,5 @@ function storage(){
     const JSONstorage = Array.from(storage);
     console.log(JSONstorage);
     localStorage.setItem(date, JSON.stringify(JSONstorage));
+    localStorage.setItem('item', JSON.stringify(itemArray));
 }

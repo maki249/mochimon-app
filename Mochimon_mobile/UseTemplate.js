@@ -33,12 +33,12 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    const cards = document.querySelectorAll('.small-card');
+    const cards = document.querySelectorAll('.card');  // ← 修正
+
     const useButton = document.getElementById('use-button');
 
     function updateButtonState() {
-        const anySelected = document.querySelectorAll('.small-card.selected').length > 0;
-
+        const anySelected = document.querySelectorAll('.card.selected').length > 0;  // ← 修正
         if (anySelected) {
             useButton.classList.add('active');
         } else {
@@ -59,6 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('保存処理をここに追加');
     });
 });
+
 // キャンセルボタン
 document.querySelector('.cancel-button').addEventListener('click', () => {
     if(!eventId){

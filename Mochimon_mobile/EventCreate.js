@@ -30,6 +30,7 @@ const dataStrageJSON = localStorage.getItem(date);
 const dataStrage = new Map(JSON.parse(dataStrageJSON));
 console.log(dataStrage);
 const itemArray = JSON.parse(localStorage.getItem('item'));
+console.log(itemArray);
 // 保存した情報の自動設定
 window.onload = function(){
     const startDate = document.getElementById('start-date-box');

@@ -26,7 +26,7 @@ const params = new URLSearchParams(window.location.search);
 const eventId = params.get("eventId");
 const date = params.get("date");
 
-const movePageFlag = 0;
+let movePageFlag = 0;
 
 const itemArray = JSON.parse(localStorage.getItem('item'))
 
@@ -163,13 +163,18 @@ document.querySelector('.save-button').addEventListener('click', async () => {
 // テンプレ画面へ遷移
 document.getElementById('use-template-btn').addEventListener('click', () => {
   movePageFlag = 2;
-  window.location.href = 'UseTemplate.html';
+  if(!eventId){
+    window.location.href = `UseTemlate.html?date=${date}`;
+  }else{
+    window.location.href = `UseTemlate.html?eventId=${eventId}`;
+  }
 });
 
 window.addEventListener("beforeunload", function(e){
   if(movePageFlag === 0){
     e.preventDefault();
   }else{
+    console.log("check");
     this.localStorage.setItem('item', JSON.stringify(itemArray));
     if(movePageFlag === 2){
       this.localStorage.setItem('eventId', eventId);

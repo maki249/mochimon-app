@@ -52,6 +52,12 @@ document.addEventListener('DOMContentLoaded', () => {
             updateButtonState();
         });
     });
+
+    
+    // 保存ボタン
+    useButton.addEventListener('click', () => {
+        alert('保存処理をここに追加');
+    });
 });
 // キャンセルボタン
 document.querySelector('.cancel-button').addEventListener('click', () => {
@@ -60,8 +66,4 @@ document.querySelector('.cancel-button').addEventListener('click', () => {
     }else{
         window.location.href = `ListCreate.html?eventId=${eventId}`;
     }
-});
-// 保存ボタン
-document.querySelector('.save-button').addEventListener('click', () => {
-    alert('保存処理をここに追加');
 });

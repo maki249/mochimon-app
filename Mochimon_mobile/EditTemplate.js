@@ -100,8 +100,10 @@ saveBtn.addEventListener('click', () => {
   const newName = input.value.trim();
   if (newName !== "") {
     title.textContent = newName;
+    modal.style.display = 'none';
+  }else{
+    alert("テンプレートリストのタイトルを入力してください");
   }
-  modal.style.display = 'none';
 });
 
 // モーダル外をクリックして閉じる

@@ -1,10 +1,10 @@
 import dayjs from "https://esm.sh/dayjs";
 
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
-import { getFirestore, collection, doc, getDocs, where, query, deleteField, Timestamp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-analytics.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+import { getFirestore, collection, doc, getDocs, where, query, deleteField, Timestamp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
     
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -29,6 +29,7 @@ const iconBtn = document.getElementById("user-icon-btn");
 const db = getFirestore(app);
 let currentUser = null;
 
+localStorage.clear();
 
 // ユーザーの認証状態が変わるたびにcurrentUserにセット
 onAuthStateChanged(auth, async (user) => {
@@ -53,6 +54,25 @@ onAuthStateChanged(auth, async (user) => {
         const dashBoard = document.getElementById('dashboard');
         const itemList = document.createElement('a');
         dashBoard.appendChild(itemList);
+
+        dashBoard.innerHTML = ''; // 事前に中身をクリア
+
+        if (items.length === 0) {
+            // 予定が1件もない場合のメッセージ
+            const noEventMessage = document.createElement('p');
+            noEventMessage.textContent = 'カレンダーから予定を追加してください';
+            noEventMessage.classList.add('no-event-message');  // CSSで装飾可能
+            dashBoard.appendChild(noEventMessage);
+            return; // 以下の描画は行わない
+        } else {
+            const titleHeading = document.createElement('h2');
+            titleHeading.textContent = '今日以降の予定';
+            titleHeading.classList.add('section-title');
+            dashBoard.appendChild(titleHeading);
+
+            // アイテムリスト（アンカー要素）
+            const itemList = document.createElement('a');
+            dashBoard.appendChild(itemList);
 
         items.forEach(item =>{
             console.log(item);
@@ -125,8 +145,9 @@ onAuthStateChanged(auth, async (user) => {
             window.location.href = `SelectDate.html?eventId=${item.id}`;
         });
 
-            
+            itemList.appendChild(itemCard);
         })
+        }
 
     }catch(error){
         console.log(error);

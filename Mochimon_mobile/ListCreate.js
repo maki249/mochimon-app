@@ -26,9 +26,9 @@ const params = new URLSearchParams(window.location.search);
 const eventId = params.get("eventId");
 const date = params.get("date");
 
-const movePageFlag = 0;
+let movePageFlag = 0;
 
-const itemArray = JSON.parse(localStorage.getItem('item'))
+const itemArray = JSON.parse(localStorage.getItem('item')) || [];
 
 async function loadChecklistItems() {
   if (!currentUser) {
@@ -37,6 +37,19 @@ async function loadChecklistItems() {
   }
   if (!eventId) {
     console.error("eventIdがURLにありません");
+    const items = itemArray || [];
+    const checklist = document.getElementById('checklist');
+    checklist.innerHTML = '';  // 一旦リストを空に
+
+    items.forEach(item => {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <span>${item}</span>
+        <i class="fas fa-trash delete-icon"></i>
+      `;
+      checklist.appendChild(li);
+    });
+    updateEmptyMessage();
     return;
   }
   try {
@@ -101,9 +114,9 @@ document.getElementById('add-item-btn').addEventListener('click', () => {
     if (title) {
         const li = document.createElement('li');
         li.innerHTML = `
-      <input type="checkbox" />
-      <span>${title}</span>
-    `;
+          <span>${title}</span>
+          <i class="fas fa-trash delete-icon"></i>
+        `;
         document.getElementById('checklist').appendChild(li);
         document.getElementById('item-title').value = '';
         document.getElementById('modal-overlay').classList.remove('active');
@@ -132,8 +145,7 @@ document.querySelector('.save-button').addEventListener('click', async () => {
     const checklistItems = document.querySelectorAll('#checklist li');
     const items = Array.from(checklistItems).map(li => {
         return {
-            name: li.querySelector('span').textContent,
-            checked: li.querySelector('input[type="checkbox"]').checked
+            name: li.querySelector('span').textContent
         };
     });
 
@@ -141,13 +153,13 @@ document.querySelector('.save-button').addEventListener('click', async () => {
         while (!currentUser);
 
         // item localStrageに保存（必要なら残す）
-        const itemArray = [];
         for (const item of items) {
-            itemArray.push(item);
+            itemArray.push(item.name);
         }
 
         alert("保存成功！");
         movePageFlag = 1;
+
         if(!eventId){
           window.location.href = `EventCreate.html?date=${date}`;
         }else{
@@ -158,12 +170,47 @@ document.querySelector('.save-button').addEventListener('click', async () => {
         alert("保存に失敗しました: " + error.message);
         console.error("保存エラー", error);
     }
+
+    // Firestore へ保存（eventIdがある場合）
+    if (eventId) {
+      const eventRef = doc(db, currentUser.uid, eventId);
+      await updateDoc(eventRef, {
+        itemList: items
+      });
+    } else {
+      // 新規イベント作成前なら localStorage に保存（既存の処理）
+      localStorage.setItem('item', JSON.stringify(items));
+    }
+
+    alert("保存成功！");
+    movePageFlag = 1;
+
+    if (!eventId) {
+      window.location.href = `EventCreate.html?date=${date}`;
+    } else {
+      window.location.href = `EventEdit.html?eventId=${eventId}`;
+    }
 });
+
 
 // テンプレ画面へ遷移
 document.getElementById('use-template-btn').addEventListener('click', () => {
   movePageFlag = 2;
-  window.location.href = 'UseTemplate.html';
+  if(!eventId){
+    window.location.href = `UseTemplate.html?date=${date}`;
+  }else{
+    window.location.href = `UseTemplate.html?eventId=${eventId}`;
+  }
+});
+
+document.getElementById('checklist').addEventListener('click', function (e) {
+  if (e.target.classList.contains('delete-icon')) {
+    const li = e.target.closest('li');
+    if (li) {
+      li.remove();
+      updateEmptyMessage();
+    }
+  }
 });
 
 window.addEventListener("beforeunload", function(e){

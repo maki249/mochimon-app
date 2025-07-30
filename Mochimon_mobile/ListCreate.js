@@ -37,6 +37,19 @@ async function loadChecklistItems() {
   }
   if (!eventId) {
     console.error("eventIdがURLにありません");
+    const items = itemArray || [];
+    const checklist = document.getElementById('checklist');
+    checklist.innerHTML = '';  // 一旦リストを空に
+
+    items.forEach(item => {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <span>${item}</span>
+        <i class="fas fa-trash delete-icon"></i>
+      `;
+      checklist.appendChild(li);
+    });
+    updateEmptyMessage();
     return;
   }
   try {
@@ -101,9 +114,9 @@ document.getElementById('add-item-btn').addEventListener('click', () => {
     if (title) {
         const li = document.createElement('li');
         li.innerHTML = `
-      <input type="checkbox" />
-      <span>${title}</span>
-    `;
+          <span>${title}</span>
+          <i class="fas fa-trash delete-icon"></i>
+        `;
         document.getElementById('checklist').appendChild(li);
         document.getElementById('item-title').value = '';
         document.getElementById('modal-overlay').classList.remove('active');
@@ -132,8 +145,7 @@ document.querySelector('.save-button').addEventListener('click', async () => {
     const checklistItems = document.querySelectorAll('#checklist li');
     const items = Array.from(checklistItems).map(li => {
         return {
-            name: li.querySelector('span').textContent,
-            checked: li.querySelector('input[type="checkbox"]').checked
+            name: li.querySelector('span').textContent
         };
     });
 

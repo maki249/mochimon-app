@@ -21,7 +21,11 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 // キャンセルボタン
 document.querySelector('.cancel-button').addEventListener('click', () => {
-    window.location.href = 'ListCreate.html';
+    if(!eventId){
+        window.location.href = `ListCreate.html?date=${date}`;
+    }else{
+        window.location.href = `ListCreate.html?eventId=${eventId}`;
+    }
 });
 // 保存ボタン
 document.querySelector('.save-button').addEventListener('click', () => {

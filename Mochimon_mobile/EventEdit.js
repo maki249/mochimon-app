@@ -157,12 +157,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const confirmed = confirm("この予定を削除しますか？");
     if (!confirmed) return;
-
     try {
-      const ref = doc(db, user.uid, eventId);
-      await deleteDoc(ref);
-      alert("予定を削除しました");
-      location.href = "Calendar.html";
+        const ref = doc(db,  user.uid, eventId);
+        await deleteDoc(ref);
+        alert("予定を削除しました");
+        location.href = "Calendar.html"; 
+
     } catch (error) {
       console.error("削除に失敗:", error);
       alert("削除に失敗しました");

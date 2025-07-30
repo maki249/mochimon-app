@@ -159,6 +159,7 @@ document.querySelector('.save-button').addEventListener('click', async () => {
 
         alert("保存成功！");
         movePageFlag = 1;
+
         if(!eventId){
           window.location.href = `EventCreate.html?date=${date}`;
         }else{
@@ -169,7 +170,28 @@ document.querySelector('.save-button').addEventListener('click', async () => {
         alert("保存に失敗しました: " + error.message);
         console.error("保存エラー", error);
     }
+
+    // Firestore へ保存（eventIdがある場合）
+    if (eventId) {
+      const eventRef = doc(db, currentUser.uid, eventId);
+      await updateDoc(eventRef, {
+        itemList: items
+      });
+    } else {
+      // 新規イベント作成前なら localStorage に保存（既存の処理）
+      localStorage.setItem('item', JSON.stringify(items));
+    }
+
+    alert("保存成功！");
+    movePageFlag = 1;
+
+    if (!eventId) {
+      window.location.href = `EventCreate.html?date=${date}`;
+    } else {
+      window.location.href = `EventEdit.html?eventId=${eventId}`;
+    }
 });
+
 
 // テンプレ画面へ遷移
 document.getElementById('use-template-btn').addEventListener('click', () => {
@@ -178,6 +200,16 @@ document.getElementById('use-template-btn').addEventListener('click', () => {
     window.location.href = `UseTemlate.html?date=${date}`;
   }else{
     window.location.href = `UseTemlate.html?eventId=${eventId}`;
+  }
+});
+
+document.getElementById('checklist').addEventListener('click', function (e) {
+  if (e.target.classList.contains('delete-icon')) {
+    const li = e.target.closest('li');
+    if (li) {
+      li.remove();
+      updateEmptyMessage();
+    }
   }
 });
 

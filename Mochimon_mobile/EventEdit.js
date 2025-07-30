@@ -55,8 +55,8 @@ async function loadEventData(user) {
 
   const data = snap.data();
   console.log("✅ イベントデータ:", data);
-
-  currentItemList = data.itemList || [];
+  console.log(data.itemList); 
+  currentItemList = data.itemArray || [];
   renderItemList();
 
   // フォームへ反映
@@ -107,16 +107,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const start = new Date(`${sd}T${st}`);
     const end   = new Date(`${ed}T${et}`);
 
+    // 持ち物リストをDOMから取得して配列作成
+    const mochimonItems = document.querySelectorAll("#checklist li span.mochimon");
     const itemArray = [];
 
-    const mochimonList = document.getElementById();
-    for(const mochimon of mochimonList) {
-        const item = {
-            name: mochimon.textContent,
-            isChecked: false
-        }
-        itemList.push(item);
-    }
+    mochimonItems.forEach(mochimon => {
+      itemArray.push({
+        name: mochimon.textContent.trim(),
+        isChecked: false,  // チェックボックス連動があればここで取得
+      });
+    });
 
     const ref = doc(db, user.uid, eventId);
     await updateDoc(ref, {
@@ -125,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
       startDate: Timestamp.fromDate(start),
       endDate:   Timestamp.fromDate(end),
       tag:       "Event",
-      itemArray:  currentItemList
+      itemList: itemArray
     });
 
     alert("保存しました");

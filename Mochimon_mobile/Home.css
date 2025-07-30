@@ -172,3 +172,18 @@ body {
 .menu-button span {
     display: block;
 }
+
+.section-title {
+    font-size: 20px;
+    margin: 0 0 16px 0;
+    color: #333;
+    border-left: 4px solid #76c7c0;
+    padding-left: 8px;
+}
+
+.no-event-message {
+    text-align: center;
+    margin: 0px;
+    font-size: 14px;
+    color: #888;
+}

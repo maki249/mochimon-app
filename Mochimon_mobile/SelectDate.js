@@ -21,6 +21,7 @@ const urlParams = new URLSearchParams(window.location.search);
 let userId = null;
 let eventId = urlParams.get('eventId') || null;
 
+
 // userId と eventId の分割処理（もしuserId?eventId形式の場合）
 if (eventId && eventId.includes('?')) {
   [userId, eventId] = eventId.split('?');
@@ -62,21 +63,25 @@ async function loadChecklistItems(userId, eventId) {
   // チェックリスト初期化
   const checklist = document.querySelector('.checklist');
   checklist.innerHTML = '';
-
+  const shoppingDocRef = doc(db, userId, `shoppingList_${eventId}`);
+  const shoppingDocSnap = await getDoc(shoppingDocRef);
+  const shoppingItems = shoppingDocSnap.exists() ? (shoppingDocSnap.data().items || []) : [];
   // itemListは [{name, checked}, ...]の想定に修正（firestoreから配列として取得）
   const itemList = eventData.itemList || [];
   for (const item of itemList) {
     // itemがオブジェクトなら name と checked を取得、文字列なら名前だけ扱う
     const name = (typeof item === "string") ? item : (item.name || "不明なアイテム");
     const checked = (typeof item === "object" && 'checked' in item) ? item.checked : false;
-
+    const isInShoppingList = shoppingItems.some(i => i.name === name);
     const li = document.createElement('li');
     li.innerHTML = `
       <div class="item">
         <input type="checkbox" ${checked ? 'checked' : ''}>
         <span>${name}</span>
       </div>
-      <span class="icon"><i class="fa-solid fa-cart-shopping"></i></span>
+      <span class="icon ${isInShoppingList ? 'added' : ''}">
+      <i class="fa-solid ${isInShoppingList ? 'fa-circle-check' : 'fa-cart-shopping'}"></i>
+      </span>
     `;
     checklist.appendChild(li);
   }

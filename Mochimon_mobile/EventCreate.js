@@ -174,9 +174,9 @@ document.querySelector('.save-button').addEventListener('click', async () => {
             startDate: start,   //開始日時
             endDate: end,       //終了日時
             notify: notify,   //通知設定
+            itemArray: itemList
         });
         
-        const docID = docRef.id
         alert("登録成功: ");
         window.location.href = 'Calendar.html';
     } catch(error){

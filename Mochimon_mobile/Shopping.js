@@ -16,6 +16,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
+let currentUser = null;
 let userId; 
 
 function updateCardState(checklist) {
@@ -36,6 +37,8 @@ window.toggleChecklist = function (button) {
 };
 
 onAuthStateChanged(auth, async (user) => {
+    currentUser = user;
+    console.log("Auth state changed:", user);
     if (!user) {
         console.error("ログインユーザーがいません");
         return;
@@ -113,14 +116,6 @@ window.onload = function () {
 };
 
 const iconBtn = document.getElementById("user-icon-btn");
-let currentUser = null;
-
-// ユーザーの認証状態が変わるたびにcurrentUserにセット
-onAuthStateChanged(auth, (user) => {
-currentUser = user;
-console.log("Auth state changed:", user);
-});
-
 
 if (iconBtn) {
     iconBtn.addEventListener("click", async (e) => {

@@ -29,6 +29,7 @@ const iconBtn = document.getElementById("user-icon-btn");
 const db = getFirestore(app);
 let currentUser = null;
 
+localStorage.clear();
 
 // ユーザーの認証状態が変わるたびにcurrentUserにセット
 onAuthStateChanged(auth, async (user) => {

@@ -37,7 +37,7 @@ function renderItemList() {
   currentItemList.forEach(item => {
     const li = document.createElement("li");
     li.innerHTML = `
-      <span>${item.name}</span>
+      <span class='mochimon'>${item.name}</span>
     `;
     checklist.appendChild(li);
   });
@@ -107,6 +107,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const start = new Date(`${sd}T${st}`);
     const end   = new Date(`${ed}T${et}`);
 
+    const itemArray = [];
+
+    const mochimonList = document.getElementById();
+    for(const mochimon of mochimonList) {
+        const item = {
+            name: mochimon.textContent,
+            isChecked: false
+        }
+        itemList.push(item);
+    }
+
     const ref = doc(db, user.uid, eventId);
     await updateDoc(ref, {
       eventName: title,
@@ -114,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
       startDate: Timestamp.fromDate(start),
       endDate:   Timestamp.fromDate(end),
       tag:       "Event",
-      itemList:  currentItemList
+      itemArray:  currentItemList
     });
 
     alert("保存しました");

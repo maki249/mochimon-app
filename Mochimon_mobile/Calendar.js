@@ -22,6 +22,9 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 let currentUser = null;
+
+localStorage.clear();
+
 // ユーザーの認証状態が変わるたびにcurrentUserにセット
 onAuthStateChanged(auth, (user) => {
     currentUser = user;

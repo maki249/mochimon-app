@@ -30,6 +30,7 @@ const dataStrageJSON = localStorage.getItem(date);
 const dataStrage = new Map(JSON.parse(dataStrageJSON));
 console.log(dataStrage);
 const itemArray = JSON.parse(localStorage.getItem('item'));
+console.log(itemArray);
 // 保存した情報の自動設定
 window.onload = function(){
     const startDate = document.getElementById('start-date-box');
@@ -173,9 +174,9 @@ document.querySelector('.save-button').addEventListener('click', async () => {
             startDate: start,   //開始日時
             endDate: end,       //終了日時
             notify: notify,   //通知設定
+            itemArray: itemList
         });
         
-        const docID = docRef.id
         alert("登録成功: ");
         window.location.href = 'Calendar.html';
     } catch(error){
@@ -185,10 +186,8 @@ document.querySelector('.save-button').addEventListener('click', async () => {
 });
 //  持ち物リスト追加ボタン
 document.getElementById('add-item-button').addEventListener('click', () => {
-    if(confirm()){
-        storage();
-        location.href = `ListCreate.html?date=${date}`;
-    }
+    storage();
+    location.href = `ListCreate.html?date=${date}`;
 });
 //  終日トグル
 document.getElementById('all-day-toggle').addEventListener('change', () => {
@@ -252,4 +251,5 @@ function storage(){
     const JSONstorage = Array.from(storage);
     console.log(JSONstorage);
     localStorage.setItem(date, JSON.stringify(JSONstorage));
+    localStorage.setItem('item', JSON.stringify(itemArray));
 }

@@ -1,7 +1,7 @@
 // --- Firebase 初期化 ---
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-import { getFirestore, doc, getDoc, updateDoc, deleteDoc, Timestamp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+import { getFirestore, doc, getDoc, updateDoc, deleteDoc, Timestamp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyChPt5NDvgd4okxbUQalZtrS7w6Tm30fgg",
@@ -37,7 +37,7 @@ function renderItemList() {
   currentItemList.forEach(item => {
     const li = document.createElement("li");
     li.innerHTML = `
-      <span>${item.name}</span>
+      <span class='mochimon'>${item.name}</span>
     `;
     checklist.appendChild(li);
   });
@@ -55,8 +55,8 @@ async function loadEventData(user) {
 
   const data = snap.data();
   console.log("✅ イベントデータ:", data);
-
-  currentItemList = data.itemList || [];
+  console.log(data.itemList); 
+  currentItemList = data.itemArray || [];
   renderItemList();
 
   // フォームへ反映
@@ -107,6 +107,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const start = new Date(`${sd}T${st}`);
     const end   = new Date(`${ed}T${et}`);
 
+    // 持ち物リストをDOMから取得して配列作成
+    const mochimonItems = document.querySelectorAll("#checklist li span.mochimon");
+    const itemArray = [];
+
+    mochimonItems.forEach(mochimon => {
+      itemArray.push({
+        name: mochimon.textContent.trim(),
+        isChecked: false,  // チェックボックス連動があればここで取得
+      });
+    });
+
     const ref = doc(db, user.uid, eventId);
     await updateDoc(ref, {
       eventName: title,
@@ -114,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
       startDate: Timestamp.fromDate(start),
       endDate:   Timestamp.fromDate(end),
       tag:       "Event",
-      itemList:  currentItemList
+      itemList: itemArray
     });
 
     alert("保存しました");
@@ -157,12 +168,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const confirmed = confirm("この予定を削除しますか？");
     if (!confirmed) return;
-
     try {
-      const ref = doc(db, user.uid, eventId);
-      await deleteDoc(ref);
-      alert("予定を削除しました");
-      location.href = "Calendar.html";
+        const ref = doc(db,  user.uid, eventId);
+        await deleteDoc(ref);
+        alert("予定を削除しました");
+        location.href = "Calendar.html"; 
+
     } catch (error) {
       console.error("削除に失敗:", error);
       alert("削除に失敗しました");

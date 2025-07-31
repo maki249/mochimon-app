@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="SelectDate.css">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+        <title>持ち物リスト</title>
+    </head>
+
+    <body>
+        <div class="header-area">
+
+            <a href="home.html">
+                <button class="cancel-button">＜戻る</button>
+            </a>
+            <h3 id="eventHeader"><br>
+            </h3>
+
+        </div>
+
+        <div class="checklist-container">
+            <div id="progress">0%</div>
+            <div class="progress-bar">
+                <div class="progress-bar-fill"></div>
+            </div>
+            
+            <ul class="checklist"></ul>
+        </div>
+        <div class="save-area">
+            <button class="save-button">保存</button>
+        </div>
+
+        <nav class="bottom-menu">
+            <a href="Home.html" class="menu-button">
+                <span>
+                    <i class="fa-solid fa-house"></i>
+                </span>
+                <p>ホーム</p>
+            </a>
+            <a href="Calendar.html" class="menu-button">
+                <span>
+                    <i class="fa-regular fa-calendar-days"></i>
+                </span>
+                <p>カレンダー</p>
+            </a>
+            <a href="Template.html" class="menu-button">
+                <span>
+                    <i class="fa-solid fa-bookmark"></i>
+                </span>
+                <p>テンプレート</p>
+            </a>
+            <a href="Shopping.html" class="menu-button">
+                <span>
+                    <i class="fa-solid fa-cart-shopping"></i>
+                </span>
+                <p>買い物リスト</p>
+            </a>
+            <a href="Share.html" class="menu-button">
+                <span>
+                    <i class="fa-solid fa-share-nodes"></i>
+                </span>
+                <p>共有</p>
+            </a>
+        </nav>
+
+        <script type="module" src="SelectDate.js">
+            
+        </script>
+  
+    </body>
+
+</html>

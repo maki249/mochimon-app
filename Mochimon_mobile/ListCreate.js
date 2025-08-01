@@ -35,12 +35,10 @@ async function loadChecklistItems() {
     console.log("ユーザー未認証なので読み込みを待つ");
     return;
   }
-  if (!eventId) {
-    console.error("eventIdがURLにありません");
+  if (date || eventId) {
     const items = itemArray || [];
     const checklist = document.getElementById('checklist');
     checklist.innerHTML = '';  // 一旦リストを空に
-
     items.forEach(item => {
       const li = document.createElement('li');
       li.innerHTML = `
@@ -51,32 +49,8 @@ async function loadChecklistItems() {
     });
     updateEmptyMessage();
     return;
-  }
-  try {
-    const eventRef = doc(db, currentUser.uid, eventId);
-    const eventSnap = await getDoc(eventRef);
-
-    if (eventSnap.exists()) {
-      const eventData = eventSnap.data();
-      const items = eventData.itemList || [];
-      const checklist = document.getElementById('checklist');
-      checklist.innerHTML = '';  // 一旦リストを空に
-
-      items.forEach(item => {
-        const li = document.createElement('li');
-        li.innerHTML = `
-          <input type="checkbox" ${item.checked ? 'checked' : ''} />
-          <span>${item.name}</span>
-          <i class="fas fa-trash delete-icon"></i>
-        `;
-        checklist.appendChild(li);
-      });
-      updateEmptyMessage();
-    } else {
-      console.log("イベントが見つかりません");
-    }
-  } catch (error) {
-    console.error("チェックリスト読み込みエラー:", error);
+  }else {
+    console.log("イベントが見つかりません");
   }
 }
 
@@ -142,19 +116,18 @@ document.querySelector('.cancel-button').addEventListener('click', (e) => {
 });
 //保存ボタン
 document.querySelector('.save-button').addEventListener('click', async () => {
-    const checklistItems = document.querySelectorAll('#checklist li');
-    const items = Array.from(checklistItems).map(li => {
-        return {
-            name: li.querySelector('span').textContent
-        };
-    });
-
+    const checklistItems = document.querySelectorAll('#checklist li span');
+    const items = [];
+    for(const item of checklistItems){
+      items.push(item.textContent);
+    }
+    
     try {
         while (!currentUser);
 
         // item localStrageに保存（必要なら残す）
         for (const item of items) {
-            itemArray.push(item.name);
+            itemArray.push(item);
         }
 
         alert("保存成功！");

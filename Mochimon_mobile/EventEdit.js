@@ -1,6 +1,6 @@
 // --- Firebase 初期化 ---
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-import { getFirestore, doc, getDoc, updateDoc, deleteDoc, Timestamp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+import { getFirestore, collection, doc, addDoc, getDoc, updateDoc, deleteDoc, Timestamp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 
 const firebaseConfig = {
@@ -55,8 +55,20 @@ async function loadEventData(user) {
 
   const data = snap.data();
   console.log("✅ イベントデータ:", data);
-  console.log(data.itemList); 
+  console.log(data.itemArray); 
   currentItemList = data.itemArray || [];
+  const itemArray = JSON.parse(localStorage.getItem('item')) || [];
+  if(itemArray.length > 0){
+    console.log(itemArray);
+    currentItemList.length = 0;
+    itemArray.forEach(item =>{
+      currentItemList.push({
+        name: item,
+        isChecked: false
+    });
+    })
+  }
+  console.log(currentItemList);
   renderItemList();
 
   // フォームへ反映
@@ -74,6 +86,29 @@ async function loadEventData(user) {
     document.getElementById("end-date-box").value = end.toISOString().slice(0, 10);
     document.getElementById("end-time-box").value = end.toTimeString().slice(0, 5);
   }
+  
+  document.querySelector(".copy-button").addEventListener("click", async () => {
+    const user = auth.currentUser;
+    if(!user) return alert("再度ログインしてください");
+    if(confirm("この予定をコピーしますか？")){
+      try{
+        await addDoc(collection(db, user.uid), {
+            tag: "Event",
+            eventName: snap.data().eventName + "+",
+            isAllDay: snap.data().isAllDay,
+            startDate: snap.data().startDate,
+            endDate: snap.data().endDate,
+            notify: snap.data().notify,
+            itemArray: snap.data().itemArray
+        });
+        alert("予定をコピーしました");
+        window.location.href = "Calendar.html"; 
+      }catch (e){
+
+      }
+    }
+
+  });
 }
 
 // --- ログイン後処理 ---
@@ -125,7 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
       startDate: Timestamp.fromDate(start),
       endDate:   Timestamp.fromDate(end),
       tag:       "Event",
-      itemList: itemArray
+      itemArray: itemArray
     });
 
     alert("保存しました");
@@ -134,6 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // アイテム追加
   document.getElementById("add-item-button").addEventListener("click", () => {
+    storage();
     location.href = `ListCreate.html?eventId=${eventId}`;
   });
 
@@ -162,6 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
     location.href = "Calendar.html";
   });
 
+
   document.querySelector(".delete-button").addEventListener("click", async () => {
     const user = auth.currentUser;
     if (!user) return alert("再度ログインしてください");
@@ -180,3 +217,30 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+function storage(){
+    const notify = []
+
+    const notifyList = document.querySelectorAll('.form-row.selected');
+    for(const notifyTime of notifyList){
+        console.log(notifyTime.id);
+        notify.push(notifyTime.id);
+    }
+    console.log(notify);
+    const storage = ([
+        ["title", document.getElementById('event-title').value.trim()],
+        ["allDay", document.getElementById('all-day-toggle').checked],
+        ["endDate", document.getElementById('end-date-box').value ?? ""],
+        ["startTime", document.getElementById('start-time-box').value ?? ""],
+        ["endTime", document.getElementById('end-time-box').value ?? ""],
+        ["notifyList", notify]
+    ]);
+    const JSONstorage = Array.from(storage);
+    console.log(JSONstorage);
+    localStorage.setItem(eventId, JSON.stringify(JSONstorage));
+    const itemArray = [];
+    currentItemList.forEach(item => {
+      itemArray.push(item.name);
+    })
+    localStorage.setItem('item', JSON.stringify(itemArray));
+}

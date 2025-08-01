@@ -52,7 +52,7 @@ async function loadChecklistItems(userId, eventId) {
     const formattedStartDate = `${startDate.getFullYear()}年${startDate.getMonth()+1}月${startDate.getDate()}日`;
     const formattedEndDate = `${endDate.getFullYear()}年${endDate.getMonth()+1}月${endDate.getDate()}日`;
     if (formattedStartDate !== formattedEndDate) {
-      header.innerHTML = `${formattedStartDate} ～ ${formattedEndDate}<br>${eventData.eventName || ''}`;
+      header.innerHTML = `${formattedStartDate} ～ <br>${formattedEndDate}<br>${eventData.eventName || ''}`;
     } else {
       header.innerHTML = `${formattedStartDate}<br>${eventData.eventName || ''}`;
     }

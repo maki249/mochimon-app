@@ -47,7 +47,7 @@ document.getElementById("create-template-btn").addEventListener("click", () => {
     const input = document.getElementById("template-name").value.trim();
     if (input) {
       // URLにテンプレート名をクエリパラメータで渡す
-      location.href = `EditTemplate.html?TempId=${encodeURIComponent(input)}`;
+      location.href = `EditTemplate.html?TempName=${encodeURIComponent(input)}`;
     } else {
       alert("テンプレート名を入力してください");
     }
@@ -558,7 +558,7 @@ onAuthStateChanged(auth, async (user) => {
                         if(temp.data().type === 'default'){
                             iconImage.setAttribute('src', 'tempIcon/' + temp.id + '.svg');
                         }else{
-                            iconImage.setAttribute('src', 'tempIcon/other.svg');
+                            iconImage.setAttribute('src', 'tempIcon/zisaku.svg');
                         }
                         iconImage.setAttribute('alt', 'アイコン');
                         iconImage.setAttribute('class', 'card-icon');

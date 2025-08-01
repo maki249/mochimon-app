@@ -1,6 +1,6 @@
 // --- Firebase 初期化 ---
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-import { getFirestore, doc, getDoc, updateDoc, deleteDoc, Timestamp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+import { getFirestore, collection, doc, addDoc, getDoc, updateDoc, deleteDoc, Timestamp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 
 const firebaseConfig = {
@@ -55,7 +55,7 @@ async function loadEventData(user) {
 
   const data = snap.data();
   console.log("✅ イベントデータ:", data);
-  console.log(data.itemList); 
+  console.log(data.itemArray); 
   currentItemList = data.itemArray || [];
   renderItemList();
 
@@ -74,6 +74,29 @@ async function loadEventData(user) {
     document.getElementById("end-date-box").value = end.toISOString().slice(0, 10);
     document.getElementById("end-time-box").value = end.toTimeString().slice(0, 5);
   }
+  
+  document.querySelector(".copy-button").addEventListener("click", async () => {
+    const user = auth.currentUser;
+    if(!user) return alert("再度ログインしてください");
+    if(confirm("この予定をコピーしますか？")){
+      try{
+        await addDoc(collection(db, user.uid), {
+            tag: "Event",
+            eventName: snap.data().eventName + "+",
+            isAllDay: snap.data().isAllDay,
+            startDate: snap.data().startDate,
+            endDate: snap.data().endDate,
+            notify: snap.data().notify,
+            itemArray: snap.data().itemArray
+        });
+        alert("予定をコピーしました");
+        window.location.href = "Calendar.html"; 
+      }catch (e){
+
+      }
+    }
+
+  });
 }
 
 // --- ログイン後処理 ---
@@ -125,7 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
       startDate: Timestamp.fromDate(start),
       endDate:   Timestamp.fromDate(end),
       tag:       "Event",
-      itemList: itemArray
+      itemArray: itemArray
     });
 
     alert("保存しました");
@@ -161,6 +184,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelector(".cancel-button").addEventListener("click", () => {
     location.href = "Calendar.html";
   });
+
 
   document.querySelector(".delete-button").addEventListener("click", async () => {
     const user = auth.currentUser;

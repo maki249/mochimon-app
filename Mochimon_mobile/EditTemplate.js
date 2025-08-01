@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
+import { cloneElement } from "react";
 
 const firebaseConfig = {
     apiKey: "AIzaSyChPt5NDvgd4okxbUQalZtrS7w6Tm30fgg",
@@ -36,6 +37,7 @@ const checklist = document.querySelector('.checklist');
 // URL から TempId を取得
 const params  = new URLSearchParams(window.location.search);
 const TempId = params.get("TempId");
+const TempName = params.get("TempName");
 
 // ユーザーの認証状態が変わるたびにcurrentUserにセット
 onAuthStateChanged(auth, async (user) => {
@@ -44,8 +46,8 @@ onAuthStateChanged(auth, async (user) => {
     let type = "default";
     try{
       // テンプレートリストの取得
-      const getItem = await getDoc(doc(db, user.uid, TempId));
-      if(getItem.data()){
+      if(TempId){
+        const getItem = await getDoc(doc(db, user.uid, TempId));
         // テンプレートリストタイトルの表示
         title.textContent = getItem.data().title;
 
@@ -63,7 +65,7 @@ onAuthStateChanged(auth, async (user) => {
         }
       }else{
         type = "origin";
-        title.textContent = TempId
+        title.textContent = TempName;
       }
     }catch(error){
         console.log(error);
@@ -80,13 +82,22 @@ onAuthStateChanged(auth, async (user) => {
         }
         item.push(itemDict);
       }
+      if(TempId){
+        await setDoc(doc(db, user.uid, TempId), {
+          tag: "templateList",
+          title: title.textContent,
+          item: item,
+          type: type
+        });
+      }else if(TempName){
+        await addDoc(collection(db, user.uid), {
+          tag: "templateList",
+          title: title.textContent,
+          item: item,
+          type: type
+        });
+      }
 
-      await setDoc(doc(db, user.uid, TempId), {
-        tag: "templateList",
-        title: title.textContent,
-        item: item,
-        type: type
-      });
 
       alert("登録成功: ");
       window.location.href = 'Template.html';

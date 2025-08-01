@@ -41,11 +41,11 @@ window.onload = function(){
 
         document.getElementById('all-day-toggle').checked = dataStrage.get("allDay");
         document.getElementById('end-date-box').value = dataStrage.get("endDate");
-        if(!dataStrage.allDay){
-            document.getElementById('start-time-box').value = dataStrage.get("startTime");
-            
-            document.getElementById('end-time-box').value = dataStrage.get("endTime");
+        if(dataStrage.allDay){
+            document.getElementById('start-time-box').style.display = 'none';
+            document.getElementById('end-time-box').style.display = 'none';
         }
+
         
         const notifyArray = document.getElementsByClassName('form-row');
         console.log(dataStrage.get("notifyList"));
@@ -166,7 +166,6 @@ document.querySelector('.save-button').addEventListener('click', async () => {
             alert("ログインしていません。もう一度お試しください。");
             return;
         }
-        
         const docRef = await addDoc(collection(db, currentUser.uid), {
             tag: "Event",
             eventName: title,    //タイトル

@@ -41,7 +41,8 @@ window.onload = function(){
 
         document.getElementById('all-day-toggle').checked = dataStrage.get("allDay");
         document.getElementById('end-date-box').value = dataStrage.get("endDate");
-        if(dataStrage.allDay){
+        if(dataStrage.get("allDay")){
+            console.log("aa");
             document.getElementById('start-time-box').style.display = 'none';
             document.getElementById('end-time-box').style.display = 'none';
         }

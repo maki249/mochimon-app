@@ -33,6 +33,9 @@ localStorage.clear();
 
 // ユーザーの認証状態が変わるたびにcurrentUserにセット
 onAuthStateChanged(auth, async (user) => {
+    if(!user){
+        window.location.href = '../login.html';
+    }
     currentUser = user;
     console.log("Auth state changed:", user);
     //持ち物の取得

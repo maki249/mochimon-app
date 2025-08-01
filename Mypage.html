@@ -74,14 +74,7 @@
 
         homeLink.addEventListener('click', (e) => {
             e.preventDefault(); // デフォルトのリンク動作を止める
-
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-            if (isMobile) {
             window.location.href = "Mochimon_mobile/Home.html"; // スマホ用
-            } else {
-            window.location.href = "Mochimon_pc/Home.html"; // PC用
-            }
         });
     </script>
 </body>

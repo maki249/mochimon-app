@@ -11,7 +11,7 @@
     padding: 0 20px; /* 左右にパディングを設定 */
     box-sizing: border-box; /* paddingを含めて幅を計算 */
     z-index: 1000; /* 下部メニューと同じか、必要に応じて調整 */
-    background-color: #e0f0f0;
+    background-color: #a2d0d0;
 }
 
 .title{
@@ -19,20 +19,9 @@
     color: black;
 }
 
-/*ログインフォーム*/
-.login-container {
-    flex-grow: 1; /* ヘッダー以外の残りのスペースを全て使用 */
-    display: flex;
-    justify-content: center; /* 水平方向中央 */
-    align-items: center; /* 垂直方向中央 */
-    padding: 20px; /* 必要に応じてフォームの上下左右に余白 */
-    box-sizing: border-box;
-    margin-top: 50px;
-}
-
 body {
     font-family: sans-serif;
-    background-color: #f0f8ff;
+    background-color: white;
     text-align: center;
     margin: 0;
     padding: 0;
@@ -44,7 +33,7 @@ body {
     background: white;
     border-radius: 1rem;
     padding: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     box-sizing: border-box;
   
 }

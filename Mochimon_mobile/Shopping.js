@@ -52,61 +52,77 @@ onAuthStateChanged(auth, async (user) => {
     const userDocRef = collection(db, userId);
     const snapshot = await getDocs(userDocRef);
 
+
     snapshot.forEach(async (docSnap) => {
         if (docSnap.id.startsWith("shoppingList_")) {
             const data = docSnap.data();
             const items = data.items || [];
-            const date = data.date || "日付不明";
-            const eventName = data.eventName || docSnap.id.replace("shoppingList_", ""); // イベント名確保
+            const dateStr = data.date || ""; // 日付がない場合は空文字列
+            const eventName = data.eventName || docSnap.id.replace("shoppingList_", "");
 
-            const card = document.createElement('div');
-            card.classList.add('card');
-            card.dataset.eventName = eventName;  // data属性として保持
+            // ✅ 日付をDateオブジェクトに変換できるか確認
+            let eventDate = null;
+            if (dateStr) {
+                const parsed = new Date(dateStr);
+                if (!isNaN(parsed)) {
+                    eventDate = parsed;
+                    eventDate.setHours(0, 0, 0, 0);
+                }
+            }
 
-            card.innerHTML = `
-                <div class="card-header">
-                    <h3>${date}</h3>
-                    <h4 style="display:none;">${eventName}</h4>
-                    <button class="toggle-button" onclick="toggleChecklist(this)">
-                        <i class="fa-solid fa-chevron-up"></i>
-                    </button>
-                </div>
-                <ul class="checklist">
-                    ${items.map((item, index) => `
-                        <li>
-                            <div class="item">
-                                <input type="checkbox" data-index="${index}" ${item.checked ? 'checked' : ''}> ${item.name}
-                            </div>
-                        </li>
-                    `).join('')}
-                </ul>
-            `;
+            // ✅ 表示条件：今日以降 または 未チェックのアイテムがある
+            const hasUnchecked = items.some(item => !item.checked);
+            const isFutureOrToday = eventDate && eventDate >= today;
 
-            checklistContainer.appendChild(card);
+            if (isFutureOrToday || hasUnchecked) {
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.dataset.eventName = eventName;
 
-            // チェックボックスのイベント登録
-            const checklist = card.querySelector('.checklist');
-            const checkboxes = checklist.querySelectorAll("input[type='checkbox']");
+                card.innerHTML = `
+                    <div class="card-header">
+                        <h3>${dateStr || "日付不明"}</h3>
+                        <h4 style="display:none;">${eventName}</h4>
+                        <button class="toggle-button" onclick="toggleChecklist(this)">
+                            <i class="fa-solid fa-chevron-up"></i>
+                        </button>
+                    </div>
+                    <ul class="checklist">
+                        ${items.map((item, index) => `
+                            <li>
+                                <div class="item">
+                                    <input type="checkbox" data-index="${index}" ${item.checked ? 'checked' : ''}> ${item.name}
+                                </div>
+                            </li>
+                        `).join('')}
+                    </ul>
+                `;
 
-            checkboxes.forEach(cb => {
-                cb.addEventListener("change", async () => {
-                    const index = parseInt(cb.dataset.index);
-                    const updatedItems = items.map((item, i) =>
-                        i === index ? { ...item, checked: cb.checked } : item
-                    );
+                checklistContainer.appendChild(card);
 
-                    const shoppingDocRef = doc(db, userId, docSnap.id);
-                    await setDoc(shoppingDocRef, {
-                        ...data,
-                        items: updatedItems
+                const checklist = card.querySelector('.checklist');
+                const checkboxes = checklist.querySelectorAll("input[type='checkbox']");
+
+                checkboxes.forEach(cb => {
+                    cb.addEventListener("change", async () => {
+                        const index = parseInt(cb.dataset.index);
+                        const updatedItems = items.map((item, i) =>
+                            i === index ? { ...item, checked: cb.checked } : item
+                        );
+
+                        const shoppingDocRef = doc(db, userId, docSnap.id);
+                        await setDoc(shoppingDocRef, {
+                            ...data,
+                            items: updatedItems
+                        });
+
+                        console.log("チェック状態を保存:", updatedItems[index].name, cb.checked);
+                        updateCardState(checklist);
                     });
-
-                    console.log("チェック状態を保存:", updatedItems[index].name, cb.checked);
-                    updateCardState(checklist);
                 });
-            });
 
-            updateCardState(checklist);
+                updateCardState(checklist);
+            }
         }
     });
 });

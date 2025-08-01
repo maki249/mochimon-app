@@ -29,6 +29,7 @@ const date = params.get("date");
 let movePageFlag = 0;
 
 const itemArray = JSON.parse(localStorage.getItem('item')) || [];
+const addItemArray = JSON.parse(localStorage.getItem('addItem')) || [];
 
 async function loadChecklistItems() {
   if (!currentUser) {
@@ -37,9 +38,18 @@ async function loadChecklistItems() {
   }
   if (date || eventId) {
     const items = itemArray || [];
+    const addItems = addItemArray || [];
     const checklist = document.getElementById('checklist');
     checklist.innerHTML = '';  // 一旦リストを空に
     items.forEach(item => {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <span>${item}</span>
+        <i class="fas fa-trash delete-icon"></i>
+      `;
+      checklist.appendChild(li);
+    });
+    addItems.forEach(item => {
       const li = document.createElement('li');
       li.innerHTML = `
         <span>${item}</span>
@@ -108,6 +118,7 @@ document.getElementById('modal-overlay').addEventListener('click', (e) => {
 });
 // キャンセルボタン
 document.querySelector('.cancel-button').addEventListener('click', (e) => {
+    localStorage.removeItem('addItem');
     if(!eventId){
       window.location.href = `EventCreate.html?date=${date}`; 
     }else{
@@ -125,11 +136,9 @@ document.querySelector('.save-button').addEventListener('click', async () => {
     try {
         while (!currentUser);
 
-        // item localStrageに保存（必要なら残す）
-        for (const item of items) {
-            itemArray.push(item);
-        }
-
+        localStorage.removeItem('item');
+        localStorage.setItem('item', JSON.stringify(items));
+        localStorage.removeItem('addItem');
         alert("保存成功！");
         movePageFlag = 1;
 
@@ -142,26 +151,6 @@ document.querySelector('.save-button').addEventListener('click', async () => {
     } catch (error) {
         alert("保存に失敗しました: " + error.message);
         console.error("保存エラー", error);
-    }
-
-    // Firestore へ保存（eventIdがある場合）
-    if (eventId) {
-      const eventRef = doc(db, currentUser.uid, eventId);
-      await updateDoc(eventRef, {
-        itemList: items
-      });
-    } else {
-      // 新規イベント作成前なら localStorage に保存（既存の処理）
-      localStorage.setItem('item', JSON.stringify(items));
-    }
-
-    alert("保存成功！");
-    movePageFlag = 1;
-
-    if (!eventId) {
-      window.location.href = `EventCreate.html?date=${date}`;
-    } else {
-      window.location.href = `EventEdit.html?eventId=${eventId}`;
     }
 });
 

@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-import { getFirestore, addDoc, updateDoc, deleteDoc, collection, doc ,getDoc} from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+import { getFirestore, addDoc, updateDoc, deleteDoc, collection, doc, getDocs, query, where} from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -30,9 +30,64 @@ const date = params.get("date");
 onAuthStateChanged(auth, async (user) => {
     currentUser = user;
     console.log("auth state changed:", user);
-});
+    
+    //持ち物の取得
+    try{        
+        const templateList = await getDocs(query(collection(db, user.uid), where("tag", "==", "templateList")));
+        console.log(templateList);
 
-document.addEventListener('DOMContentLoaded', () => {
+        const dashboard = document.getElementById('dashboard-list');
+        templateList.forEach(temp => {
+            const card = document.createElement('div');
+            card.setAttribute('class', 'card');
+            card.setAttribute('id', temp.id);
+                
+                const title = document.createElement('h2');
+                title.textContent = temp.data().title;
+                card.appendChild(title);
+                
+                const content = document.createElement('div');
+                content.setAttribute('class', 'card-content');
+                    
+                    const icon = document.createElement('div');
+                    icon.setAttribute('class', 'icon-wrapper');
+
+                        const iconImage = document.createElement('img');
+                        if(temp.data().type === 'default'){
+                            iconImage.setAttribute('src', 'tempIcon/' + temp.id + '.svg');
+                        }else{
+                            iconImage.setAttribute('src', 'tempIcon/zisaku.svg');
+                        }
+                        iconImage.setAttribute('alt', 'アイコン');
+                        iconImage.setAttribute('class', 'card-icon');
+                    icon.appendChild(iconImage);
+
+                    content.appendChild(icon);
+
+                    const itemList = document.createElement('ul');
+                    itemList.setAttribute('class', 'checklist');
+                        if(temp.data().item.length > 0){
+                            for(const item of temp.data().item){
+                                const li = document.createElement('li');
+                                li.innerHTML = `
+                                    <label><input type="checkbox" disabled> ${item.name}</label>
+                                `
+                                itemList.appendChild(li); 
+                            }
+                        }else{
+                            const li = document.createElement('li');
+                            li.textContent = '※テンプレートリストが空です';
+                            itemList.appendChild(li);
+                        }
+                    
+                    content.appendChild(itemList);
+                card.appendChild(content);
+            dashboard.appendChild(card);
+        });
+    }catch(error){
+        console.log(error);
+    }
+        
     const cards = document.querySelectorAll('.card');  // ← 修正
 
     const useButton = document.getElementById('use-button');
@@ -56,15 +111,34 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 保存ボタン
     useButton.addEventListener('click', () => {
-        alert('保存処理をここに追加');
+        const itemArray = JSON.parse(localStorage.getItem('item')) || [];
+        const addItemArray = [];
+        cards.forEach(card => {
+            if (card.classList.contains('selected')) {
+                const names = card.querySelectorAll('label');
+                names.forEach(name => {
+                    if(!itemArray.includes(name.textContent)){
+                        if(!addItemArray.includes(name.textContent)){
+                            addItemArray.push(name.textContent);
+                        }
+                    }
+                })
+            }
+        })
+        localStorage.setItem('addItem', JSON.stringify(addItemArray));
+        if(!eventId){
+            window.location.href = `ListCreate.html?date=${date}`;
+        }else{
+            window.location.href = `ListCreate.html?eventId=${eventId}`;
+        }
     });
-});
 
-// キャンセルボタン
-document.querySelector('.cancel-button').addEventListener('click', () => {
-    if(!eventId){
-        window.location.href = `ListCreate.html?date=${date}`;
-    }else{
-        window.location.href = `ListCreate.html?eventId=${eventId}`;
-    }
+    // キャンセルボタン
+    document.querySelector('.cancel-button').addEventListener('click', () => {
+        if(!eventId){
+            window.location.href = `ListCreate.html?date=${date}`;
+        }else{
+            window.location.href = `ListCreate.html?eventId=${eventId}`;
+        }
+    });
 });

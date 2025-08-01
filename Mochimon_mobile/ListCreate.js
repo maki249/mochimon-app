@@ -148,7 +148,6 @@ document.querySelector('.save-button').addEventListener('click', async () => {
       items.push(item.textContent);
     }
     
-
     try {
         while (!currentUser);
 

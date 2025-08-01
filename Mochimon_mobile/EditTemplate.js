@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 
 const firebaseConfig = {
@@ -19,7 +19,7 @@ let currentUser = null;
 
 const save = document.getElementById('save');
 
-const editIcon = document.querySelector('.fa-pencil');
+const editIcon = document.querySelector('.title-with-icon');
 const modal = document.getElementById('editModal');
 const input = document.getElementById('templateNameInput');
 const cancelBtn = document.getElementById('cancelModal');
@@ -77,7 +77,7 @@ onAuthStateChanged(auth, async (user) => {
         item.push(itemDict);
       }
 
-      await setDoc(doc(db, user.uid, eventId), {
+      await updateDoc(doc(db, user.uid, eventId), {
         title: title.textContent,
         item: item
       });

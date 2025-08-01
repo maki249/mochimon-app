@@ -60,6 +60,7 @@ async function loadEventData(user) {
   const itemArray = JSON.parse(localStorage.getItem('item')) || [];
   if(itemArray.length > 0){
     console.log(itemArray);
+    currentItemList.length = 0;
     itemArray.forEach(item =>{
       currentItemList.push({
         name: item,
@@ -168,6 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // アイテム追加
   document.getElementById("add-item-button").addEventListener("click", () => {
+    storage();
     location.href = `ListCreate.html?eventId=${eventId}`;
   });
 
@@ -215,3 +217,30 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+function storage(){
+    const notify = []
+
+    const notifyList = document.querySelectorAll('.form-row.selected');
+    for(const notifyTime of notifyList){
+        console.log(notifyTime.id);
+        notify.push(notifyTime.id);
+    }
+    console.log(notify);
+    const storage = ([
+        ["title", document.getElementById('event-title').value.trim()],
+        ["allDay", document.getElementById('all-day-toggle').checked],
+        ["endDate", document.getElementById('end-date-box').value ?? ""],
+        ["startTime", document.getElementById('start-time-box').value ?? ""],
+        ["endTime", document.getElementById('end-time-box').value ?? ""],
+        ["notifyList", notify]
+    ]);
+    const JSONstorage = Array.from(storage);
+    console.log(JSONstorage);
+    localStorage.setItem(eventId, JSON.stringify(JSONstorage));
+    const itemArray = [];
+    currentItemList.forEach(item => {
+      itemArray.push(item.name);
+    })
+    localStorage.setItem('item', JSON.stringify(itemArray));
+}

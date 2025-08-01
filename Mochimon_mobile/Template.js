@@ -79,163 +79,514 @@ onAuthStateChanged(auth, async (user) => {
         
         if(tempList.empty){
             // テンプレートリストをデータベースへ追加
-            await setDoc(doc(db, user.uid, "child"),{
+            await setDoc(doc(db, user.uid, "akasan"),{
                 tag: "templateList",
                 title: "赤ちゃん",
                 item: [
                     {
-                        name: "タオル",
+                        name: "おむつ",
                         isChecked: false
                     },
                     {
-                        name: "ウェットシート",
+                        name: "ミルク",
+                        isChecked: false
+                    },
+                    {
+                        name: "着替え",
                         isChecked: false
                     }
-                ]
+                ],
+                type: "default"
             })
-            await setDoc(doc(db, user.uid, "plane"),{
+            await setDoc(doc(db, user.uid, "foreign"),{
                 tag: "templateList",
-                title: "飛行機",
+                title: "海外旅行",
                 item: [
                     {
-                        name: "耳栓",
+                        name: "パスポート・ビザ",
                         isChecked: false
                     },
                     {
-                        name: "ウェットシート",
+                        name: "航空券（Eチケット）",
+                        isChecked: false
+                    },
+                    {
+                        name: "現地通貨・クレジットカード",
+                        isChecked: false
+                    },
+                    {
+                        name: "スマホ・充電器・変換プラグ",
+                        isChecked: false
+                    },
+                    {
+                        name: "常備薬・処方薬",
+                        isChecked: false
+                    },
+                    {
+                        name: "歯ブラシ・洗面用具",
+                        isChecked: false
+                    },
+                    {
+                        name: "着替え",
+                        isChecked: false
+                    },
+                    {
+                        name: "スーツケースベルト・タグ",
+                        isChecked: false
+                    },
+                    {
+                        name: "マスク・除菌シート",
                         isChecked: false
                     }
-                ]
+                ],
+                type: "default"
             })
-            await setDoc(doc(db, user.uid, "sport"),{
+            await setDoc(doc(db, user.uid, "sports"),{
                 tag: "templateList",
                 title: "スポーツ",
                 item: [
                     {
-                        name: "タオル",
-                        isChecked: false
-                    },
-                    {
                         name: "スポーツウェア",
                         isChecked: false
-                    }
-                ]
-            })
-            await setDoc(doc(db, user.uid, "ocean"),{
-                tag: "templateList",
-                title: "海",
-                item: [
+                    },
                     {
-                        name: "タオル",
+                        name: "シューズ（ランニング・屋内用）",
                         isChecked: false
                     },
                     {
-                        name: "サンダル",
+                        name: "飲み物",
+                        isChecked: false
+                    },
+                    {
+                        name: "タオル・汗拭きシート",
+                        isChecked: false
+                    },
+                    {
+                        name: "プロテイン",
+                        isChecked: false
+                    },
+                    {
+                        name: "着替え",
+                        isChecked: false
+                    },
+                    {
+                        name: "サポーター・テーピング",
+                        isChecked: false
+                    },
+                    {
+                        name: "スマートウォッチ・活動計",
+                        isChecked: false
+                    },
+                ],
+                type: "default"
+            })
+            await setDoc(doc(db, user.uid, "umi"),{
+                tag: "templateList",
+                title: "海・川・プール",
+                item: [
+                    {
+                        name: "水着",
+                        isChecked: false
+                    },
+                    {
+                        name: "ゴーグル・浮き輪",
+                        isChecked: false
+                    },
+                    {
+                        name: "ビーチサンダル",
+                        isChecked: false
+                    },
+                    {
+                        name: "バスタオル・ラップタオル",
                         isChecked: false
                     },
                     {
                         name: "日焼け止め",
                         isChecked: false
-                    }
-                ]
-            })
-            await setDoc(doc(db, user.uid, "climb"),{
-                tag: "templateList",
-                title: "登山",
-                item: [
-                    {
-                        name: "登山靴",
-                        isChecked: false
                     },
-                    {
-                        name: "登山ジャケット",
-                        isChecked: false
-                    },
-                    {
-                        name: "ポリ袋",
-                        isChecked: false
-                    }
-                ]
-            })
-            await setDoc(doc(db, user.uid, "camp"),{
-                tag: "templateList",
-                title: "キャンプ",
-                item: [
-                    {
-                        name: "テント",
-                        isChecked: false
-                    },
-                    {
-                        name: "寝袋",
-                        isChecked: false
-                    },
-                    {
-                        name: "折り畳み椅子",
-                        isChecked: false
-                    }
-                ]
-            })
-            await setDoc(doc(db, user.uid, "picnic"),{
-                tag: "templateList",
-                title: "ピクニック",
-                item: [
                     {
                         name: "レジャーシート",
                         isChecked: false
                     },
                     {
-                        name: "弁当",
+                        name: "クーラーボックス・飲み物",
                         isChecked: false
                     },
                     {
-                        name: "日焼け止め",
+                        name: "着替え",
+                        isChecked: false
+                    },
+                    {
+                        name: "防水ポーチ",
+                        isChecked: false
+                    },
+                    {
+                        name: "スマホ防水ケース",
+                        isChecked: false
+                    },
+                    {
+                        name: "海辺用のおもちゃ（バケツなど）",
                         isChecked: false
                     }
-                ]
+                ],
+                type: "default"
             })
-            await setDoc(doc(db, user.uid, "park"),{
+            await setDoc(doc(db, user.uid, "yuenti"),{
                 tag: "templateList",
                 title: "遊園地",
                 item: [
                     {
-                        name: "年間パスポート",
+                        name: "チケット・アプリ登録",
+                        isChecked: false
+                    },
+                    {
+                        name: "モバイルバッテリー",
+                        isChecked: false
+                    },
+                    {
+                        name: "防止・サングラス",
                         isChecked: false
                     },
                     {
                         name: "日焼け止め",
                         isChecked: false
+                    },
+                    {
+                        name: "動きやすい服・靴",
+                        isChecked: false
+                    },
+                    {
+                        name: "タオル・ハンカチ",
+                        isChecked: false
+                    },
+                    {
+                        name: "折りたたみ傘・ポンチョ",
+                        isChecked: false
+                    },
+                    {
+                        name: "財布・交通系ICカード",
+                        isChecked: false
+                    },
+                    {
+                        name: "飲み物・軽食",
+                        isChecked: false
+                    },
+                    {
+                        name: "グッズ用バッグ",
+                        isChecked: false
                     }
-                ]
+                ],
+                type: "default"
             })
-            await setDoc(doc(db, user.uid, "festival"),{
+            await setDoc(doc(db, user.uid, "maturi"),{
                 tag: "templateList",
                 title: "祭り",
                 item: [
                     {
-                        name: "",
+                        name: "浴衣・下駄",
                         isChecked: false
                     },
-                ]
+                    {
+                        name: "財布",
+                        isChecked: false
+                    },
+                    {
+                        name: "うちわ・扇子",
+                        isChecked: false
+                    },
+                    {
+                        name: "レジャーシート",
+                        isChecked: false
+                    },
+                    {
+                        name: "虫除けスプレー",
+                        isChecked: false
+                    },
+                    {
+                        name: "カメラ・スマホ",
+                        isChecked: false
+                    },
+                    {
+                        name: "飲み物",
+                        isChecked: false
+                    },
+                    {
+                        name: "ポケットティッシュ",
+                        isChecked: false
+                    },
+                    {
+                        name: "折りたたみ椅子",
+                        isChecked: false
+                    },
+                    {
+                        name: "ゴミ袋",
+                        isChecked: false
+                    }
+                ],
+                type: "default"
             })
-            await setDoc(doc(db, user.uid, "spring"),{
+            await setDoc(doc(db, user.uid, "yama"),{
+                tag: "templateList",
+                title: "登山・ハイキング",
+                item: [
+                    {
+                        name: "登山靴・靴下",
+                        isChecked: false
+                    },
+                    {
+                        name: "リュックサック",
+                        isChecked: false
+                    },
+                    {
+                        name: "レインウェア",
+                        isChecked: false
+                    },
+                    {
+                        name: "地図・コンパス",
+                        isChecked: false
+                    },
+                    {
+                        name: "飲み物",
+                        isChecked: false
+                    },
+                    {
+                        name: "非常食",
+                        isChecked: false
+                    },
+                    {
+                        name: "帽子・サングラス",
+                        isChecked: false
+                    },
+                    {
+                        name: "軍手・手袋",
+                        isChecked: false
+                    },
+                    {
+                        name: "タオル",
+                        isChecked: false
+                    },
+                    {
+                        name: "救急セット",
+                        isChecked: false
+                    },
+                    {
+                        name: "常備薬",
+                        isChecked: false
+                    }
+                ],
+                type: "default"
+            })
+            await setDoc(doc(db, user.uid, "pikuniku"),{
+                tag: "templateList",
+                title: "ピクニック",
+                item: [
+                    {
+                        name: "お弁当",
+                        isChecked: false
+                    },
+                    {
+                        name: "飲み物",
+                        isChecked: false
+                    },
+                    {
+                        name: "レジャーシート",
+                        isChecked: false
+                    },
+                    {
+                        name: "クーラーバッグ",
+                        isChecked: false
+                    },
+                    {
+                        name: "紙皿・紙コップ・割り箸",
+                        isChecked: false
+                    },
+                    {
+                        name: "ウェットティッシュ",
+                        isChecked: false
+                    },
+                    {
+                        name: "ゴミ袋",
+                        isChecked: false
+                    },
+                    {
+                        name: "日傘",
+                        isChecked: false
+                    },
+                    {
+                        name: "帽子・サングラス",
+                        isChecked: false
+                    },
+                    {
+                        name: "ミニテーブル",
+                        isChecked: false
+                    },
+                    {
+                        name: "折りたたみ椅子",
+                        isChecked: false
+                    },
+                    {
+                        name: "玩具",
+                        isChecked: false
+                    }
+                ],
+                type: "default"
+            })
+            await setDoc(doc(db, user.uid, "kyanpu"),{
+                tag: "templateList",
+                title: "キャンプ",
+                item: [
+                    {
+                        name: "テント・タープ",
+                        isChecked: false
+                    },
+                    {
+                        name: "寝袋・マット",
+                        isChecked: false
+                    },
+                    {
+                        name: "懐中電灯・ランタン",
+                        isChecked: false
+                    },
+                    {
+                        name: "調理器具",
+                        isChecked: false
+                    },
+                    {
+                        name: "クーラーボックス",
+                        isChecked: false
+                    },
+                    {
+                        name: "保冷剤",
+                        isChecked: false
+                    },
+                    {
+                        name: "虫除けスプレー",
+                        isChecked: false
+                    },
+                    {
+                        name: "レジャーシート",
+                        isChecked: false
+                    },
+                    {
+                        name: "軍手・手袋",
+                        isChecked: false
+                    },
+                    {
+                        name: "着替え",
+                        isChecked: false
+                    },
+                    {
+                        name: "タオル",
+                        isChecked: false
+                    },
+                    {
+                        name: "ゴミ袋",
+                        isChecked: false
+                    },
+                    {
+                        name: "雨具",
+                        isChecked: false
+                    }
+                ],
+                type: "default"
+            })
+            await setDoc(doc(db, user.uid, "onsen"),{
                 tag: "templateList",
                 title: "温泉",
                 item: [
                     {
                         name: "タオル",
                         isChecked: false
+                    },
+                    {
+                        name: "着替え",
+                        isChecked: false
+                    },
+                    {
+                        name: "洗顔料・シャンプー",
+                        isChecked: false
+                    },
+                    {
+                        name: "スキンケア用品",
+                        isChecked: false
+                    },
+                    {
+                        name: "ビニール袋",
+                        isChecked: false
+                    },
+                    {
+                        name: "ヘアゴム・ヘアブラシ",
+                        isChecked: false
+                    },
+                    {
+                        name: "飲み物",
+                        isChecked: false
+                    },
+                    {
+                        name: "小銭",
+                        isChecked: false
+                    },
+                    {
+                        name: "マスク・除菌シート",
+                        isChecked: false
                     }
-                ]
+                ],
+                type: "default"
             })
-        }else{
-            tempList.forEach((doc) => {
-                doc
-            });
         }
+        
+        const templateList = await getDocs(query(collection(db, user.uid), where("tag", "==", "templateList")));
+        console.log(templateList);
+
+        const dashboard = document.getElementById('dashboard-list');
+        templateList.forEach(temp => {
+            const card = document.createElement('div');
+            card.setAttribute('class', 'card');
+            card.setAttribute('id', temp.id);
+                
+                const title = document.createElement('h2');
+                title.textContent = temp.data().title;
+                card.appendChild(title);
+                
+                const content = document.createElement('div');
+                content.setAttribute('class', 'card-content');
+                    
+                    const icon = document.createElement('div');
+                    icon.setAttribute('class', 'icon-wrapper');
+
+                        const iconImage = document.createElement('img');
+                        if(temp.data().type === 'default'){
+                            iconImage.setAttribute('src', 'tempIcon/' + temp.id + '.svg');
+                        }else{
+                            iconImage.setAttribute('src', 'tempIcon/other.svg');
+                        }
+                        iconImage.setAttribute('alt', 'アイコン');
+                        iconImage.setAttribute('class', 'card-icon');
+                    icon.appendChild(iconImage);
+
+                    content.appendChild(icon);
+
+                    const itemList = document.createElement('ul');
+                    itemList.setAttribute('class', 'checklist');
+                        
+                        for(const item of temp.data().item){
+                            const li = document.createElement('li');
+                            li.innerHTML = `
+                                <label><input type="checkbox" disabled> ${item.name}</label>
+                            `
+                            itemList.appendChild(li); 
+                        }
+                    
+                    content.appendChild(itemList);
+                card.appendChild(content);
+            dashboard.appendChild(card);
+        });
+        const header = document.getElementById('header');
+        header.after(dashboard);
     }catch(error){
         console.log(error);
     }
-    const tempcards = document.getElementsByClassName("small-card");
+    const tempcards = document.getElementsByClassName("card");
     for(const temp of tempcards){
         temp.addEventListener('click', (e) => {
                 e.stopPropagation(); // カード本体クリック

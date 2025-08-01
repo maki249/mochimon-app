@@ -67,7 +67,7 @@ async function loadChecklistItems(userId, eventId) {
   const shoppingDocSnap = await getDoc(shoppingDocRef);
   const shoppingItems = shoppingDocSnap.exists() ? (shoppingDocSnap.data().items || []) : [];
   // itemListは [{name, checked}, ...]の想定に修正（firestoreから配列として取得）
-  const itemList = eventData.itemList || [];
+  const itemList = eventData.itemArray || [];
   for (const item of itemList) {
     // itemがオブジェクトなら name と checked を取得、文字列なら名前だけ扱う
     const name = (typeof item === "string") ? item : (item.name || "不明なアイテム");

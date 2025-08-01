@@ -56,8 +56,31 @@ onAuthStateChanged(auth, async (user) => {
         if (docSnap.id.startsWith("shoppingList_")) {
             const data = docSnap.data();
             const items = data.items || [];
-            const date = data.date || "日付不明";
+            const dateStr = data.date || "日付不明";
             const eventName = data.eventName || docSnap.id.replace("shoppingList_", ""); // イベント名確保
+
+            // 🔽 日付フィルタ：今日以降か判定
+            let showByDate = true;
+            if (dateStr !== "日付不明") {
+                const dateParts = dateStr.match(/(\d{4})年(\d{1,2})月(\d{1,2})日/);
+                if (dateParts) {
+                    const y = parseInt(dateParts[1]);
+                    const m = parseInt(dateParts[2]) - 1; // 月は0始まり
+                    const d = parseInt(dateParts[3]);
+                    const eventDate = new Date(y, m, d);
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0); // 時間を無視して比較
+                    showByDate = eventDate >= today;
+                }
+            }
+
+            // 🔽 チェックが1つでも false なら true
+            const hasUncheckedItem = items.some(item => !item.checked);
+
+            // 🔽 表示条件：今日以降 または 未チェックがある
+            if (!(showByDate || hasUncheckedItem)) {
+                return; // 表示しない
+            }
 
             const card = document.createElement('div');
             card.classList.add('card');
@@ -65,7 +88,7 @@ onAuthStateChanged(auth, async (user) => {
 
             card.innerHTML = `
                 <div class="card-header">
-                    <h3>${date}</h3>
+                    <h3>${dateStr}</h3>
                     <h4 style="display:none;">${eventName}</h4>
                     <button class="toggle-button" onclick="toggleChecklist(this)">
                         <i class="fa-solid fa-chevron-up"></i>

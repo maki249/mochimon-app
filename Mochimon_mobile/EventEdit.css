@@ -305,4 +305,5 @@ input[type="text"] {
   z-index: 1000;
   padding: 12px;
   box-sizing: border-box;
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.2);
 }

@@ -16,16 +16,21 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// URLからeventIdとuserIdを取得
+// URLから eventId と userId を取得
 const urlParams = new URLSearchParams(window.location.search);
 let userId = null;
 let eventId = urlParams.get('eventId') || null;
 
-
-// userId と eventId の分割処理（もしuserId?eventId形式の場合）
+// eventId に userId?eventId の形式が混入している場合の対応（もしあれば）
 if (eventId && eventId.includes('?')) {
-  [userId, eventId] = eventId.split('?');
+  // 例: userId?eventId=xxxx → 分割して userId と eventId に分ける
+  const parts = eventId.split('?');
+  userId = parts[0];
+  eventId = parts[1] || null;
 }
+
+// グローバルにアイテムリスト保持（checkbox状態の管理用）
+let itemList = [];
 
 // Firestoreからチェックリストを取得して表示
 async function loadChecklistItems(userId, eventId) {
@@ -34,128 +39,177 @@ async function loadChecklistItems(userId, eventId) {
     return;
   }
 
-  const eventDocRef = doc(db, userId, eventId);
-  const eventDocSnap = await getDoc(eventDocRef);
+  try {
+    // イベント情報ドキュメント取得
+    const eventDocRef = doc(db, userId, eventId);
+    const eventDocSnap = await getDoc(eventDocRef);
 
-  if (!eventDocSnap.exists()) {
-    console.error("指定されたイベントのデータが存在しません");
-    return;
-  }
-
-  const eventData = eventDocSnap.data();
-
-  // 日付表示更新
-  const header = document.getElementById('eventHeader');
-  if (eventData.startDate && eventData.endDate) {
-    const startDate = eventData.startDate.toDate();
-    const endDate = eventData.endDate.toDate();
-    const formattedStartDate = `${startDate.getFullYear()}年${startDate.getMonth()+1}月${startDate.getDate()}日`;
-    const formattedEndDate = `${endDate.getFullYear()}年${endDate.getMonth()+1}月${endDate.getDate()}日`;
-    if (formattedStartDate !== formattedEndDate) {
-      header.innerHTML = `${formattedStartDate} ～ <br>${formattedEndDate}<br>${eventData.eventName || ''}`;
-    } else {
-      header.innerHTML = `${formattedStartDate}<br>${eventData.eventName || ''}`;
+    if (!eventDocSnap.exists()) {
+      console.error("指定されたイベントのデータが存在しません");
+      return;
     }
-  } else {
-    header.textContent = eventData.eventName || '';
-  }
 
-  // チェックリスト初期化
-  const checklist = document.querySelector('.checklist');
-  checklist.innerHTML = '';
-  const shoppingDocRef = doc(db, userId, `shoppingList_${eventId}`);
-  const shoppingDocSnap = await getDoc(shoppingDocRef);
-  const shoppingItems = shoppingDocSnap.exists() ? (shoppingDocSnap.data().items || []) : [];
-  // itemListは [{name, checked}, ...]の想定に修正（firestoreから配列として取得）
-  const itemList = eventData.itemArray || [];
-  for (const item of itemList) {
-    // itemがオブジェクトなら name と checked を取得、文字列なら名前だけ扱う
-    const name = (typeof item === "string") ? item : (item.name || "不明なアイテム");
-    const checked = (typeof item === "object" && 'checked' in item) ? item.checked : false;
-    const isInShoppingList = shoppingItems.some(i => i.name === name);
-    const li = document.createElement('li');
-    li.innerHTML = `
-      <div class="item">
-        <input type="checkbox" ${checked ? 'checked' : ''}>
-        <span>${name}</span>
-      </div>
-      <span class="icon ${isInShoppingList ? 'added' : ''}">
-      <i class="fa-solid ${isInShoppingList ? 'fa-circle-check' : 'fa-cart-shopping'}"></i>
-      </span>
-    `;
-    checklist.appendChild(li);
-  }
+    const eventData = eventDocSnap.data();
 
-  setupEvents(userId, eventId);
-  updateProgress();
+    // ヘッダー表示更新
+    const header = document.getElementById('eventHeader');
+    if (eventData.startDate && eventData.endDate) {
+      const startDate = eventData.startDate.toDate();
+      const endDate = eventData.endDate.toDate();
+      const formattedStartDate = `${startDate.getFullYear()}年${startDate.getMonth()+1}月${startDate.getDate()}日`;
+      const formattedEndDate = `${endDate.getFullYear()}年${endDate.getMonth()+1}月${endDate.getDate()}日`;
+      if (formattedStartDate !== formattedEndDate) {
+        header.innerHTML = `${formattedStartDate} ～ <br>${formattedEndDate}<br>${eventData.eventName || ''}`;
+      } else {
+        header.innerHTML = `${formattedStartDate}<br>${eventData.eventName || ''}`;
+      }
+    } else {
+      header.textContent = eventData.eventName || '';
+    }
+
+    // チェックリスト初期化
+    const checklist = document.querySelector('.checklist');
+    checklist.innerHTML = '';
+
+    // 買い物リスト取得（items配列）
+    const shoppingDocRef = doc(db, userId, `shoppingList_${eventId}`);
+    const shoppingDocSnap = await getDoc(shoppingDocRef);
+    const shoppingItems = shoppingDocSnap.exists() ? (shoppingDocSnap.data().items || []) : [];
+
+    // アイテムリスト（eventDataから取得）
+    itemList = eventData.itemArray || [];
+
+    // 表示生成
+    itemList.forEach((item, index) => {
+      // itemがオブジェクトなら name と checked を取得、文字列なら名前だけ扱う
+      const name = (typeof item === "string") ? item : (item.name || "不明なアイテム");
+      const checked = (typeof item === "object" && 'checked' in item) ? item.checked : false;
+      const isInShoppingList = shoppingItems.some(i => i.name === name);
+
+      // li要素作成
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <div class="item">
+          <input type="checkbox" data-index="${index}" ${checked ? 'checked' : ''}>
+          <span>${name}</span>
+        </div>
+        <span class="icon ${isInShoppingList ? 'added' : ''}">
+          <i class="fa-solid ${isInShoppingList ? 'fa-circle-check' : 'fa-cart-shopping'}"></i>
+        </span>
+      `;
+      checklist.appendChild(li);
+    });
+
+    // イベントリスナー登録
+    setupEvents(userId, eventId);
+
+    // プログレスバー更新
+    updateProgress();
+
+  } catch (error) {
+    console.error("チェックリスト読み込み中にエラーが発生しました:", error);
+  }
 }
 
 function setupEvents(userId, eventId) {
   const checklist = document.querySelector('.checklist');
+  const checkboxes = checklist.querySelectorAll('input[type="checkbox"]');
+  const icons = checklist.querySelectorAll('.icon i');
 
-  // チェックボックス変更イベント
-  checklist.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-    cb.addEventListener('change', () => {
-      updateProgress();
-      // チェック状態変更をFirestoreのitemListにも反映させたいならここで保存処理を呼ぶ
+  // チェックボックスの変更イベント
+  checkboxes.forEach(cb => {
+    cb.addEventListener("change", async () => {
+      const index = parseInt(cb.dataset.index);
+      if (isNaN(index)) return;
+
+      // itemListの該当アイテムのchecked状態を更新
+      itemList[index] = {
+        ...(typeof itemList[index] === "string" ? { name: itemList[index] } : itemList[index]),
+        checked: cb.checked
+      };
+
+      // Firestoreのドキュメント参照作成
+      const shoppingDocRef = doc(db, userId, eventId);
+
+      try {
+        // 現在のドキュメントを取得し、他データも保持しつつitemsのみ更新
+        const docSnap = await getDoc(shoppingDocRef);
+        const data = docSnap.exists() ? docSnap.data() : {};
+
+        await setDoc(shoppingDocRef, {
+          ...data,
+          itemArray: itemList
+        });
+
+        console.log("チェック状態を保存:", itemList[index].name, cb.checked);
+        updateProgress();
+      } catch (error) {
+        console.error("チェック状態保存中にエラー:", error);
+      }
     });
   });
 
-  // アイコン（買い物カート）クリックイベント
-  checklist.querySelectorAll('.icon i').forEach(icon => {
+  // アイコン（買い物カート）のクリックイベント
+  icons.forEach(icon => {
     icon.addEventListener('click', async () => {
       const li = icon.closest('li');
-      const itemName = li.querySelector('.item span').textContent.trim();
+      if (!li) return;
 
+      const itemName = li.querySelector('.item span').textContent.trim();
       if (!userId || !eventId) {
-        alert("ユーザーIDまたはイベントIDがありません。");
+        console.error("ユーザーIDまたはイベントIDがありません。");
         return;
       }
 
       const shoppingDocRef = doc(db, userId, `shoppingList_${eventId}`);
-      const docSnap = await getDoc(shoppingDocRef);
-      let shoppingData = { eventName: eventId, date: "", items: [] };
+      try {
+        const docSnap = await getDoc(shoppingDocRef);
+        let shoppingData = { eventName: eventId, date: "", items: [] };
 
-      if (docSnap.exists()) {
-        shoppingData = docSnap.data();
-      } else {
-        // 初回はイベントの開始日をセット
-        const eventDocRef = doc(db, userId, eventId);
-        const eventDocSnap = await getDoc(eventDocRef);
-        if (eventDocSnap.exists()) {
-          const eventData = eventDocSnap.data();
-          if (eventData.startDate) {
-            const startDate = eventData.startDate.toDate();
-            shoppingData.date = `${startDate.getFullYear()}年${startDate.getMonth() + 1}月${startDate.getDate()}日`;
+        if (docSnap.exists()) {
+          shoppingData = docSnap.data();
+        } else {
+          // 初回はイベントの開始日をセット
+          const eventDocRef = doc(db, userId, eventId);
+          const eventDocSnap = await getDoc(eventDocRef);
+          if (eventDocSnap.exists()) {
+            const eventData = eventDocSnap.data();
+            if (eventData.startDate) {
+              const startDate = eventData.startDate.toDate();
+              shoppingData.date = `${startDate.getFullYear()}年${startDate.getMonth() + 1}月${startDate.getDate()}日`;
+            }
           }
         }
-      }
 
-      const isAdded = icon.classList.contains('fa-circle-check');
-      if (isAdded) {
-        // アイテム削除
-        icon.classList.replace('fa-circle-check', 'fa-cart-shopping');
-        icon.parentElement.classList.remove('added');
+        const isAdded = icon.classList.contains('fa-circle-check');
+        if (isAdded) {
+          // 削除処理
+          icon.classList.replace('fa-circle-check', 'fa-cart-shopping');
+          icon.parentElement.classList.remove('added');
 
-        shoppingData.items = shoppingData.items.filter(item => item.name !== itemName);
+          shoppingData.items = shoppingData.items.filter(item => item.name !== itemName);
 
-        if (shoppingData.items.length === 0) {
-          await deleteDoc(shoppingDocRef);
-          alert("🧹 全アイテムが削除されたので買い物リストを削除しました");
+          if (shoppingData.items.length === 0) {
+            await deleteDoc(shoppingDocRef);
+            console.log("全アイテムが削除されたため買い物リストを削除しました");
+          } else {
+            await setDoc(shoppingDocRef, shoppingData);
+            console.log("アイテムを削除し、買い物リストを更新しました");
+          }
         } else {
-          await setDoc(shoppingDocRef, shoppingData);
-          alert("📝 アイテムを削除し、更新しました");
-        }
-      } else {
-        // アイテム追加
-        icon.classList.replace('fa-cart-shopping', 'fa-circle-check');
-        icon.parentElement.classList.add('added');
+          // 追加処理
+          icon.classList.replace('fa-cart-shopping', 'fa-circle-check');
+          icon.parentElement.classList.add('added');
 
-        if (!shoppingData.items.some(item => item.name === itemName)) {
-          shoppingData.items.push({ name: itemName, checked: false });
+          if (!shoppingData.items.some(item => item.name === itemName)) {
+            shoppingData.items.push({ name: itemName, checked: false });
+          }
+          await setDoc(shoppingDocRef, shoppingData);
+          console.log("アイテムを買い物リストに追加しました:", itemName);
         }
-        await setDoc(shoppingDocRef, shoppingData);
-        console.log("保存完了:", itemName);
+
+      } catch (error) {
+        console.error("買い物リスト更新時にエラー:", error);
       }
     });
   });
@@ -163,8 +217,10 @@ function setupEvents(userId, eventId) {
 
 function updateProgress() {
   const checklist = document.querySelector('.checklist');
+  if (!checklist) return;
+
   const items = Array.from(checklist.querySelectorAll('li'));
-  const checkedCount = items.filter(li => li.querySelector('input').checked).length;
+  const checkedCount = items.filter(li => li.querySelector('input[type="checkbox"]').checked).length;
   const totalCount = items.length;
   const percent = totalCount === 0 ? 0 : Math.round((checkedCount / totalCount) * 100);
 
@@ -174,15 +230,15 @@ function updateProgress() {
   if (progressText) progressText.textContent = `${percent}%`;
   if (progressBar) progressBar.style.width = `${percent}%`;
 
-  // 未チェックを上にする
-  const unchecked = items.filter(li => !li.querySelector('input').checked);
-  const checked = items.filter(li => li.querySelector('input').checked);
+  // 未チェックを上にして並び替え
+  const unchecked = items.filter(li => !li.querySelector('input[type="checkbox"]').checked);
+  const checked = items.filter(li => li.querySelector('input[type="checkbox"]').checked);
 
   checklist.innerHTML = '';
   [...unchecked, ...checked].forEach(li => checklist.appendChild(li));
 }
 
-// 認証状態を監視しロード開始
+// 認証状態監視後、チェックリストをロード
 document.addEventListener('DOMContentLoaded', () => {
   onAuthStateChanged(auth, async (user) => {
     if (!user) {

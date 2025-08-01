@@ -57,6 +57,17 @@ async function loadEventData(user) {
   console.log("✅ イベントデータ:", data);
   console.log(data.itemArray); 
   currentItemList = data.itemArray || [];
+  const itemArray = JSON.parse(localStorage.getItem('item')) || [];
+  if(itemArray.length > 0){
+    console.log(itemArray);
+    itemArray.forEach(item =>{
+      currentItemList.push({
+        name: item,
+        isChecked: false
+    });
+    })
+  }
+  console.log(currentItemList);
   renderItemList();
 
   // フォームへ反映

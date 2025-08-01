@@ -49,7 +49,6 @@ window.onload = function(){
 
         
         const notifyArray = document.getElementsByClassName('form-row');
-        console.log(dataStrage.get("notifyList"));
         for(const notify of notifyArray){
             if(dataStrage.get("notifyList").includes(notify.id)){
                 notify.classList.toggle('selected');
@@ -89,7 +88,6 @@ window.onload = function(){
             }
         }
     }
-    localStorage.clear();
 }
 
 // ユーザーの認証状態が変わるたびにcurrentUserにセット
@@ -159,6 +157,7 @@ document.querySelector('.save-button').addEventListener('click', async () => {
             name: mochimon.textContent,
             isChecked: false
         }
+        console.log(item);
         itemList.push(item);
     }
     try{

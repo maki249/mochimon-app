@@ -153,7 +153,7 @@ document.querySelector('.save-button').addEventListener('click', async () => {
 
         // item localStrageに保存（必要なら残す）
         for (const item of items) {
-            itemArray.push(item.name);
+            itemArray.push(item);
         }
 
         alert("保存成功！");

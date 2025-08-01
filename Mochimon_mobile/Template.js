@@ -47,7 +47,7 @@ document.getElementById("create-template-btn").addEventListener("click", () => {
     const input = document.getElementById("template-name").value.trim();
     if (input) {
       // URLにテンプレート名をクエリパラメータで渡す
-      location.href = `EditTemplate.html?name=${encodeURIComponent(input)}`;
+      location.href = `EditTemplate.html?TempId=${encodeURIComponent(input)}`;
     } else {
       alert("テンプレート名を入力してください");
     }
@@ -568,13 +568,18 @@ onAuthStateChanged(auth, async (user) => {
 
                     const itemList = document.createElement('ul');
                     itemList.setAttribute('class', 'checklist');
-                        
-                        for(const item of temp.data().item){
+                        if(temp.data().item.length > 0){
+                            for(const item of temp.data().item){
+                                const li = document.createElement('li');
+                                li.innerHTML = `
+                                    <label><input type="checkbox" disabled> ${item.name}</label>
+                                `
+                                itemList.appendChild(li); 
+                            }
+                        }else{
                             const li = document.createElement('li');
-                            li.innerHTML = `
-                                <label><input type="checkbox" disabled> ${item.name}</label>
-                            `
-                            itemList.appendChild(li); 
+                            li.textContent = '※テンプレートリストが空です';
+                            itemList.appendChild(li);
                         }
                     
                     content.appendChild(itemList);

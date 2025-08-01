@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 
 const firebaseConfig = {
@@ -33,33 +33,37 @@ const addItemSaveBtn = document.getElementById('addItemSaveBtn');
 const addItemCancelBtn = document.getElementById('addItemCancelBtn');
 const checklist = document.querySelector('.checklist');
 
-// URL から eventId を取得
+// URL から TempId を取得
 const params  = new URLSearchParams(window.location.search);
-const eventId = params.get("TempId");
+const TempId = params.get("TempId");
 
 // ユーザーの認証状態が変わるたびにcurrentUserにセット
 onAuthStateChanged(auth, async (user) => {
     currentUser = user;
     console.log("auth state changed:", user);
-    
+    let type = "default";
     try{
       // テンプレートリストの取得
-      const getItem = await getDoc(doc(db, user.uid, eventId));
-      
-      // テンプレートリストタイトルの表示
-      title.textContent = getItem.data().title;
+      const getItem = await getDoc(doc(db, user.uid, TempId));
+      if(getItem.data()){
+        // テンプレートリストタイトルの表示
+        title.textContent = getItem.data().title;
 
-      // テンプレートリストの設計
-      const itemTagList = [];
-      for(const item of getItem.data().item){
-        const li = createItem(item.name);
+        // テンプレートリストの設計
+        const itemTagList = [];
+        for(const item of getItem.data().item){
+          const li = createItem(item.name);
 
-        itemTagList.push(li);
-      }
+          itemTagList.push(li);
+        }
 
-      // テンプレートリストの表示
-      for(const itemTag of itemTagList){
-        checklist.appendChild(itemTag);
+        // テンプレートリストの表示
+        for(const itemTag of itemTagList){
+          checklist.appendChild(itemTag);
+        }
+      }else{
+        type = "origin";
+        title.textContent = TempId
       }
     }catch(error){
         console.log(error);
@@ -77,9 +81,11 @@ onAuthStateChanged(auth, async (user) => {
         item.push(itemDict);
       }
 
-      await updateDoc(doc(db, user.uid, eventId), {
+      await setDoc(doc(db, user.uid, TempId), {
+        tag: "templateList",
         title: title.textContent,
-        item: item
+        item: item,
+        type: type
       });
 
       alert("登録成功: ");

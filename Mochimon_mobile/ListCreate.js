@@ -142,13 +142,12 @@ document.querySelector('.cancel-button').addEventListener('click', (e) => {
 });
 //保存ボタン
 document.querySelector('.save-button').addEventListener('click', async () => {
-    const checklistItems = document.querySelectorAll('#checklist li');
-    const items = Array.from(checklistItems).map(li => {
-        return {
-            name: li.querySelector('span').textContent
-        };
-    });
-
+    const checklistItems = document.querySelectorAll('#checklist li span');
+    const items = [];
+    for(const item of checklistItems){
+      items.push(item.textContent);
+    }
+    
     try {
         while (!currentUser);
 

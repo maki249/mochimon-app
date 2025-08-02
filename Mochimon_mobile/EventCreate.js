@@ -26,9 +26,9 @@ let currentUser = null;
 const params  = new URLSearchParams(window.location.search);
 const date = params.get("date");
 
-const dataStrageJSON = localStorage.getItem(date);
-const dataStrage = new Map(JSON.parse(dataStrageJSON));
-console.log(dataStrage);
+const dataStorageJSON = localStorage.getItem(date);
+const dataStorage = new Map(JSON.parse(dataStorageJSON));
+console.log(dataStorage);
 const itemArray = JSON.parse(localStorage.getItem('item'));
 console.log(itemArray);
 // 保存した情報の自動設定
@@ -36,13 +36,12 @@ window.onload = function(){
     const startDate = document.getElementById('start-date-box');
     startDate.value = date;
     
-    if(dataStrage.size > 0){
-        document.getElementById('event-title').value = dataStrage.get("title");
+    if(dataStorage.size > 0){
+        document.getElementById('event-title').value = dataStorage.get("title");
 
-        document.getElementById('all-day-toggle').checked = dataStrage.get("allDay");
-        document.getElementById('end-date-box').value = dataStrage.get("endDate");
-        if(dataStrage.get("allDay")){
-            console.log("aa");
+        document.getElementById('all-day-toggle').checked = dataStorage.get("allDay");
+        document.getElementById('end-date-box').value = dataStorage.get("endDate");
+        if(dataStorage.get("allDay")){
             document.getElementById('start-time-box').style.display = 'none';
             document.getElementById('end-time-box').style.display = 'none';
         }
@@ -50,7 +49,7 @@ window.onload = function(){
         
         const notifyArray = document.getElementsByClassName('form-row');
         for(const notify of notifyArray){
-            if(dataStrage.get("notifyList").includes(notify.id)){
+            if(dataStorage.get("notifyList").includes(notify.id)){
                 notify.classList.toggle('selected');
             }
         }
@@ -59,7 +58,7 @@ window.onload = function(){
         itemList.setAttribute('class', 'form-section');
         itemList.textContent = "持ち物";
         const itemButton = document.getElementById('add-item-button');
-        itemButton.before(itemList);
+        itemButton.after(itemList);
         if(itemArray){
             for(const item of itemArray){
                 const form = document.createElement('div');
@@ -120,8 +119,7 @@ document.querySelector('.save-button').addEventListener('click', async () => {
         endDate += "T" + document.getElementById('end-time-box').value + ":00";
     }
     
-    const notifyList = Array.from(document.querySelectorAll('.form-row.selected'))
-                                .map(row => row.dataset.value);
+    const notifyList = document.querySelectorAll('.form-row.selected');
     const start = new Date(startDate)
     const end = new Date(endDate)
     console.log("sss"+start);
@@ -141,9 +139,9 @@ document.querySelector('.save-button').addEventListener('click', async () => {
     const notify = [];
     console.log("notifyList:" + notifyList);
     for(const notifyElement of notifyList){
-        console.log(notifyElement);
-        console.log(dict[notifyElement] + "aaa");
-        const notifyTime = dict[notifyElement];
+        console.log(notifyElement.id);
+        console.log(dict[notifyElement.id] + "aaa");
+        const notifyTime = dict[notifyElement.id];
         console.log(notifyTime);
         notify.push(notifyTime);
     }
@@ -213,11 +211,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             if(notifies){
                 const arrow = document.getElementById('arrow');
+                arrow.textContent = ">";
+                let count = 0;
                 for(const notify of notifies){
-                    const notifyArea = document.createElement('span');
-                    notifyArea.textContent = notify.id + " ";
-                    notifyArea.setAttribute('class', 'notifyList');
-                    arrow.appendChild(notifyArea);
+                    count++;
+                    if(count > 3){
+                        arrow.textContent += "...";
+                        break;
+                    }
+                    arrow.textContent += notify.id + " ";
                 }
             }
         });

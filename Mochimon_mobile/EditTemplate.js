@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+import { getFirestore, doc, collection,  getDoc, setDoc, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
 
 const firebaseConfig = {
@@ -100,7 +100,25 @@ onAuthStateChanged(auth, async (user) => {
 
       alert("登録成功: ");
       window.location.href = 'Template.html';
-    })
+    });
+        
+    saveBtn.addEventListener('click', async () => {
+      const newName = input.value.trim();
+      if (newName !== "") {
+        title.textContent = newName;
+        modal.style.display = 'none';
+      }else{
+        const item = await getDoc(doc(db, user.uid, TempId));
+        if(item.data().type === "default"){
+          alert("テンプレートリストのタイトルを入力してください");
+        }else{
+          if(confirm("テンプレートリストを削除します")){
+            await deleteDoc(doc(db, user.uid, TempId));
+            window.location.href = "Template.html";
+          }
+        }
+      }
+    });
 });
 
 editIcon.addEventListener('click', () => {
@@ -112,15 +130,6 @@ cancelBtn.addEventListener('click', () => {
   modal.style.display = 'none';
 });
 
-saveBtn.addEventListener('click', () => {
-  const newName = input.value.trim();
-  if (newName !== "") {
-    title.textContent = newName;
-    modal.style.display = 'none';
-  }else{
-    alert("テンプレートリストのタイトルを入力してください");
-  }
-});
 
 // モーダル外をクリックして閉じる
 window.addEventListener('click', (e) => {

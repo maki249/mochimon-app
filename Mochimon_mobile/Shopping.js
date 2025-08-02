@@ -48,9 +48,15 @@ onAuthStateChanged(auth, async (user) => {
     const checklistContainer = document.querySelector('#shoppingListContainer');
     checklistContainer.innerHTML = ''; // 一旦クリア
 
+    let displayCount = 0;
+    let shoppingLists = [];
+
     // Firestore の userId コレクション内を取得
     const userDocRef = collection(db, userId);
     const snapshot = await getDocs(userDocRef);
+
+    const futureLists = [];     // 今日以降の予定
+    const pastUnfinishedLists = [];  // 過去かつ未チェックありの予定
 
     snapshot.forEach(async (docSnap) => {
         if (docSnap.id.startsWith("shoppingList_")) {
@@ -61,6 +67,8 @@ onAuthStateChanged(auth, async (user) => {
 
             // 🔽 日付フィルタ：今日以降か判定
             let showByDate = true;
+            let isFuture = false;
+            let isPastUnfinished = false;
             if (dateStr !== "日付不明") {
                 const dateParts = dateStr.match(/(\d{4})年(\d{1,2})月(\d{1,2})日/);
                 if (dateParts) {
@@ -70,17 +78,22 @@ onAuthStateChanged(auth, async (user) => {
                     const eventDate = new Date(y, m, d);
                     const today = new Date();
                     today.setHours(0, 0, 0, 0); // 時間を無視して比較
-                    showByDate = eventDate >= today;
+                    const hasUncheckedItem = items.some(item => !item.checked);
+
+                    if (eventDate >= today) {
+                        isFuture = true;
+                    } else if (hasUncheckedItem) {
+                        isPastUnfinished = true;
+                    }
                 }
             }
-
-            // 🔽 チェックが1つでも false なら true
-            const hasUncheckedItem = items.some(item => !item.checked);
 
             // 🔽 表示条件：今日以降 または 未チェックがある
             if (!(showByDate || hasUncheckedItem)) {
                 return; // 表示しない
             }
+
+            displayCount++;
 
             const card = document.createElement('div');
             card.classList.add('card');
@@ -130,6 +143,37 @@ onAuthStateChanged(auth, async (user) => {
             });
 
             updateCardState(checklist);
+
+            if (isFuture) {
+                futureLists.push(card);
+            } else if (isPastUnfinished) {
+                pastUnfinishedLists.push(card);
+            }
+        }
+    });
+    setTimeout(() => {
+        checklistContainer.innerHTML = ''; // 一度リセット
+        if (futureLists.length > 0) {
+            const title = document.createElement('h2');
+            title.textContent = '今日以降のリスト';
+            title.classList.add('section-title');
+            checklistContainer.appendChild(title);
+            futureLists.forEach(card => checklistContainer.appendChild(card));
+        }
+
+        if (pastUnfinishedLists.length > 0) {
+            const title = document.createElement('h2');
+            title.textContent = '過去の未完了リスト';
+            title.classList.add('section-title');
+            checklistContainer.appendChild(title);
+            pastUnfinishedLists.forEach(card => checklistContainer.appendChild(card));
+        }
+        if (displayCount === 0) {
+            checklistContainer.innerHTML = `
+                <div class="empty-message">
+                    <p>表示する買い物リストがありません</p>
+                </div>
+            `;
         }
     });
 });
@@ -153,3 +197,5 @@ if (iconBtn) {
         }
     });
 }
+
+

@@ -48,6 +48,9 @@ onAuthStateChanged(auth, async (user) => {
     const checklistContainer = document.querySelector('#shoppingListContainer');
     checklistContainer.innerHTML = ''; // 一旦クリア
 
+    let displayCount = 0;
+    let shoppingLists = [];
+
     // Firestore の userId コレクション内を取得
     const userDocRef = collection(db, userId);
     const snapshot = await getDocs(userDocRef);
@@ -81,6 +84,8 @@ onAuthStateChanged(auth, async (user) => {
             if (!(showByDate || hasUncheckedItem)) {
                 return; // 表示しない
             }
+
+            displayCount++;
 
             const card = document.createElement('div');
             card.classList.add('card');
@@ -132,6 +137,17 @@ onAuthStateChanged(auth, async (user) => {
             updateCardState(checklist);
         }
     });
+    setTimeout(() => {
+        if (displayCount === 0) {
+            checklistContainer.innerHTML = `
+                <div class="empty-message">
+                    <p>表示する買い物リストがありません</p>
+                </div>
+            `;
+        } else {
+            displayShoppingLists(shoppingLists);
+        }
+    });
 });
 
 window.onload = function () {
@@ -153,3 +169,4 @@ if (iconBtn) {
         }
     });
 }
+

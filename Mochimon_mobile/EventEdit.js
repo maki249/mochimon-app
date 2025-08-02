@@ -55,7 +55,6 @@ async function loadEventData(user) {
 
   const data = snap.data();
   console.log("✅ イベントデータ:", data);
-  console.log(data.itemArray); 
   currentItemList = data.itemArray || [];
   const itemArray = JSON.parse(localStorage.getItem('item')) || [];
   if(itemArray.length > 0){
@@ -74,6 +73,10 @@ async function loadEventData(user) {
   // フォームへ反映
   document.getElementById("event-title").value = data.eventName || "";
   document.getElementById("all-day-toggle").checked = !!data.isAllDay;
+  if(data.isAllDay){
+    document.getElementById("start-date-box").style.display = 'none';
+    document.getElementById("end-date-box").style.display = 'none';
+  }
 
   if (data.startDate) {
     const start = data.startDate.toDate();
@@ -86,7 +89,47 @@ async function loadEventData(user) {
     document.getElementById("end-date-box").value = end.toISOString().slice(0, 10);
     document.getElementById("end-time-box").value = end.toTimeString().slice(0, 5);
   }
+
   
+  
+  const notifyArray = document.getElementsByClassName('form-row');
+  const dict = {
+    0:    "予定時間",
+    300:  "5分前",
+    600:  "10分前",
+    900:  "15分前",
+    1800: "30分前",
+    3600: "1時間前",
+    7200: "2時間前",
+    10800:"3時間前",
+    21600:"6時間前",
+    86400:"1日前",
+  };
+  const notifyTime = [];
+  for(const notify of data.notify){
+    notifyTime.push(dict[data.startDate.seconds - notify.seconds]);
+  }
+  for(const notify of notifyArray){
+    if(notifyTime.includes(notify.id)){
+        notify.classList.toggle('selected');
+    }
+  }
+
+  const notifies = document.querySelectorAll('.form-row.selected');
+  const preNotfyArea = document.getElementsByClassName('notifyList');
+  while (preNotfyArea.length > 0){
+      preNotfyArea[0].remove();
+  }
+  if(notifies){
+      const arrow = document.getElementById('arrow');
+      for(const notify of notifies){
+          const notifyArea = document.createElement('span');
+          notifyArea.textContent = notify.id + " ";
+          notifyArea.setAttribute('class', 'notifyList');
+          arrow.appendChild(notifyArea);
+      }
+  }
+
   document.querySelector(".copy-button").addEventListener("click", async () => {
     const user = auth.currentUser;
     if(!user) return alert("再度ログインしてください");

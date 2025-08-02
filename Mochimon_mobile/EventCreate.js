@@ -197,34 +197,6 @@ document.getElementById('modal-back-button').addEventListener('click', () => {
     document.getElementById('modal-overlay').classList.remove('active');
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelector('.notification-row').addEventListener('click', () => {
-        document.getElementById('modal-overlay').classList.add('active');
-    });
-    document.querySelectorAll('.notification-options .form-row').forEach(row => {
-        row.addEventListener('click', () => {
-            row.classList.toggle('selected');
-            const notifies = document.querySelectorAll('.form-row.selected');
-            const preNotfyArea = document.getElementsByClassName('notifyList');
-            while (preNotfyArea.length > 0){
-                preNotfyArea[0].remove();
-            }
-            if(notifies){
-                const arrow = document.getElementById('arrow');
-                arrow.textContent = ">";
-                let count = 0;
-                for(const notify of notifies){
-                    count++;
-                    if(count > 3){
-                        arrow.textContent += "...";
-                        break;
-                    }
-                    arrow.textContent += notify.id + " ";
-                }
-            }
-        });
-    });
-});
 
 function calcNotifyTime(start, day, hour, minute){
     const loss = (((day * 24) + hour) * 60 + minute) * 60000;

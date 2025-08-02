@@ -211,11 +211,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             if(notifies){
                 const arrow = document.getElementById('arrow');
+                let count = 0;
                 for(const notify of notifies){
-                    const notifyArea = document.createElement('span');
-                    notifyArea.textContent = notify.id + " ";
-                    notifyArea.setAttribute('class', 'notifyList');
-                    arrow.appendChild(notifyArea);
+                    count++;
+                    if(count > 3){
+                        arrow.textContent += "...";
+                        break;
+                    }
+                    arrow.textContent += notify.id + " ";
                 }
             }
         });

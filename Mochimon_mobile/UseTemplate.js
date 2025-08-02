@@ -38,35 +38,35 @@ onAuthStateChanged(auth, async (user) => {
 
         const dashboard = document.getElementById('dashboard-list');
         templateList.forEach(temp => {
-            const card = document.createElement('div');
-            card.setAttribute('class', 'card');
-            card.setAttribute('id', temp.id);
-                
-                const title = document.createElement('h2');
-                title.textContent = temp.data().title;
-                card.appendChild(title);
-                
-                const content = document.createElement('div');
-                content.setAttribute('class', 'card-content');
+            if(temp.data().item.length > 0){
+                const card = document.createElement('div');
+                card.setAttribute('class', 'card');
+                card.setAttribute('id', temp.id);
                     
-                    const icon = document.createElement('div');
-                    icon.setAttribute('class', 'icon-wrapper');
+                    const title = document.createElement('h2');
+                    title.textContent = temp.data().title;
+                    card.appendChild(title);
+                    
+                    const content = document.createElement('div');
+                    content.setAttribute('class', 'card-content');
+                        
+                        const icon = document.createElement('div');
+                        icon.setAttribute('class', 'icon-wrapper');
 
-                        const iconImage = document.createElement('img');
-                        if(temp.data().type === 'default'){
-                            iconImage.setAttribute('src', 'tempIcon/' + temp.id + '.svg');
-                        }else{
-                            iconImage.setAttribute('src', 'tempIcon/zisaku.svg');
-                        }
-                        iconImage.setAttribute('alt', 'アイコン');
-                        iconImage.setAttribute('class', 'card-icon');
-                    icon.appendChild(iconImage);
+                            const iconImage = document.createElement('img');
+                            if(temp.data().type === 'default'){
+                                iconImage.setAttribute('src', 'tempIcon/' + temp.id + '.svg');
+                            }else{
+                                iconImage.setAttribute('src', 'tempIcon/zisaku.svg');
+                            }
+                            iconImage.setAttribute('alt', 'アイコン');
+                            iconImage.setAttribute('class', 'card-icon');
+                        icon.appendChild(iconImage);
 
-                    content.appendChild(icon);
+                        content.appendChild(icon);
 
-                    const itemList = document.createElement('ul');
-                    itemList.setAttribute('class', 'checklist');
-                        if(temp.data().item.length > 0){
+                        const itemList = document.createElement('ul');
+                        itemList.setAttribute('class', 'checklist');
                             for(const item of temp.data().item){
                                 const li = document.createElement('li');
                                 li.innerHTML = `
@@ -74,15 +74,11 @@ onAuthStateChanged(auth, async (user) => {
                                 `
                                 itemList.appendChild(li); 
                             }
-                        }else{
-                            const li = document.createElement('li');
-                            li.textContent = '※テンプレートリストが空です';
-                            itemList.appendChild(li);
-                        }
-                    
-                    content.appendChild(itemList);
-                card.appendChild(content);
-            dashboard.appendChild(card);
+                        
+                        content.appendChild(itemList);
+                    card.appendChild(content);
+                dashboard.appendChild(card);
+            }
         });
     }catch(error){
         console.log(error);

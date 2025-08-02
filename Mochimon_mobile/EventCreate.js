@@ -59,7 +59,7 @@ window.onload = function(){
         itemList.setAttribute('class', 'form-section');
         itemList.textContent = "持ち物";
         const itemButton = document.getElementById('add-item-button');
-        itemButton.before(itemList);
+        itemButton.after(itemList);
         if(itemArray){
             for(const item of itemArray){
                 const form = document.createElement('div');

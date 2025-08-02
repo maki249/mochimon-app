@@ -211,6 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             if(notifies){
                 const arrow = document.getElementById('arrow');
+                arrow.textContent = ">";
                 let count = 0;
                 for(const notify of notifies){
                     count++;

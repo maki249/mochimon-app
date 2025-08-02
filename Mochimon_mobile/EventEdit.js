@@ -231,19 +231,37 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("modal-overlay").classList.remove("active");
   });
 
-  document.querySelector(".notification-row").addEventListener("click", () => {
-    document.getElementById("modal-overlay").classList.add("active");
+  document.querySelector('.notification-row').addEventListener('click', () => {
+      document.getElementById('modal-overlay').classList.add('active');
   });
-
-  document.querySelectorAll(".notification-options .form-row").forEach(row => {
-    row.addEventListener("click", () => row.classList.toggle("selected"));
+  document.querySelectorAll('.notification-options .form-row').forEach(row => {
+      row.addEventListener('click', () => {
+          row.classList.toggle('selected');
+          const notifies = document.querySelectorAll('.form-row.selected');
+          const preNotfyArea = document.getElementsByClassName('notifyList');
+          while (preNotfyArea.length > 0){
+              preNotfyArea[0].remove();
+          }
+          if(notifies){
+              const arrow = document.getElementById('arrow');
+              arrow.textContent = ">";
+              let count = 0;
+              for(const notify of notifies){
+                  count++;
+                  if(count > 3){
+                      arrow.textContent += "...";
+                      break;
+                  }
+                  arrow.textContent += notify.id + " ";
+              }
+          }
+      });
   });
 
   // キャンセル・削除
   document.querySelector(".cancel-button").addEventListener("click", () => {
     location.href = "Calendar.html";
   });
-
 
   document.querySelector(".delete-button").addEventListener("click", async () => {
     const user = auth.currentUser;

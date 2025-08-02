@@ -244,7 +244,7 @@ onAuthStateChanged(auth, async (user) => {
                         isChecked: false
                     },
                     {
-                        name: "防止・サングラス",
+                        name: "帽子・サングラス",
                         isChecked: false
                     },
                     {

@@ -155,7 +155,7 @@ onAuthStateChanged(auth, async (user) => {
         checklistContainer.innerHTML = ''; // 一度リセット
         if (futureLists.length > 0) {
             const title = document.createElement('h2');
-            title.textContent = '今日以降のリスト';
+            title.textContent = '今日以降の買い物リスト';
             title.classList.add('section-title');
             checklistContainer.appendChild(title);
             futureLists.forEach(card => checklistContainer.appendChild(card));

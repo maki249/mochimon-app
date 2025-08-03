@@ -83,7 +83,7 @@ async function loadChecklistItems(userId, eventId) {
     itemList.forEach((item, index) => {
       // itemがオブジェクトなら name と checked を取得、文字列なら名前だけ扱う
       const name = (typeof item === "string") ? item : (item.name || "不明なアイテム");
-      const checked = (typeof item === "object" && 'checked' in item) ? item.checked : false;
+      const checked = (typeof item === "object" && 'checked' in item) ? item.isChecked : false;
       const isInShoppingList = shoppingItems.some(i => i.name === name);
 
       // li要素作成
@@ -125,7 +125,7 @@ function setupEvents(userId, eventId) {
       // itemListの該当アイテムのchecked状態を更新
       itemList[index] = {
         ...(typeof itemList[index] === "string" ? { name: itemList[index] } : itemList[index]),
-        checked: cb.checked
+        isChecked: cb.checked
       };
 
       // Firestoreのドキュメント参照作成
@@ -202,7 +202,7 @@ function setupEvents(userId, eventId) {
           icon.parentElement.classList.add('added');
 
           if (!shoppingData.items.some(item => item.name === itemName)) {
-            shoppingData.items.push({ name: itemName, checked: false });
+            shoppingData.items.push({ name: itemName, isChecked: false });
           }
           await setDoc(shoppingDocRef, shoppingData);
           console.log("アイテムを買い物リストに追加しました:", itemName);

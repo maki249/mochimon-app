@@ -114,6 +114,22 @@ onAuthStateChanged(auth, async (user) => {
             p1.textContent = start;
             p2.textContent = end;
 
+            const rate = document.createElement('p');
+            let sum = 0;
+            let checkItem = 0;
+            console.log(item);
+            item.itemArray.forEach(eventItem => {
+                sum++;
+                if(eventItem.isChecked){
+                    checkItem++;
+                }
+            })
+            if(sum === 0){
+                rate.textContent = "持ち物リストが空です";
+            }else{
+                rate.textContent = Math.round(checkItem / sum * 100) + '%';
+            }
+
             // 編集ボタンの作成
             const editBtn = document.createElement('div');
             editBtn.classList.add('edit-button');
@@ -132,6 +148,7 @@ onAuthStateChanged(auth, async (user) => {
             itemCard.appendChild(eventTitle);
             itemCard.appendChild(p1);
             itemCard.appendChild(p2);
+            itemCard.appendChild(rate);
 
             itemCard.addEventListener('click', () => {
                 // イベント情報を localStorage に保存

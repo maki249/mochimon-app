@@ -67,8 +67,25 @@ onAuthStateChanged(auth, async (user) => {
                 eventTitle.textContent = shareEvents.data().eventName;
                 card.appendChild(eventTitle);
 
+                const rate = document.createElement('p');
+                let sum = 0;
+                let checkItem = 0;
+                const items = shareEvents.data().itemArray || [];
+                items.forEach(eventItem => {
+                    sum++;
+                    if(eventItem.isChecked){
+                        checkItem++;
+                    }
+                })
+                if(sum === 0){
+                    rate.textContent = "持ち物リストが空です";
+                }else{
+                    rate.textContent = Math.round(checkItem / sum * 100) + '%';
+                }
+                card.appendChild(rate);
 
-                console.log()
+
+
                 body.addEventListener('click', () => {
                     // イベント情報を localStorage に保存
                     localStorage.setItem('selectedShredEvent', JSON.stringify({
@@ -132,9 +149,28 @@ onAuthStateChanged(auth, async (user) => {
                         time.textContent = "~ " + dayjs(end).format("YYYY年MM月DD日 HH:mm");
                     }
                 }
+
+                    
+                const rate = document.createElement('p');
+                let sum = 0;
+                let checkItem = 0;
+                console.log(doc.data());
+                doc.data().itemArray.forEach(eventItem => {
+                    sum++;
+                    if(eventItem.isChecked){
+                        checkItem++;
+                    }
+                })
+                if(sum === 0){
+                    rate.textContent = "持ち物リストが空です";
+                }else{
+                    rate.textContent = Math.round(checkItem / sum * 100) + '%';
+                }
+
                 card.appendChild(title);
                 card.appendChild(date);
-                card.appendChild(time)
+                card.appendChild(time);
+                card.appendChild(rate);
                 dashBoard.appendChild(card);
             }
         })

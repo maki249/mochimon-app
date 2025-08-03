@@ -240,6 +240,7 @@ function updateProgress() {
 
 // 認証状態監視後、チェックリストをロード
 document.addEventListener('DOMContentLoaded', () => {
+  let homeOrShare = false;
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
       console.error("ログインしているユーザーがいません。");
@@ -250,8 +251,17 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     if (!userId) {
+      homeOrShare = true;
       userId = user.uid;
     }
     await loadChecklistItems(userId, eventId);
   });
+  
+  document.getElementById('return').addEventListener('click', () => {
+    if(homeOrShare){
+      window.location.href = 'home.html';
+    }else{
+      window.location.href = 'share.html';
+    }
+  })
 });

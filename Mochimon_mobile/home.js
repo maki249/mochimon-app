@@ -117,7 +117,6 @@ onAuthStateChanged(auth, async (user) => {
             const rate = document.createElement('p');
             let sum = 0;
             let checkItem = 0;
-            console.log(item);
             item.itemArray.forEach(eventItem => {
                 sum++;
                 if(eventItem.isChecked){

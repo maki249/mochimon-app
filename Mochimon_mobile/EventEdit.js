@@ -92,46 +92,6 @@ async function loadEventData(user) {
 
   
   
-  const notifyArray = document.getElementsByClassName('form-row');
-  const dict = {
-    0:    "予定時間",
-    300:  "5分前",
-    600:  "10分前",
-    900:  "15分前",
-    1800: "30分前",
-    3600: "1時間前",
-    7200: "2時間前",
-    10800:"3時間前",
-    21600:"6時間前",
-    86400:"1日前",
-  };
-  const notifyTime = [];
-  for(const notify of data.notify){
-    notifyTime.push(dict[data.startDate.seconds - notify.seconds]);
-  }
-  for(const notify of notifyArray){
-    if(notifyTime.includes(notify.id)){
-        notify.classList.toggle('selected');
-    }
-  }
-
-  const notifies = document.querySelectorAll('.form-row.selected');
-  const preNotfyArea = document.getElementsByClassName('notifyList');
-  while (preNotfyArea.length > 0){
-      preNotfyArea[0].remove();
-  }
-  if(notifies){
-      const arrow = document.getElementById('arrow');
-      let count = 0;
-      for(const notify of notifies){
-          count++;
-          if(count > 3){
-              arrow.textContent += "...";
-              break;
-          }
-          arrow.textContent += notify.id + " ";
-      }
-  }
 
   document.querySelector(".copy-button").addEventListener("click", async () => {
     const user = auth.currentUser;

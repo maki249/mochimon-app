@@ -74,8 +74,8 @@ async function loadEventData(user) {
   document.getElementById("event-title").value = data.eventName || "";
   document.getElementById("all-day-toggle").checked = !!data.isAllDay;
   if(data.isAllDay){
-    document.getElementById("start-date-box").style.display = 'none';
-    document.getElementById("end-date-box").style.display = 'none';
+    document.getElementById("start-time-box").style.display = 'none';
+    document.getElementById("end-time-box").style.display = 'none';
   }
 
   if (data.startDate) {

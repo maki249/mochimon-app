@@ -538,7 +538,8 @@ onAuthStateChanged(auth, async (user) => {
         const templateList = await getDocs(query(collection(db, user.uid), where("tag", "==", "templateList")));
         console.log(templateList);
 
-        const dashboard = document.getElementById('dashboard-list');
+        const originTemp = document.getElementById('dashboard-origin');
+        const defaultTemp = document.getElementById('dashboard-default');
         templateList.forEach(temp => {
             const card = document.createElement('div');
             card.setAttribute('class', 'card');
@@ -584,10 +585,14 @@ onAuthStateChanged(auth, async (user) => {
                     
                     content.appendChild(itemList);
                 card.appendChild(content);
-            dashboard.appendChild(card);
+            if(temp.data().type === 'default'){
+                defaultTemp.appendChild(card);
+            }else{
+                originTemp.appendChild(card);
+            }
         });
-        const header = document.getElementById('header');
-        header.after(dashboard);
+        originTemp.style.display = 'block';
+        defaultTemp.style.display = 'block';
     }catch(error){
         console.log(error);
     }

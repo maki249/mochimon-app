@@ -271,3 +271,7 @@ if (iconBtn) {
         }
     });
 }
+
+document.querySelector('.header-area h1').addEventListener('click', () => {
+    window.location.href = 'Home.html';
+})

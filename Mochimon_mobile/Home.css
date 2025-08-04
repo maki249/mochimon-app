@@ -35,6 +35,7 @@ body {
   transform: translateX(-50%);
   margin: 0;
   font-family: "Book Antiqua";
+  font-size: 1.6em;
 }
 
 .login-button {

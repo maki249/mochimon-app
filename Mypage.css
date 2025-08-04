@@ -13,6 +13,7 @@
     z-index: 1000; /* 下部メニューと同じか、必要に応じて調整 */
     background-color: #a2d0d0;
     font-family: 'Book antiqua';
+    font-size: 0.8em;
 }
 
 .title{

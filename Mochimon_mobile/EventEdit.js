@@ -135,42 +135,54 @@ onAuthStateChanged(auth, user => {
 // --- DOM 準備完了後 ---
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelector(".save-button").addEventListener("click", async () => {
-    const user = auth.currentUser;
-    if (!user) return alert("再度ログインしてください");
+    if(confirm('変更した内容を保存します')){
+      const user = auth.currentUser;
+      if (!user) return alert("再度ログインしてください");
 
-    const title  = document.getElementById("event-title").value;
-    const allDay = document.getElementById("all-day-toggle").checked;
-    const sd     = document.getElementById("start-date-box").value;
-    const st     = document.getElementById("start-time-box").value;
-    const ed     = document.getElementById("end-date-box").value;
-    const et     = document.getElementById("end-time-box").value;
+      const title  = document.getElementById("event-title").value;
+      const allDay = document.getElementById("all-day-toggle").checked;
+      const sd     = document.getElementById("start-date-box").value;
+      const st     = document.getElementById("start-time-box").value;
+      const ed     = document.getElementById("end-date-box").value;
+      const et     = document.getElementById("end-time-box").value;
 
-    const start = new Date(`${sd}T${st}`);
-    const end   = new Date(`${ed}T${et}`);
+      if(!title){
+        alert("タイトルを入力してください。");
+        return; // 処理を中断
+      }
 
-    // 持ち物リストをDOMから取得して配列作成
-    const mochimonItems = document.querySelectorAll("#checklist li span.mochimon");
-    const itemArray = [];
+      const start = new Date(`${sd}T${st}`);
+      const end   = new Date(`${ed}T${et}`);
 
-    mochimonItems.forEach(mochimon => {
-      itemArray.push({
-        name: mochimon.textContent.trim(),
-        isChecked: false,  // チェックボックス連動があればここで取得
+      if(start > end){
+        alert('開始日時より前に終了日時が設定されています');
+        return;
+      }
+
+      // 持ち物リストをDOMから取得して配列作成
+      const mochimonItems = document.querySelectorAll("#checklist li span.mochimon");
+      const itemArray = [];
+
+      mochimonItems.forEach(mochimon => {
+        itemArray.push({
+          name: mochimon.textContent.trim(),
+          isChecked: false,  // チェックボックス連動があればここで取得
+        });
       });
-    });
 
-    const ref = doc(db, user.uid, eventId);
-    await updateDoc(ref, {
-      eventName: title,
-      isAllDay:  allDay,
-      startDate: Timestamp.fromDate(start),
-      endDate:   Timestamp.fromDate(end),
-      tag:       "Event",
-      itemArray: itemArray
-    });
+      const ref = doc(db, user.uid, eventId);
+      await updateDoc(ref, {
+        eventName: title,
+        isAllDay:  allDay,
+        startDate: Timestamp.fromDate(start),
+        endDate:   Timestamp.fromDate(end),
+        tag:       "Event",
+        itemArray: itemArray
+      });
 
-    alert("保存しました");
-    window.location.href = "Calendar.html";
+      alert("保存しました");
+      window.location.href = "Calendar.html";
+    }
   });
 
   // アイテム追加

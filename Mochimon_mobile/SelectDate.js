@@ -50,7 +50,16 @@ async function loadChecklistItems(userId, eventId) {
     }
 
     const eventData = eventDocSnap.data();
+    // チェックリスト初期化
+    const checklist = document.querySelector('.checklist');
+    checklist.innerHTML = '';
 
+    // 買い物リスト取得（items配列）
+    const shoppingDocRef = doc(db, userId, `shoppingList_${eventId}`);
+    const shoppingDocSnap = await getDoc(shoppingDocRef);
+    const shoppingItems = shoppingDocSnap.exists() ? (shoppingDocSnap.data().items || []) : [];
+
+    
     // ヘッダー表示更新
     const header = document.getElementById('eventHeader');
     if (eventData.startDate && eventData.endDate) {
@@ -66,16 +75,6 @@ async function loadChecklistItems(userId, eventId) {
     } else {
       header.textContent = eventData.eventName || '';
     }
-
-    // チェックリスト初期化
-    const checklist = document.querySelector('.checklist');
-    checklist.innerHTML = '';
-
-    // 買い物リスト取得（items配列）
-    const shoppingDocRef = doc(db, userId, `shoppingList_${eventId}`);
-    const shoppingDocSnap = await getDoc(shoppingDocRef);
-    const shoppingItems = shoppingDocSnap.exists() ? (shoppingDocSnap.data().items || []) : [];
-
     // アイテムリスト（eventDataから取得）
     itemList = eventData.itemArray || [];
 

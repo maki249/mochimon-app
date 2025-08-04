@@ -32,7 +32,7 @@ const addItemInput = document.getElementById('addItemInput');
 const addItemSaveBtn = document.getElementById('addItemSaveBtn');
 const addItemCancelBtn = document.getElementById('addItemCancelBtn');
 const checklist = document.querySelector('.checklist');
-
+const cancelPage = document.getElementById('cancel');
 // URL から TempId を取得
 const params  = new URLSearchParams(window.location.search);
 const TempId = params.get("TempId");
@@ -103,24 +103,30 @@ onAuthStateChanged(auth, async (user) => {
     });
         
     saveBtn.addEventListener('click', async () => {
-      const newName = input.value.trim();
-      if (newName !== "") {
-        title.textContent = newName;
-        modal.style.display = 'none';
-      }else{
-        const item = await getDoc(doc(db, user.uid, TempId));
-        if(item.data().type === "default"){
-          alert("テンプレートリストのタイトルを入力してください");
+      if(confirm('変更した内容を保存します')){
+        const newName = input.value.trim();
+        if (newName !== "") {
+          title.textContent = newName;
+          modal.style.display = 'none';
         }else{
-          if(confirm("テンプレートリストを削除します")){
-            await deleteDoc(doc(db, user.uid, TempId));
-            window.location.href = "Template.html";
+          const item = await getDoc(doc(db, user.uid, TempId));
+          if(item.data().type === "default"){
+            alert("テンプレートリストのタイトルを入力してください");
+          }else{
+            if(confirm("テンプレートリストを削除します")){
+              await deleteDoc(doc(db, user.uid, TempId));
+              window.location.href = "Template.html";
+            }
           }
         }
       }
     });
 });
-
+cancelPage.addEventListener('click', () => {
+  if(confirm('変更した内容は保存されません')){
+    window.location.href = 'Template.html';
+  }
+})
 editIcon.addEventListener('click', () => {
   input.value = title.textContent; // 現在の名前をセット
   modal.style.display = 'flex';

@@ -26,6 +26,7 @@ const params = new URLSearchParams(window.location.search);
 const eventId = params.get("eventId");
 const date = params.get("date");
 
+
 // ユーザーの認証状態が変わるたびにcurrentUserにセット
 onAuthStateChanged(auth, async (user) => {
     currentUser = user;
@@ -135,6 +136,7 @@ onAuthStateChanged(auth, async (user) => {
 
     // キャンセルボタン
     document.querySelector('.cancel-button').addEventListener('click', () => {
+        localStorage.removeItem('addItem');
         if(!eventId){
             window.location.href = `ListCreate.html?date=${date}`;
         }else{

@@ -70,14 +70,10 @@
                 await sendEmailVerification(user);
                 alert("登録に成功しました！確認メールを送信しました。メールをチェックしてください。");
                 console.log("登録ユーザー:", user);
-                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-                if (isMobile) {
-                    window.location.href = "Login.html"; // スマホ用
-                } else {
-                    window.location.href = "Login.html"; // PC用
-                }
+                window.location.href = "Login.html"; // スマホ用
+                
             } catch (error) {
-                alert("登録に失敗しました: " + error.message);
+                alert("有効なメールアドレスを入力してください: ");
                 console.error("エラー:", error);
             }
             });

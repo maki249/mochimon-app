@@ -50,7 +50,16 @@ async function loadChecklistItems(userId, eventId) {
     }
 
     const eventData = eventDocSnap.data();
+    // チェックリスト初期化
+    const checklist = document.querySelector('.checklist');
+    checklist.innerHTML = '';
 
+    // 買い物リスト取得（items配列）
+    const shoppingDocRef = doc(db, userId, `shoppingList_${eventId}`);
+    const shoppingDocSnap = await getDoc(shoppingDocRef);
+    const shoppingItems = shoppingDocSnap.exists() ? (shoppingDocSnap.data().items || []) : [];
+
+    
     // ヘッダー表示更新
     const header = document.getElementById('eventHeader');
     if (eventData.startDate && eventData.endDate) {
@@ -66,16 +75,6 @@ async function loadChecklistItems(userId, eventId) {
     } else {
       header.textContent = eventData.eventName || '';
     }
-
-    // チェックリスト初期化
-    const checklist = document.querySelector('.checklist');
-    checklist.innerHTML = '';
-
-    // 買い物リスト取得（items配列）
-    const shoppingDocRef = doc(db, userId, `shoppingList_${eventId}`);
-    const shoppingDocSnap = await getDoc(shoppingDocRef);
-    const shoppingItems = shoppingDocSnap.exists() ? (shoppingDocSnap.data().items || []) : [];
-
     // アイテムリスト（eventDataから取得）
     itemList = eventData.itemArray || [];
 
@@ -83,7 +82,7 @@ async function loadChecklistItems(userId, eventId) {
     itemList.forEach((item, index) => {
       // itemがオブジェクトなら name と checked を取得、文字列なら名前だけ扱う
       const name = (typeof item === "string") ? item : (item.name || "不明なアイテム");
-      const checked = (typeof item === "object" && 'checked' in item) ? item.isChecked : false;
+      const checked = (typeof item === "object" && 'isChecked' in item) ? item.isChecked : false;
       const isInShoppingList = shoppingItems.some(i => i.name === name);
 
       // li要素作成
@@ -127,6 +126,8 @@ function setupEvents(userId, eventId) {
         ...(typeof itemList[index] === "string" ? { name: itemList[index] } : itemList[index]),
         isChecked: cb.checked
       };
+      
+      updateProgress();
 
       // Firestoreのドキュメント参照作成
       const shoppingDocRef = doc(db, userId, eventId);
@@ -142,7 +143,6 @@ function setupEvents(userId, eventId) {
         });
 
         console.log("チェック状態を保存:", itemList[index].name, cb.checked);
-        updateProgress();
       } catch (error) {
         console.error("チェック状態保存中にエラー:", error);
       }

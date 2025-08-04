@@ -315,3 +315,10 @@ body {
 .menu-button span {
     display: block;
 }
+
+.no-event-message {
+    text-align: center;
+    margin: 0px;
+    font-size: 14px;
+    color: #888;
+}

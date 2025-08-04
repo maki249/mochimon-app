@@ -22,6 +22,8 @@ const params  = new URLSearchParams(window.location.search);
 const eventId = params.get("eventId");
 let currentItemList = []; // グローバルで定義
 
+const overlay = document.getElementById("layer");
+
 // --- 持ち物リスト描画 ---
 function renderItemList() {
   const checklist = document.getElementById("checklist");
@@ -58,16 +60,14 @@ async function loadEventData(user) {
   currentItemList = data.itemArray || [];
   const itemArray = JSON.parse(localStorage.getItem('item')) || [];
   if(itemArray.length > 0){
-    console.log(itemArray);
     currentItemList.length = 0;
     itemArray.forEach(item =>{
       currentItemList.push({
         name: item,
         isChecked: false
-    });
+      });
     })
   }
-  console.log(currentItemList);
   renderItemList();
 
   // フォームへ反映
@@ -90,7 +90,7 @@ async function loadEventData(user) {
     document.getElementById("end-time-box").value = end.toTimeString().slice(0, 5);
   }
 
-  
+  overlay.style.display = 'flex'
   
 
   document.querySelector(".copy-button").addEventListener("click", async () => {
@@ -135,42 +135,54 @@ onAuthStateChanged(auth, user => {
 // --- DOM 準備完了後 ---
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelector(".save-button").addEventListener("click", async () => {
-    const user = auth.currentUser;
-    if (!user) return alert("再度ログインしてください");
+    if(confirm('変更した内容を保存します')){
+      const user = auth.currentUser;
+      if (!user) return alert("再度ログインしてください");
 
-    const title  = document.getElementById("event-title").value;
-    const allDay = document.getElementById("all-day-toggle").checked;
-    const sd     = document.getElementById("start-date-box").value;
-    const st     = document.getElementById("start-time-box").value;
-    const ed     = document.getElementById("end-date-box").value;
-    const et     = document.getElementById("end-time-box").value;
+      const title  = document.getElementById("event-title").value;
+      const allDay = document.getElementById("all-day-toggle").checked;
+      const sd     = document.getElementById("start-date-box").value;
+      const st     = document.getElementById("start-time-box").value;
+      const ed     = document.getElementById("end-date-box").value;
+      const et     = document.getElementById("end-time-box").value;
 
-    const start = new Date(`${sd}T${st}`);
-    const end   = new Date(`${ed}T${et}`);
+      if(!title){
+        alert("タイトルを入力してください。");
+        return; // 処理を中断
+      }
 
-    // 持ち物リストをDOMから取得して配列作成
-    const mochimonItems = document.querySelectorAll("#checklist li span.mochimon");
-    const itemArray = [];
+      const start = new Date(`${sd}T${st}`);
+      const end   = new Date(`${ed}T${et}`);
 
-    mochimonItems.forEach(mochimon => {
-      itemArray.push({
-        name: mochimon.textContent.trim(),
-        isChecked: false,  // チェックボックス連動があればここで取得
+      if(start > end){
+        alert('開始日時より前に終了日時が設定されています');
+        return;
+      }
+
+      // 持ち物リストをDOMから取得して配列作成
+      const mochimonItems = document.querySelectorAll("#checklist li span.mochimon");
+      const itemArray = [];
+
+      mochimonItems.forEach(mochimon => {
+        itemArray.push({
+          name: mochimon.textContent.trim(),
+          isChecked: false,  // チェックボックス連動があればここで取得
+        });
       });
-    });
 
-    const ref = doc(db, user.uid, eventId);
-    await updateDoc(ref, {
-      eventName: title,
-      isAllDay:  allDay,
-      startDate: Timestamp.fromDate(start),
-      endDate:   Timestamp.fromDate(end),
-      tag:       "Event",
-      itemArray: itemArray
-    });
+      const ref = doc(db, user.uid, eventId);
+      await updateDoc(ref, {
+        eventName: title,
+        isAllDay:  allDay,
+        startDate: Timestamp.fromDate(start),
+        endDate:   Timestamp.fromDate(end),
+        tag:       "Event",
+        itemArray: itemArray
+      });
 
-    alert("保存しました");
-    window.location.href = "Calendar.html";
+      alert("保存しました");
+      window.location.href = "Calendar.html";
+    }
   });
 
   // アイテム追加
@@ -186,15 +198,11 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("end-time-box").style.display = isAllDay ? "none" : "inline-block";
   });
 
-  // モーダル操作
-  document.getElementById("modal-back-button").addEventListener("click", () => {
-    document.getElementById("modal-overlay").classList.remove("active");
-  });
-
-
   // キャンセル・削除
   document.querySelector(".cancel-button").addEventListener("click", () => {
-    location.href = "Calendar.html";
+    if(confirm('変更した内容は保存されません')){
+      location.href = "Calendar.html";
+    }
   });
 
   document.querySelector(".delete-button").addEventListener("click", async () => {

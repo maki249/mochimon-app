@@ -70,8 +70,8 @@
                 alert("ログイン成功！");
                 window.location.href = "Mochimon_mobile/Home.html";
             } catch (error) {
-            alert("ログインに失敗しました: " + error.message);
-            console.error("エラー:", error);
+                alert("ログインに失敗しました: ");
+                console.error("エラー:", error);
             }
         });
         // パスワード再設定リンクの処理

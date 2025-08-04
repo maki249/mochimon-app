@@ -31,6 +31,31 @@ const dataStorage = new Map(JSON.parse(dataStorageJSON));
 console.log(dataStorage);
 const itemArray = JSON.parse(localStorage.getItem('item'));
 console.log(itemArray);
+
+const overlay = document.getElementById('layer');
+
+
+// --- 持ち物リスト描画 ---
+function renderItemList(currentItemList) {
+  const checklist = document.getElementById("checklist");
+  if (!checklist) return; // DOMが無ければ終了
+
+  checklist.innerHTML = "";
+
+  if (!currentItemList || currentItemList.length === 0) {
+    checklist.innerHTML = "<li>持ち物リストが空です</li>";
+    return;
+  }
+
+  currentItemList.forEach(item => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <span class='mochimon'>${item.name}</span>
+    `;
+    checklist.appendChild(li);
+  });
+}
+
 // 保存した情報の自動設定
 window.onload = function(){
     const startDate = document.getElementById('start-date-box');
@@ -47,14 +72,19 @@ window.onload = function(){
         }
 
         
-        const notifyArray = document.getElementsByClassName('form-row');
-        for(const notify of notifyArray){
-            if(dataStorage.get("notifyList").includes(notify.id)){
-                notify.classList.toggle('selected');
-            }
+        const currentItemList = [];
+        const itemArray = JSON.parse(localStorage.getItem('item')) || [];
+        if(itemArray.length > 0){
+            currentItemList.length = 0;
+            itemArray.forEach(item =>{
+            currentItemList.push({
+                    name: item,
+                    isChecked: false
+                });
+            })
         }
-
-        const itemList = document.createElement('div');
+        renderItemList(currentItemList);
+        /*const itemList = document.createElement('div');
         itemList.setAttribute('class', 'form-section');
         itemList.textContent = "持ち物";
         const itemButton = document.getElementById('add-item-button');
@@ -71,22 +101,9 @@ window.onload = function(){
                 form.appendChild(li);
                 li.appendChild(span);
             }
-        }
-        const notifies = document.querySelectorAll('.form-row.selected');
-        const preNotfyArea = document.getElementsByClassName('notifyList');
-        while (preNotfyArea.length > 0){
-            preNotfyArea[0].remove();
-        }
-        if(notifies){
-            const arrow = document.getElementById('arrow');
-            for(const notify of notifies){
-                const notifyArea = document.createElement('span');
-                notifyArea.textContent = notify.id + " ";
-                notifyArea.setAttribute('class', 'notifyList');
-                arrow.appendChild(notifyArea);
-            }
-        }
+        }*/
     }
+    overlay.style.display = 'flex';
 }
 
 // ユーザーの認証状態が変わるたびにcurrentUserにセット
@@ -97,89 +114,65 @@ onAuthStateChanged(auth, async (user) => {
 
 // キャンセルボタン
 document.querySelector('.cancel-button').addEventListener('click', () => {
-    window.location.href = 'Calendar.html';
+    if(confirm("作成した新規予定は保存されません")){
+        window.location.href = 'Calendar.html';
+    }
 });
 // 保存ボタン
 document.querySelector('.save-button').addEventListener('click', async () => {
-    
-    /*タイトル名未入力の際の警告*/
-    const title = document.getElementById('event-title').value.trim();
-    if (!title) {
-        alert("タイトルを入力してください。");
-        return; // 処理を中断
-    }
-    
-
-    const allDay = document.getElementById('all-day-toggle').checked;
-    let startDate = document.getElementById('start-date-box').value;
-    let endDate = document.getElementById('end-date-box').value;
-    if(!allDay){
-        startDate += "T" + document.getElementById('start-time-box').value + ":00";
-        
-        endDate += "T" + document.getElementById('end-time-box').value + ":00";
-    }
-    
-    const notifyList = document.querySelectorAll('.form-row.selected');
-    const start = new Date(startDate)
-    const end = new Date(endDate)
-    console.log("sss"+start);
-    const dict = {
-        "予定時間": calcNotifyTime(start,0, 0, 0),
-        "5分前": calcNotifyTime(start, 0, 0, 5),
-        "10分前": calcNotifyTime(start, 0, 0, 10),
-        "15分前": calcNotifyTime(start, 0, 0, 15),
-        "30分前": calcNotifyTime(start, 0, 0, 30),
-        "1時間前": calcNotifyTime(start, 0, 1, 0),
-        "2時間前": calcNotifyTime(start, 0, 2, 0),
-        "3時間前": calcNotifyTime(start, 0, 3, 0),
-        "6時間前": calcNotifyTime(start, 0, 6, 0),
-        "1日前": calcNotifyTime(start, 1, 0, 0),
-    };
-    //const notify = document.getElementById('notification-toggle').checked;
-    const notify = [];
-    console.log("notifyList:" + notifyList);
-    for(const notifyElement of notifyList){
-        console.log(notifyElement.id);
-        console.log(dict[notifyElement.id] + "aaa");
-        const notifyTime = dict[notifyElement.id];
-        console.log(notifyTime);
-        notify.push(notifyTime);
-    }
-    console.log(notify);
-
-    console.log(currentUser.uid)
-    const mochimonList = document.getElementsByClassName('mochimon');
-    const itemList = [];
-    for(const mochimon of mochimonList) {
-        const item = {
-            name: mochimon.textContent,
-            isChecked: false
+    if(confirm('作成した新規予定を保存します')){
+        /*タイトル名未入力の際の警告*/
+        const title = document.getElementById('event-title').value.trim();
+        if (!title) {
+            alert("タイトルを入力してください。");
+            return; // 処理を中断
         }
-        console.log(item);
-        itemList.push(item);
-    }
-    try{
-        //データ登録
-        if (!currentUser) {
-            alert("ログインしていません。もう一度お試しください。");
+        
+        const allDay = document.getElementById('all-day-toggle').checked;
+        let startDate = document.getElementById('start-date-box').value;
+        let endDate = document.getElementById('end-date-box').value;
+        if(!allDay){
+            startDate += "T" + document.getElementById('start-time-box').value + ":00";
+            
+            endDate += "T" + document.getElementById('end-time-box').value + ":00";
+        }
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        if(start > end){
+            alert('開始日時より前に終了日時が設定されています');
             return;
         }
-        const docRef = await addDoc(collection(db, currentUser.uid), {
-            tag: "Event",
-            eventName: title,    //タイトル
-            isAllDay: allDay,
-            startDate: start,   //開始日時
-            endDate: end,       //終了日時
-            notify: notify,   //通知設定
-            itemArray: itemList
-        });
-        
-        alert("登録成功: ");
-        window.location.href = 'Calendar.html';
-    } catch(error){
-        alert("登録に失敗しました: " + error.message);
-        console.error("エラー", error);
-    }     
+        const mochimonList = document.getElementsByClassName('mochimon');
+        const itemList = [];
+        for(const mochimon of mochimonList) {
+            const item = {
+                name: mochimon.textContent,
+                isChecked: false
+            }
+            itemList.push(item);
+        }
+        try{
+            //データ登録
+            if (!currentUser) {
+                alert("ログインしていません。もう一度お試しください。");
+                return;
+            }
+            const docRef = await addDoc(collection(db, currentUser.uid), {
+                tag: "Event",
+                eventName: title,    //タイトル
+                isAllDay: allDay,
+                startDate: start,   //開始日時
+                endDate: end,       //終了日時
+                itemArray: itemList
+            });
+            
+            alert("登録成功: ");
+            window.location.href = 'Calendar.html';
+        } catch(error){
+            alert("登録に失敗しました: " + error.message);
+            console.error("エラー", error);
+        }
+    }
 });
 //  持ち物リスト追加ボタン
 document.getElementById('add-item-button').addEventListener('click', () => {
@@ -197,29 +190,13 @@ document.getElementById('modal-back-button').addEventListener('click', () => {
     document.getElementById('modal-overlay').classList.remove('active');
 });
 
-
-function calcNotifyTime(start, day, hour, minute){
-    const loss = (((day * 24) + hour) * 60 + minute) * 60000;
-    const time = new Date(start.getTime() - loss)
-    return time;
-}
-
 function storage(){
-    const notify = []
-
-    const notifyList = document.querySelectorAll('.form-row.selected');
-    for(const notifyTime of notifyList){
-        console.log(notifyTime.id);
-        notify.push(notifyTime.id);
-    }
-    console.log(notify);
     const storage = ([
         ["title", document.getElementById('event-title').value.trim()],
         ["allDay", document.getElementById('all-day-toggle').checked],
         ["endDate", document.getElementById('end-date-box').value ?? ""],
         ["startTime", document.getElementById('start-time-box').value ?? ""],
-        ["endTime", document.getElementById('end-time-box').value ?? ""],
-        ["notifyList", notify]
+        ["endTime", document.getElementById('end-time-box').value ?? ""]
     ]);
     const JSONstorage = Array.from(storage);
     console.log(JSONstorage);

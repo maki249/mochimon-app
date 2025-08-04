@@ -2,7 +2,7 @@ import dayjs from "https://esm.sh/dayjs";
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-auth.js";
-import { getFirestore, addDoc, getDoc, getDocs, query, collection, doc, where, Timestamp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+import { getFirestore, addDoc, getDoc, getDocs, deleteDoc, query, collection, doc, where, Timestamp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 
 // Firebase設定（apiKeyは実際のものに置き換えてください）
 const firebaseConfig = {
@@ -31,83 +31,90 @@ onAuthStateChanged(auth, async (user) => {
             id: doc.id,
             ... doc.data()
         }));
+        
+        const dashboard = document.getElementById('share-dashboard');
+        const bodies = [];
         // リストの参照
         if(shareListsData.length > 0){
-            const dashboard = document.getElementById('share-dashboard');
-
-            const bodies = [];
             for(const shareListData of shareListsData){
                 const shareEvents = await getDoc(doc(db, shareListData.fromId, shareListData.list));
-                console.log(shareEvents.data())
-                
-                // リストの表示
-                const body = document.createElement('div');
-                body.setAttribute('class', 'card-group');
-                body.setAttribute('id', shareListData.fromId + '?' + shareListData.list);
-                bodies.push(body);
-                
-                const title = document.createElement('span');
-                title.setAttribute('class', 'owner-label');
-                title.textContent = shareListData.from + 'さん';
-                body.appendChild(title);
+                if(shareEvents.data()){
 
-                const ref = document.createElement('a');
-                body.appendChild(ref);
+                    // リストの表示
+                    const body = document.createElement('div');
+                    body.setAttribute('class', 'card-group');
+                    body.setAttribute('id', shareListData.fromId + '?' + shareListData.list);
+                    bodies.push(body);
+                    
+                    const title = document.createElement('span');
+                    title.setAttribute('class', 'owner-label');
+                    title.textContent = shareListData.from + 'さん';
+                    body.appendChild(title);
 
-                const card = document.createElement('div');
-                card.setAttribute('class', 'card');
-                body.appendChild(card);
-                
-                const date = document.createElement('H2');
-                const startDate = new Date(shareEvents.data().startDate.seconds *1000);
-                date.textContent = dayjs(startDate).format('YYYY年MM月DD日');
-                card.appendChild(date);
+                    const ref = document.createElement('a');
+                    body.appendChild(ref);
 
-                const eventTitle = document.createElement('H2');
-                eventTitle.textContent = shareEvents.data().eventName;
-                card.appendChild(eventTitle);
+                    const card = document.createElement('div');
+                    card.setAttribute('class', 'card');
+                    body.appendChild(card);
+                    
+                    const date = document.createElement('H2');
+                    const startDate = new Date(shareEvents.data().startDate.seconds *1000);
+                    date.textContent = dayjs(startDate).format('YYYY年MM月DD日');
+                    card.appendChild(date);
 
-                const rate = document.createElement('p');
-                let sum = 0;
-                let checkItem = 0;
-                const items = shareEvents.data().itemArray || [];
-                items.forEach(eventItem => {
-                    sum++;
-                    if(eventItem.isChecked){
-                        checkItem++;
+                    const eventTitle = document.createElement('H2');
+                    eventTitle.textContent = shareEvents.data().eventName;
+                    card.appendChild(eventTitle);
+
+                    const rate = document.createElement('p');
+                    let sum = 0;
+                    let checkItem = 0;
+                    const items = shareEvents.data().itemArray || [];
+                    items.forEach(eventItem => {
+                        sum++;
+                        if(eventItem.isChecked){
+                            checkItem++;
+                        }
+                    })
+                    if(sum === 0){
+                        rate.textContent = "持ち物リストが空です";
+                    }else{
+                        rate.textContent = Math.round(checkItem / sum * 100) + '%';
                     }
-                })
-                if(sum === 0){
-                    rate.textContent = "持ち物リストが空です";
+                    card.appendChild(rate);
+
+
+
+                    body.addEventListener('click', () => {
+                        // イベント情報を localStorage に保存
+                        localStorage.setItem('selectedShredEvent', JSON.stringify({
+                            id: shareEvents.data().id,
+                            eventName: shareEvents.data().eventName,
+                            startDate: shareEvents.data().startDate,
+                            endDate: shareEvents.data().endDate,
+                            isAllDay: shareEvents.data().isAllDay
+                        }));
+
+                        // EventEdit.html に遷移
+                        window.location.href = `SelectDate.html?eventId=${body.id}`;
+                    });
                 }else{
-                    rate.textContent = Math.round(checkItem / sum * 100) + '%';
-                }
-                card.appendChild(rate);
-
-
-
-                body.addEventListener('click', () => {
-                    // イベント情報を localStorage に保存
-                    localStorage.setItem('selectedShredEvent', JSON.stringify({
-                        id: shareEvents.data().id,
-                        eventName: shareEvents.data().eventName,
-                        startDate: shareEvents.data().startDate,
-                        endDate: shareEvents.data().endDate,
-                        isAllDay: shareEvents.data().isAllDay
-                    }));
-
-                    // EventEdit.html に遷移
-                    window.location.href = `SelectDate.html?eventId=${body.id}`;
-                });
+                    await deleteDoc(doc(db, "sharedEvents", shareListData.id));
+                }   
             }
-            
-            for(const cardBody of bodies){
-                dashboard.appendChild(cardBody);
-            }
-
-            
         }
         
+        for(const cardBody of bodies){
+            dashboard.appendChild(cardBody);
+        }
+        if(bodies.length === 0){
+            // 予定が1件もない場合のメッセージ
+            const noEventMessage = document.createElement('p');
+            noEventMessage.textContent = '共有された予定はありません';
+            noEventMessage.classList.add('no-event-message');  // CSSで装飾可能
+            dashboard.appendChild(noEventMessage);
+        }
     }catch(error){
         console.log(error);
     }

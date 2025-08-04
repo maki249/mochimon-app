@@ -83,7 +83,7 @@ async function loadChecklistItems(userId, eventId) {
     itemList.forEach((item, index) => {
       // itemがオブジェクトなら name と checked を取得、文字列なら名前だけ扱う
       const name = (typeof item === "string") ? item : (item.name || "不明なアイテム");
-      const checked = (typeof item === "object" && 'checked' in item) ? item.isChecked : false;
+      const checked = (typeof item === "object" && 'isChecked' in item) ? item.isChecked : false;
       const isInShoppingList = shoppingItems.some(i => i.name === name);
 
       // li要素作成
@@ -127,6 +127,8 @@ function setupEvents(userId, eventId) {
         ...(typeof itemList[index] === "string" ? { name: itemList[index] } : itemList[index]),
         isChecked: cb.checked
       };
+      
+      updateProgress();
 
       // Firestoreのドキュメント参照作成
       const shoppingDocRef = doc(db, userId, eventId);
@@ -142,7 +144,6 @@ function setupEvents(userId, eventId) {
         });
 
         console.log("チェック状態を保存:", itemList[index].name, cb.checked);
-        updateProgress();
       } catch (error) {
         console.error("チェック状態保存中にエラー:", error);
       }

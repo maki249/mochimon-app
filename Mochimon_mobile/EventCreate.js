@@ -31,6 +31,31 @@ const dataStorage = new Map(JSON.parse(dataStorageJSON));
 console.log(dataStorage);
 const itemArray = JSON.parse(localStorage.getItem('item'));
 console.log(itemArray);
+
+const overlay = document.getElementById('layer');
+
+
+// --- 持ち物リスト描画 ---
+function renderItemList(currentItemList) {
+  const checklist = document.getElementById("checklist");
+  if (!checklist) return; // DOMが無ければ終了
+
+  checklist.innerHTML = "";
+
+  if (!currentItemList || currentItemList.length === 0) {
+    checklist.innerHTML = "<li>持ち物リストが空です</li>";
+    return;
+  }
+
+  currentItemList.forEach(item => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <span class='mochimon'>${item.name}</span>
+    `;
+    checklist.appendChild(li);
+  });
+}
+
 // 保存した情報の自動設定
 window.onload = function(){
     const startDate = document.getElementById('start-date-box');
@@ -53,8 +78,19 @@ window.onload = function(){
                 notify.classList.toggle('selected');
             }
         }
-
-        const itemList = document.createElement('div');
+        const currentItemList = [];
+        const itemArray = JSON.parse(localStorage.getItem('item')) || [];
+        if(itemArray.length > 0){
+            currentItemList.length = 0;
+            itemArray.forEach(item =>{
+            currentItemList.push({
+                    name: item,
+                    isChecked: false
+                });
+            })
+        }
+        renderItemList(currentItemList);
+        /*const itemList = document.createElement('div');
         itemList.setAttribute('class', 'form-section');
         itemList.textContent = "持ち物";
         const itemButton = document.getElementById('add-item-button');
@@ -71,22 +107,9 @@ window.onload = function(){
                 form.appendChild(li);
                 li.appendChild(span);
             }
-        }
-        const notifies = document.querySelectorAll('.form-row.selected');
-        const preNotfyArea = document.getElementsByClassName('notifyList');
-        while (preNotfyArea.length > 0){
-            preNotfyArea[0].remove();
-        }
-        if(notifies){
-            const arrow = document.getElementById('arrow');
-            for(const notify of notifies){
-                const notifyArea = document.createElement('span');
-                notifyArea.textContent = notify.id + " ";
-                notifyArea.setAttribute('class', 'notifyList');
-                arrow.appendChild(notifyArea);
-            }
-        }
+        }*/
     }
+    overlay.style.display = 'flex';
 }
 
 // ユーザーの認証状態が変わるたびにcurrentUserにセット
@@ -97,7 +120,9 @@ onAuthStateChanged(auth, async (user) => {
 
 // キャンセルボタン
 document.querySelector('.cancel-button').addEventListener('click', () => {
-    window.location.href = 'Calendar.html';
+    if(confirm("作成した予定は保存されません")){
+        window.location.href = 'Calendar.html';
+    }
 });
 // 保存ボタン
 document.querySelector('.save-button').addEventListener('click', async () => {
@@ -108,7 +133,6 @@ document.querySelector('.save-button').addEventListener('click', async () => {
         alert("タイトルを入力してください。");
         return; // 処理を中断
     }
-    
 
     const allDay = document.getElementById('all-day-toggle').checked;
     let startDate = document.getElementById('start-date-box').value;
@@ -118,36 +142,7 @@ document.querySelector('.save-button').addEventListener('click', async () => {
         
         endDate += "T" + document.getElementById('end-time-box').value + ":00";
     }
-    
-    const notifyList = document.querySelectorAll('.form-row.selected');
-    const start = new Date(startDate)
-    const end = new Date(endDate)
-    console.log("sss"+start);
-    const dict = {
-        "予定時間": calcNotifyTime(start,0, 0, 0),
-        "5分前": calcNotifyTime(start, 0, 0, 5),
-        "10分前": calcNotifyTime(start, 0, 0, 10),
-        "15分前": calcNotifyTime(start, 0, 0, 15),
-        "30分前": calcNotifyTime(start, 0, 0, 30),
-        "1時間前": calcNotifyTime(start, 0, 1, 0),
-        "2時間前": calcNotifyTime(start, 0, 2, 0),
-        "3時間前": calcNotifyTime(start, 0, 3, 0),
-        "6時間前": calcNotifyTime(start, 0, 6, 0),
-        "1日前": calcNotifyTime(start, 1, 0, 0),
-    };
-    //const notify = document.getElementById('notification-toggle').checked;
-    const notify = [];
-    console.log("notifyList:" + notifyList);
-    for(const notifyElement of notifyList){
-        console.log(notifyElement.id);
-        console.log(dict[notifyElement.id] + "aaa");
-        const notifyTime = dict[notifyElement.id];
-        console.log(notifyTime);
-        notify.push(notifyTime);
-    }
-    console.log(notify);
 
-    console.log(currentUser.uid)
     const mochimonList = document.getElementsByClassName('mochimon');
     const itemList = [];
     for(const mochimon of mochimonList) {
@@ -155,7 +150,6 @@ document.querySelector('.save-button').addEventListener('click', async () => {
             name: mochimon.textContent,
             isChecked: false
         }
-        console.log(item);
         itemList.push(item);
     }
     try{

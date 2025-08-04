@@ -22,6 +22,8 @@ const params  = new URLSearchParams(window.location.search);
 const eventId = params.get("eventId");
 let currentItemList = []; // グローバルで定義
 
+const overlay = document.getElementById("layer");
+
 // --- 持ち物リスト描画 ---
 function renderItemList() {
   const checklist = document.getElementById("checklist");
@@ -58,16 +60,14 @@ async function loadEventData(user) {
   currentItemList = data.itemArray || [];
   const itemArray = JSON.parse(localStorage.getItem('item')) || [];
   if(itemArray.length > 0){
-    console.log(itemArray);
     currentItemList.length = 0;
     itemArray.forEach(item =>{
       currentItemList.push({
         name: item,
         isChecked: false
-    });
+      });
     })
   }
-  console.log(currentItemList);
   renderItemList();
 
   // フォームへ反映
@@ -90,7 +90,7 @@ async function loadEventData(user) {
     document.getElementById("end-time-box").value = end.toTimeString().slice(0, 5);
   }
 
-  
+  overlay.style.display = 'flex'
   
 
   document.querySelector(".copy-button").addEventListener("click", async () => {
@@ -186,15 +186,11 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("end-time-box").style.display = isAllDay ? "none" : "inline-block";
   });
 
-  // モーダル操作
-  document.getElementById("modal-back-button").addEventListener("click", () => {
-    document.getElementById("modal-overlay").classList.remove("active");
-  });
-
-
   // キャンセル・削除
   document.querySelector(".cancel-button").addEventListener("click", () => {
-    location.href = "Calendar.html";
+    if(confirm('変更した内容は保存されません')){
+      location.href = "Calendar.html";
+    }
   });
 
   document.querySelector(".delete-button").addEventListener("click", async () => {

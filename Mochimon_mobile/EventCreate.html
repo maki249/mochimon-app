@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <div class="overlay">
+    <div class="overlay" id="layer">
         <div class="event-form">
             <div class="form-header">
                 <button class="cancel-button">キャンセル</button>
@@ -49,61 +49,12 @@
                 </div>
 
                 <button id="add-item-button">
-                    <i class="fa-solid fa-plus"></i> 持ち物を追加
+                    <i class="fa-solid fa-plus"></i> 持ち物を追加・削除
                 </button>
-            </div>
-        </div>
-    </div>
 
-    <!-- 通知設定画面が右から出てくる -->
-    <div class="modal-overlay" id="modal-overlay">
-        <div class="modal">
-            <div class="form-header">
-                <button class="cancel-button" id="modal-back-button">＜戻る</button>
-                <div class="form-title">通知</div>
-            </div>
-            <div class="notification-body">
-                <div class="form-section notification-options">
-                    <div class="form-row" id="予定時間">
-                        <span class="form-label">予定時間</span>
-                        <span class="checkmark"></span>
-                    </div>
-                    <div class="form-row" id="5分前">
-                        <span class="form-label">5分前</span>
-                        <span class="checkmark"></span>
-                    </div>
-                    <div class="form-row" id="10分前">
-                        <span class="form-label">10分前</span>
-                        <span class="checkmark"></span>
-                    </div>
-                    <div class="form-row" id="15分前">
-                        <span class="form-label">15分前</span>
-                        <span class="checkmark"></span>
-                    </div>
-                    <div class="form-row" id="30分前">
-                        <span class="form-label">30分前</span>
-                        <span class="checkmark"></span>
-                    </div>
-                    <div class="form-row" id="1時間前">
-                        <span class="form-label">1時間前</span>
-                        <span class="checkmark"></span>
-                    </div>
-                    <div class="form-row" id="2時間前">
-                        <span class="form-label">2時間前</span>
-                        <span class="checkmark"></span>
-                    </div>
-                    <div class="form-row" id="3時間前">
-                        <span class="form-label">3時間前</span>
-                        <span class="checkmark"></span>
-                    </div>
-                    <div class="form-row" id="6時間前">
-                        <span class="form-label">6時間前</span>
-                        <span class="checkmark"></span>
-                    </div>
-                    <div class="form-row" id="1日前">
-                        <span class="form-label">1日前</span>
-                        <span class="checkmark"></span>
-                    </div>
+                <div class="form-section">
+                    <h3>持ち物リスト</h3>
+                    <ul id="checklist"></ul>
                 </div>
 
             </div>

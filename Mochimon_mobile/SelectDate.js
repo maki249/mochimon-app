@@ -98,10 +98,15 @@ async function loadChecklistItems(userId, eventId) {
       `;
       checklist.appendChild(li);
     });
-
-    // イベントリスナー登録
-    setupEvents(userId, eventId);
-
+    if(homeOrShare){
+      // イベントリスナー登録
+      setupEvents(userId, eventId);
+    }else{
+      const inputGroup = document.querySelectorAll('input');
+      inputGroup.forEach(input => {
+        input.disabled = true;
+      })
+    }
     // プログレスバー更新
     updateProgress();
 
@@ -238,9 +243,9 @@ function updateProgress() {
   [...unchecked, ...checked].forEach(li => checklist.appendChild(li));
 }
 
+let homeOrShare = false;
 // 認証状態監視後、チェックリストをロード
 document.addEventListener('DOMContentLoaded', () => {
-  let homeOrShare = false;
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
       console.error("ログインしているユーザーがいません。");

@@ -227,7 +227,7 @@ function updateProgress() {
   const progressText = document.getElementById('progress');
   const progressBar = document.querySelector('.progress-bar-fill');
 
-  if (progressText) progressText.textContent = `${percent}%`;
+  if (progressText) progressText.textContent = `${percent}% (${checkedCount}/${totalCount})`;
   if (progressBar) progressBar.style.width = `${percent}%`;
 
   // 未チェックを上にして並び替え

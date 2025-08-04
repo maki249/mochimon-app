@@ -126,7 +126,7 @@ onAuthStateChanged(auth, async (user) => {
             if(sum === 0){
                 rate.textContent = "持ち物リストが空です";
             }else{
-                rate.textContent = Math.round(checkItem / sum * 100) + '%';
+                rate.textContent = `${Math.round(checkItem / sum * 100)}% (${checkItem}/${sum})`;
             }
 
             // 編集ボタンの作成

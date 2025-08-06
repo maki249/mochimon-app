@@ -28,6 +28,7 @@ header {
   transform: translateX(-50%);
   font-size: 18px;
   color: #fff;
+  text-align: center;
 }
 
 .cancel-button,

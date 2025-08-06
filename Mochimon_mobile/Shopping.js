@@ -168,7 +168,7 @@ onAuthStateChanged(auth, async (user) => {
             checklistContainer.appendChild(title);
             pastUnfinishedLists.forEach(card => checklistContainer.appendChild(card));
         }
-        if (displayCount === 0) {
+        if (futureLists.length === 0 && pastUnfinishedLists.length === 0) {
             checklistContainer.innerHTML = `
                 <div class="empty-message">
                     <p>表示する買い物リストがありません</p>
@@ -200,4 +200,5 @@ if (iconBtn) {
 
 document.querySelector('.header-area h1').addEventListener('click', () => {
     window.location.href = 'Home.html';
+
 })
